@@ -22,6 +22,8 @@ export {
 export { ButtonGroup } from './components/ui/ButtonGroup';
 export type { ButtonGroupOption, ButtonGroupProps } from './components/ui/ButtonGroup';
 
+export { AppFooter } from './components/AppFooter';
+
 // Adapters + Provider (S2).
 export {
   MerlynUIProvider,
