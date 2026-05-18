@@ -31,6 +31,8 @@ export { InputBarKeyboardHandler } from './components/InputBarKeyboardHandler';
 
 export { ChatPane } from './components/ChatPane';
 
+export { ConversationsDrawer } from './components/ConversationsDrawer';
+
 export { useReadlineKeys } from './hooks/useReadlineKeys';
 export { useTabIndent } from './hooks/useTabIndent';
 export type { TabIndentSpaces } from './hooks/useTabIndent';
