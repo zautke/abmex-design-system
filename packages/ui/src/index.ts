@@ -26,6 +26,13 @@ export { AppFooter } from './components/AppFooter';
 
 export { ModelPicker } from './components/ModelPicker';
 
+export { InputBar } from './components/InputBar';
+export { InputBarKeyboardHandler } from './components/InputBarKeyboardHandler';
+
+export { useReadlineKeys } from './hooks/useReadlineKeys';
+export { useTabIndent } from './hooks/useTabIndent';
+export type { TabIndentSpaces } from './hooks/useTabIndent';
+
 // Adapters + Provider (S2).
 export {
   MerlynUIProvider,
