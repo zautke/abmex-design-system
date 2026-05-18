@@ -29,6 +29,8 @@ export { ModelPicker } from './components/ModelPicker';
 export { InputBar } from './components/InputBar';
 export { InputBarKeyboardHandler } from './components/InputBarKeyboardHandler';
 
+export { ChatPane } from './components/ChatPane';
+
 export { useReadlineKeys } from './hooks/useReadlineKeys';
 export { useTabIndent } from './hooks/useTabIndent';
 export type { TabIndentSpaces } from './hooks/useTabIndent';
