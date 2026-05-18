@@ -33,6 +33,18 @@ export { ChatPane } from './components/ChatPane';
 
 export { ConversationsDrawer } from './components/ConversationsDrawer';
 
+export { ColorSystem } from './components/theme/ColorSystem';
+export type { ColorSystemProps } from './components/theme/ColorSystem';
+export { ThemeEditorPanel } from './components/theme/ThemeEditorPanel';
+export type { ThemeEditorPanelProps } from './components/theme/ThemeEditorPanel';
+
+export {
+  COLOR_FAMILIES,
+  DEFAULT_HS,
+  DEFAULT_THEME,
+  SHADES,
+} from './types/theme';
+
 export { useReadlineKeys } from './hooks/useReadlineKeys';
 export { useTabIndent } from './hooks/useTabIndent';
 export type { TabIndentSpaces } from './hooks/useTabIndent';
