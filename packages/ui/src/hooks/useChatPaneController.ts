@@ -89,9 +89,16 @@ export function useChatPaneController(
     setIsJsonFormat((v) => !v);
   }, []);
 
-  const clearTransport = transportAdapter?.clear
-    ? transportAdapter.clear.bind(transportAdapter)
-    : undefined;
+  // Stable bound reference across renders. `bind` defends against adapters
+  // that implement `clear()` as a method using `this`; useMemo keeps the
+  // identity stable so consumers can use this as a React effect dep.
+  const clearTransport = useMemo(
+    () =>
+      transportAdapter?.clear
+        ? transportAdapter.clear.bind(transportAdapter)
+        : undefined,
+    [transportAdapter],
+  );
 
   return {
     history,

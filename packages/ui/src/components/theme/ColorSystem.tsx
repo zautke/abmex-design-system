@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useId, useState } from 'react';
 import * as culori from 'culori';
 import { HexColorPicker } from 'react-colorful';
 
@@ -7,11 +7,24 @@ export interface ColorSystemProps {
   onChange: (color: string) => void; // Called when the color changes
 }
 
+const CHANNEL_LABELS: Record<string, string> = {
+  R: 'Red',
+  G: 'Green',
+  B: 'Blue',
+  H: 'Hue',
+  S: 'Saturation',
+  L: 'Lightness',
+  C: 'Chroma',
+};
+
 export function ColorSystem({ color: initialColor, onChange }: ColorSystemProps) {
   // We'll manage the internal state in OKLCH, converting back and forth
   // Initialize from the incoming string, fallback to black if unparseable
   const [internalColor, setInternalColor] = useState(() => culori.oklch(initialColor) || culori.oklch('#000000')!);
   const [hexInput, setHexInput] = useState(culori.formatHex(initialColor) || '#000000');
+  // Per-instance ids so multiple ColorSystem mounts on the same page do not
+  // collide on input/label association (Browser-1 a11y fix).
+  const hexInputId = useId();
 
   // Convert OKLCH to other spaces for the UI
   // Note: culori.rgb returns values from 0-1, so we'll scale for the UI
@@ -79,11 +92,20 @@ export function ColorSystem({ color: initialColor, onChange }: ColorSystemProps)
         <div className="flex flex-col gap-2 flex-1 min-w-0">
           {/* Hex Input */}
           <div className="flex items-center gap-1.5">
-            <span className="text-[10px] font-semibold text-slate-500 w-8">HEX</span>
-            <input 
-              type="text" 
-              value={hexInput} 
+            <label
+              htmlFor={hexInputId}
+              className="text-[10px] font-semibold text-slate-500 w-8"
+            >
+              HEX
+            </label>
+            <input
+              id={hexInputId}
+              name="hex"
+              type="text"
+              value={hexInput}
               onChange={(e) => handleHexChange(e.target.value)}
+              aria-label="Hex color value"
+              spellCheck={false}
               className="flex-1 px-1.5 py-1 text-[11px] font-mono border border-slate-200 rounded focus:outline-none focus:border-teal-400 bg-slate-50"
             />
           </div>
@@ -91,7 +113,7 @@ export function ColorSystem({ color: initialColor, onChange }: ColorSystemProps)
           <div className="flex flex-col gap-2.5">
             {/* RGB Channels */}
             <div className="flex flex-col gap-1">
-              <div className="text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">RGB</div>
+              <div className="text-[9px] font-bold text-slate-700 uppercase tracking-wider mb-0.5">RGB</div>
               <ChannelSlider label="R" value={Math.round(rgb.r * 255)} min={0} max={255} onChange={(v) => handleChannelChange('rgb', 'r', v / 255)} />
               <ChannelSlider label="G" value={Math.round(rgb.g * 255)} min={0} max={255} onChange={(v) => handleChannelChange('rgb', 'g', v / 255)} />
               <ChannelSlider label="B" value={Math.round(rgb.b * 255)} min={0} max={255} onChange={(v) => handleChannelChange('rgb', 'b', v / 255)} />
@@ -99,7 +121,7 @@ export function ColorSystem({ color: initialColor, onChange }: ColorSystemProps)
 
             {/* HSL Channels */}
             <div className="flex flex-col gap-1">
-              <div className="text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">HSL</div>
+              <div className="text-[9px] font-bold text-slate-700 uppercase tracking-wider mb-0.5">HSL</div>
               <ChannelSlider label="H" value={Math.round(hsl.h || 0)} min={0} max={360} onChange={(v) => handleChannelChange('hsl', 'h', v)} />
               <ChannelSlider label="S" value={Math.round(hsl.s * 100)} min={0} max={100} onChange={(v) => handleChannelChange('hsl', 's', v / 100)} />
               <ChannelSlider label="L" value={Math.round(hsl.l * 100)} min={0} max={100} onChange={(v) => handleChannelChange('hsl', 'l', v / 100)} />
@@ -107,7 +129,7 @@ export function ColorSystem({ color: initialColor, onChange }: ColorSystemProps)
 
             {/* OKLCH Channels */}
             <div className="flex flex-col gap-1">
-              <div className="text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">OKLCH</div>
+              <div className="text-[9px] font-bold text-slate-700 uppercase tracking-wider mb-0.5">OKLCH</div>
               <ChannelSlider label="L" value={Math.round(internalColor.l * 100)} min={0} max={100} onChange={(v) => handleChannelChange('oklch', 'l', v / 100)} />
               <ChannelSlider label="C" value={internalColor.c} min={0} max={0.4} step={0.01} onChange={(v) => handleChannelChange('oklch', 'c', v)} />
               <ChannelSlider label="H" value={Math.round(internalColor.h || 0)} min={0} max={360} onChange={(v) => handleChannelChange('oklch', 'h', v)} />
@@ -122,20 +144,34 @@ export function ColorSystem({ color: initialColor, onChange }: ColorSystemProps)
 function ChannelSlider({ label, value, min, max, step = 1, onChange }: { label: string, value: number, min: number, max: number, step?: number, onChange: (v: number) => void }) {
   // Format the display value: integers as integers, decimals to 2 places
   const displayValue = typeof value === 'number' && !Number.isInteger(value) ? value.toFixed(2) : value;
-  
+  // Long-form for screen readers; short label remains the visual chip.
+  const ariaLabel = CHANNEL_LABELS[label] ?? label;
+  const sliderId = useId();
+
   return (
     <div className="flex items-center gap-1.5">
-      <span className="text-[9px] font-medium text-slate-500 w-2.5">{label}</span>
+      <label
+        htmlFor={sliderId}
+        className="text-[9px] font-medium text-slate-700 w-2.5"
+        aria-hidden="true"
+      >
+        {label}
+      </label>
       <input
+        id={sliderId}
         type="range"
         min={min}
         max={max}
         step={step}
         value={value}
         onChange={(e) => onChange(Number(e.target.value))}
+        aria-label={ariaLabel}
+        aria-valuetext={String(displayValue)}
         className="flex-1 h-1 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-teal-500 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-2.5 [&::-webkit-slider-thumb]:h-2.5 [&::-webkit-slider-thumb]:bg-teal-500 [&::-webkit-slider-thumb]:rounded-full"
       />
-      <span className="text-[9px] text-slate-400 w-6 text-right font-mono tabular-nums leading-none">{displayValue}</span>
+      {/* Browser-2 fix: was text-slate-400 (~3.0:1 on white). Bumped to
+          text-slate-600 (~5.5:1 on white) to clear WCAG AA at 9px. */}
+      <span className="text-[9px] text-slate-600 w-6 text-right font-mono tabular-nums leading-none">{displayValue}</span>
     </div>
   );
 }
