@@ -114,25 +114,25 @@ export function ColorSystem({ color: initialColor, onChange }: ColorSystemProps)
             {/* RGB Channels */}
             <div className="flex flex-col gap-1">
               <div className="text-[9px] font-bold text-slate-700 uppercase tracking-wider mb-0.5">RGB</div>
-              <ChannelSlider label="R" value={Math.round(rgb.r * 255)} min={0} max={255} onChange={(v) => handleChannelChange('rgb', 'r', v / 255)} />
-              <ChannelSlider label="G" value={Math.round(rgb.g * 255)} min={0} max={255} onChange={(v) => handleChannelChange('rgb', 'g', v / 255)} />
-              <ChannelSlider label="B" value={Math.round(rgb.b * 255)} min={0} max={255} onChange={(v) => handleChannelChange('rgb', 'b', v / 255)} />
+              <ChannelSlider group="RGB" label="R" value={Math.round(rgb.r * 255)} min={0} max={255} onChange={(v) => handleChannelChange('rgb', 'r', v / 255)} />
+              <ChannelSlider group="RGB" label="G" value={Math.round(rgb.g * 255)} min={0} max={255} onChange={(v) => handleChannelChange('rgb', 'g', v / 255)} />
+              <ChannelSlider group="RGB" label="B" value={Math.round(rgb.b * 255)} min={0} max={255} onChange={(v) => handleChannelChange('rgb', 'b', v / 255)} />
             </div>
 
             {/* HSL Channels */}
             <div className="flex flex-col gap-1">
               <div className="text-[9px] font-bold text-slate-700 uppercase tracking-wider mb-0.5">HSL</div>
-              <ChannelSlider label="H" value={Math.round(hsl.h || 0)} min={0} max={360} onChange={(v) => handleChannelChange('hsl', 'h', v)} />
-              <ChannelSlider label="S" value={Math.round(hsl.s * 100)} min={0} max={100} onChange={(v) => handleChannelChange('hsl', 's', v / 100)} />
-              <ChannelSlider label="L" value={Math.round(hsl.l * 100)} min={0} max={100} onChange={(v) => handleChannelChange('hsl', 'l', v / 100)} />
+              <ChannelSlider group="HSL" label="H" value={Math.round(hsl.h || 0)} min={0} max={360} unit="deg" onChange={(v) => handleChannelChange('hsl', 'h', v)} />
+              <ChannelSlider group="HSL" label="S" value={Math.round(hsl.s * 100)} min={0} max={100} unit="percent" onChange={(v) => handleChannelChange('hsl', 's', v / 100)} />
+              <ChannelSlider group="HSL" label="L" value={Math.round(hsl.l * 100)} min={0} max={100} unit="percent" onChange={(v) => handleChannelChange('hsl', 'l', v / 100)} />
             </div>
 
             {/* OKLCH Channels */}
             <div className="flex flex-col gap-1">
               <div className="text-[9px] font-bold text-slate-700 uppercase tracking-wider mb-0.5">OKLCH</div>
-              <ChannelSlider label="L" value={Math.round(internalColor.l * 100)} min={0} max={100} onChange={(v) => handleChannelChange('oklch', 'l', v / 100)} />
-              <ChannelSlider label="C" value={internalColor.c} min={0} max={0.4} step={0.01} onChange={(v) => handleChannelChange('oklch', 'c', v)} />
-              <ChannelSlider label="H" value={Math.round(internalColor.h || 0)} min={0} max={360} onChange={(v) => handleChannelChange('oklch', 'h', v)} />
+              <ChannelSlider group="OKLCH" label="L" value={Math.round(internalColor.l * 100)} min={0} max={100} unit="percent" onChange={(v) => handleChannelChange('oklch', 'l', v / 100)} />
+              <ChannelSlider group="OKLCH" label="C" value={internalColor.c} min={0} max={0.4} step={0.01} onChange={(v) => handleChannelChange('oklch', 'c', v)} />
+              <ChannelSlider group="OKLCH" label="H" value={Math.round(internalColor.h || 0)} min={0} max={360} unit="deg" onChange={(v) => handleChannelChange('oklch', 'h', v)} />
             </div>
           </div>
         </div>
@@ -141,11 +141,42 @@ export function ColorSystem({ color: initialColor, onChange }: ColorSystemProps)
   );
 }
 
-function ChannelSlider({ label, value, min, max, step = 1, onChange }: { label: string, value: number, min: number, max: number, step?: number, onChange: (v: number) => void }) {
+type ChannelGroup = 'RGB' | 'HSL' | 'OKLCH';
+type ChannelUnit = 'percent' | 'deg' | undefined;
+
+function ChannelSlider({
+  group,
+  label,
+  value,
+  min,
+  max,
+  step = 1,
+  unit,
+  onChange,
+}: {
+  group: ChannelGroup;
+  label: string;
+  value: number;
+  min: number;
+  max: number;
+  step?: number;
+  unit?: ChannelUnit;
+  onChange: (v: number) => void;
+}) {
   // Format the display value: integers as integers, decimals to 2 places
   const displayValue = typeof value === 'number' && !Number.isInteger(value) ? value.toFixed(2) : value;
-  // Long-form for screen readers; short label remains the visual chip.
-  const ariaLabel = CHANNEL_LABELS[label] ?? label;
+  // Long-form for screen readers. Includes group so HSL Hue + OKLCH Hue (and
+  // HSL Lightness + OKLCH Lightness) read as distinct controls.
+  const ariaLabel = `${group} ${CHANNEL_LABELS[label] ?? label}`;
+  // Per-instance stable name for label/forms audits (Browser-1 completeness).
+  const name = `${group.toLowerCase()}-${label.toLowerCase()}`;
+  // Units in the SR readout match the visual meaning.
+  const valuetext =
+    unit === 'percent'
+      ? `${displayValue}%`
+      : unit === 'deg'
+        ? `${displayValue}°`
+        : String(displayValue);
   const sliderId = useId();
 
   return (
@@ -159,6 +190,7 @@ function ChannelSlider({ label, value, min, max, step = 1, onChange }: { label: 
       </label>
       <input
         id={sliderId}
+        name={name}
         type="range"
         min={min}
         max={max}
@@ -166,7 +198,7 @@ function ChannelSlider({ label, value, min, max, step = 1, onChange }: { label: 
         value={value}
         onChange={(e) => onChange(Number(e.target.value))}
         aria-label={ariaLabel}
-        aria-valuetext={String(displayValue)}
+        aria-valuetext={valuetext}
         className="flex-1 h-1 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-teal-500 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-2.5 [&::-webkit-slider-thumb]:h-2.5 [&::-webkit-slider-thumb]:bg-teal-500 [&::-webkit-slider-thumb]:rounded-full"
       />
       {/* Browser-2 fix: was text-slate-400 (~3.0:1 on white). Bumped to
