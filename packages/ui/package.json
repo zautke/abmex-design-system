@@ -6,7 +6,10 @@
   "private": false,
   "license": "MIT",
   "sideEffects": ["**/*.css"],
-  "files": ["dist", "src", "README.md", "package.json"],
+  "engines": {
+    "node": ">=18"
+  },
+  "files": ["dist", "README.md", "package.json"],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -16,11 +19,11 @@
       "types": "./dist/components/*.d.ts",
       "import": "./dist/components/*.js"
     },
-    "./styles.css": "./src/styles/tailwind.css",
+    "./styles.css": "./dist/styles.css",
     "./package.json": "./package.json"
   },
   "scripts": {
-    "build": "vite build",
+    "build": "vite build && cp src/styles/tailwind.css dist/styles.css",
     "typecheck": "tsc --noEmit",
     "check": "pnpm typecheck && pnpm build",
     "prepack": "pnpm build"
