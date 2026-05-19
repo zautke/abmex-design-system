@@ -49,6 +49,20 @@ export { useReadlineKeys } from './hooks/useReadlineKeys';
 export { useTabIndent } from './hooks/useTabIndent';
 export type { TabIndentSpaces } from './hooks/useTabIndent';
 
+// Controller hooks (S11) — headless state for ChatPane + InputBar so
+// consumers can drive these surfaces with their own layout / chrome.
+export { useChatPaneController } from './hooks/useChatPaneController';
+export type {
+  UseChatPaneControllerInput,
+  UseChatPaneControllerResult,
+} from './hooks/useChatPaneController';
+
+export { useInputBarController } from './hooks/useInputBarController';
+export type {
+  UseInputBarControllerInput,
+  UseInputBarControllerResult,
+} from './hooks/useInputBarController';
+
 // Adapters + Provider (S2).
 export {
   MerlynUIProvider,
@@ -66,7 +80,6 @@ export type {
   McpServerStatus,
 } from './adapters/mcp';
 export type { WebContextAdapter, WebPageContent } from './adapters/webContext';
-export type { KeyboardAdapter } from './adapters/keyboard';
 export type { ThemeTokenAdapter } from './adapters/theme';
 export type {
   TransportDebugAdapter,

@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import type { ChangeEvent } from 'react';
 import { ArrowUp, Square } from 'lucide-react';
 import { useReadlineKeys } from '../hooks/useReadlineKeys';
+import { useInputBarController } from '../hooks/useInputBarController';
 import { InputBarKeyboardHandler } from './InputBarKeyboardHandler';
 
 interface Props {
@@ -14,31 +15,12 @@ interface Props {
    * bare ⏎ sends, ⇧⏎ inserts newline. Consumer owns persistence of this flag.
    */
   shiftEnterToSend?: boolean;
-}
-
-const PROMPT_HISTORY_STORAGE_KEY = 'inputbar.promptHistory.v1';
-const MAX_PROMPT_HISTORY_ITEMS = 200;
-
-function readPromptHistoryFromStorage(): string[] {
-  try {
-    const raw = localStorage.getItem(PROMPT_HISTORY_STORAGE_KEY);
-    if (!raw) return [];
-    const parsed = JSON.parse(raw) as unknown;
-    if (!Array.isArray(parsed)) return [];
-    return parsed.filter(
-      (value): value is string => typeof value === 'string' && value.length > 0,
-    );
-  } catch {
-    return [];
-  }
-}
-
-function writePromptHistoryToStorage(history: string[]): void {
-  try {
-    localStorage.setItem(PROMPT_HISTORY_STORAGE_KEY, JSON.stringify(history));
-  } catch {
-    // Non-fatal: keep in-memory behavior if storage is unavailable.
-  }
+  /**
+   * Optional localStorage key override for prompt history. Lets multiple
+   * InputBar instances coexist on the same origin without collision. Default
+   * `inputbar.promptHistory.v1`.
+   */
+  promptHistoryStorageKey?: string;
 }
 
 export function InputBar({
@@ -47,17 +29,27 @@ export function InputBar({
   streaming,
   disabled,
   shiftEnterToSend = false,
+  promptHistoryStorageKey,
 }: Props) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const [inputValue, setInputValue] = useState('');
-  const [promptHistory, setPromptHistory] = useState<string[]>([]);
-  const readlineOnKeyDown = useReadlineKeys(textareaRef, inputValue, setInputValue);
-  const [navigationIndex, setNavigationIndex] = useState<number | null>(null);
-  const [navigationDraft, setNavigationDraft] = useState('');
 
-  useEffect(() => {
-    setPromptHistory(readPromptHistoryFromStorage());
-  }, []);
+  const controller = useInputBarController({
+    onSend,
+    shiftEnterToSend,
+    ...(promptHistoryStorageKey ? { promptHistoryStorageKey } : {}),
+  });
+  const {
+    inputValue,
+    setInputValue,
+    submit,
+    navigateHistoryUp,
+    navigateHistoryDown,
+    cancelHistoryNavigation,
+    notifyManualEdit,
+    placeholder,
+  } = controller;
+
+  const readlineOnKeyDown = useReadlineKeys(textareaRef, inputValue, setInputValue);
 
   useEffect(() => {
     const el = textareaRef.current;
@@ -66,74 +58,18 @@ export function InputBar({
     el.style.height = `${Math.min(el.scrollHeight, 120)}px`;
   }, [inputValue]);
 
-  function submit(): void {
-    const text = inputValue.trim();
-    if (!text) return;
-    onSend(text);
-    setInputValue('');
-    setNavigationIndex(null);
-    setNavigationDraft('');
-
-    setPromptHistory((prev) => {
-      if (prev.includes(text)) return prev;
-      const next = [...prev, text].slice(-MAX_PROMPT_HISTORY_ITEMS);
-      writePromptHistoryToStorage(next);
-      return next;
-    });
-
+  // After submit clears value, also reset textarea height back to its
+  // single-row baseline so the toolbar doesn't stay at a multi-line height.
+  function handleSubmit(): void {
+    submit();
     if (textareaRef.current) textareaRef.current.style.height = 'auto';
-  }
-
-  function navigateHistoryUp(): void {
-    if (promptHistory.length === 0) return;
-
-    if (navigationIndex === null) {
-      const shouldCaptureDraft =
-        inputValue.length > 0 && !promptHistory.includes(inputValue);
-      setNavigationDraft(shouldCaptureDraft ? inputValue : '');
-      const nextIndex = promptHistory.length - 1;
-      setNavigationIndex(nextIndex);
-      setInputValue(promptHistory[nextIndex] ?? '');
-      return;
-    }
-
-    const nextIndex = Math.max(0, navigationIndex - 1);
-    setNavigationIndex(nextIndex);
-    setInputValue(promptHistory[nextIndex] ?? '');
-  }
-
-  function navigateHistoryDown(): void {
-    if (navigationIndex === null) return;
-
-    const lastIndex = promptHistory.length - 1;
-    if (navigationIndex >= lastIndex) {
-      setNavigationIndex(null);
-      setInputValue(navigationDraft);
-      return;
-    }
-
-    const nextIndex = navigationIndex + 1;
-    setNavigationIndex(nextIndex);
-    setInputValue(promptHistory[nextIndex] ?? '');
-  }
-
-  function cancelHistoryNavigation(): void {
-    if (navigationIndex === null) return;
-    setNavigationIndex(null);
-    setInputValue(navigationDraft);
   }
 
   function handleInputChange(e: ChangeEvent<HTMLTextAreaElement>): void {
     const nextValue = e.currentTarget.value;
-    if (navigationIndex !== null) {
-      setNavigationIndex(null);
-    }
+    notifyManualEdit();
     setInputValue(nextValue);
   }
-
-  const placeholder = shiftEnterToSend
-    ? 'Ask anything… (⇧+⏎ to send)'
-    : 'Ask anything… (⏎ to send, ⇧+⏎ for newline)';
 
   const sendDisabled = disabled || inputValue.trim().length === 0;
 
@@ -144,7 +80,7 @@ export function InputBar({
           streaming={streaming}
           disabled={disabled}
           shiftEnterToSend={shiftEnterToSend}
-          onSubmit={submit}
+          onSubmit={handleSubmit}
           onHistoryUp={navigateHistoryUp}
           onHistoryDown={navigateHistoryDown}
           onCancelHistoryNavigation={cancelHistoryNavigation}
@@ -184,7 +120,7 @@ export function InputBar({
               type="button"
               className="icon-btn-32"
               data-active={!sendDisabled || undefined}
-              onClick={submit}
+              onClick={handleSubmit}
               disabled={sendDisabled}
               aria-label="Send message"
             >

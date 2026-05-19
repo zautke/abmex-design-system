@@ -7,7 +7,6 @@ export type {
   McpServerStatus,
 } from './mcp';
 export type { WebContextAdapter, WebPageContent } from './webContext';
-export type { KeyboardAdapter } from './keyboard';
 export type { ThemeTokenAdapter } from './theme';
 export type {
   TransportDebugAdapter,

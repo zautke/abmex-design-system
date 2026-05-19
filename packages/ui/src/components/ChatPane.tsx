@@ -1,8 +1,8 @@
-import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { DbConversationItem } from '../types/conversation';
 import { MarkdownRenderer } from './MarkdownRenderer';
-import { useMerlynAdaptersOptional } from '../provider';
-import type { TransportDebugAdapter, TransportDebugEntry } from '../adapters/transportDebug';
+import { useChatPaneController } from '../hooks/useChatPaneController';
+import type { TransportDebugEntry } from '../adapters/transportDebug';
 
 interface Props {
   history: DbConversationItem[];
@@ -199,31 +199,16 @@ function TransportBufferPanel({
   );
 }
 
-const EMPTY_ENTRIES: readonly TransportDebugEntry[] = Object.freeze([]);
-
-function useTransportDebugEntries(
-  adapter: TransportDebugAdapter | undefined,
-): readonly TransportDebugEntry[] {
-  return useSyncExternalStore(
-    (cb) => (adapter ? adapter.subscribe(() => cb()) : () => {}),
-    () => (adapter ? adapter.entries() : EMPTY_ENTRIES),
-    () => (adapter ? adapter.entries() : EMPTY_ENTRIES),
-  );
-}
-
 export function ChatPane({ history, showEmptyState = true }: Props) {
   const bottomRef = useRef<HTMLDivElement>(null);
   const scrollRef = useRef<HTMLUListElement>(null);
   const userFrozen = useRef(false);
-  const [isJsonFormat, setIsJsonFormat] = useState(false);
   const [showResume, setShowResume] = useState(false);
 
-  // Subscribe unconditionally when an adapter is mounted, so eviction-induced
-  // re-renders fire while JSON view is open. Without an adapter the hook
-  // returns the frozen empty array — no-op cost.
-  const adapters = useMerlynAdaptersOptional();
-  const transportAdapter = adapters?.transportDebug;
-  const transportEntries = useTransportDebugEntries(transportAdapter);
+  // Controller hook owns JSON-view toggle + TransportDebug adapter consumption.
+  // Scroll-anchor refs stay here — they're DOM-bound to this view's JSX.
+  const { isJsonFormat, toggleJsonFormat, transportEntries, transportAdapter, clearTransport } =
+    useChatPaneController({ history });
 
   useEffect(() => {
     const lastItem = history[history.length - 1];
@@ -259,7 +244,7 @@ export function ChatPane({ history, showEmptyState = true }: Props) {
       <div className="flex items-center justify-end px-3 pt-2">
         <button
           type="button"
-          onClick={() => setIsJsonFormat((value) => !value)}
+          onClick={toggleJsonFormat}
           className="text-[11px] font-medium uppercase tracking-[0.14em] text-slate-400 transition hover:text-slate-600"
         >
           {isJsonFormat ? 'Text view' : 'JSON view'}
@@ -289,10 +274,7 @@ export function ChatPane({ history, showEmptyState = true }: Props) {
       )}
 
       {isJsonFormat && transportAdapter && (
-        <TransportBufferPanel
-          entries={transportEntries}
-          onClear={transportAdapter.clear?.bind(transportAdapter)}
-        />
+        <TransportBufferPanel entries={transportEntries} onClear={clearTransport} />
       )}
 
       {showResume && (

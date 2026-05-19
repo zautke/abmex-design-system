@@ -1,10 +1,13 @@
 // MerlynUIProvider — single React context delivering adapter ports to all
 // extracted UI hooks/components. One mount point, one mock object in tests.
 //
-// Required adapters: persistence, providers, tools.
-// Optional adapters (graceful degradation): mcp, webContext, keyboard, theme,
-//   transportDebug. Hooks that depend on an optional adapter no-op or render a
-//   safe fallback when it is absent.
+// All adapters are OPTIONAL. v0.1.0 only ChatPane's TransportDebug consumer
+// runs through the seam; persistence/providers/tools/mcp/webContext/theme
+// are defined as ports so consumers can wire them ahead of future controller
+// hooks (useConversationsController, useThemeEditorController, etc.) without
+// a contract break. Hooks that depend on a specific port read it from the
+// bag and degrade gracefully when missing (e.g. ChatPane's debug panel
+// hides itself when transportDebug is absent).
 
 import { createContext, useContext } from 'react';
 import type { ReactNode } from 'react';
@@ -13,17 +16,15 @@ import type { ProviderRegistryAdapter } from './adapters/providerRegistry';
 import type { ToolExecutorAdapter } from './adapters/toolExecutor';
 import type { McpAdapter } from './adapters/mcp';
 import type { WebContextAdapter } from './adapters/webContext';
-import type { KeyboardAdapter } from './adapters/keyboard';
 import type { ThemeTokenAdapter } from './adapters/theme';
 import type { TransportDebugAdapter } from './adapters/transportDebug';
 
 export interface MerlynUIAdapters {
-  persistence: PersistenceAdapter;
-  providers: ProviderRegistryAdapter;
-  tools: ToolExecutorAdapter;
+  persistence?: PersistenceAdapter;
+  providers?: ProviderRegistryAdapter;
+  tools?: ToolExecutorAdapter;
   mcp?: McpAdapter;
   webContext?: WebContextAdapter;
-  keyboard?: KeyboardAdapter;
   theme?: ThemeTokenAdapter;
   transportDebug?: TransportDebugAdapter;
 }
