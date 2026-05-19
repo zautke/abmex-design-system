@@ -22,9 +22,11 @@ export function ColorSystem({ color: initialColor, onChange }: ColorSystemProps)
   // Initialize from the incoming string, fallback to black if unparseable
   const [internalColor, setInternalColor] = useState(() => culori.oklch(initialColor) || culori.oklch('#000000')!);
   const [hexInput, setHexInput] = useState(culori.formatHex(initialColor) || '#000000');
-  // Per-instance ids so multiple ColorSystem mounts on the same page do not
-  // collide on input/label association (Browser-1 a11y fix).
-  const hexInputId = useId();
+  // Per-instance prefix so multiple ColorSystem mounts on the same page do
+  // not collide on input id / name (Browser-1 a11y fix). useId is already
+  // collision-free; we reuse it as the namespace for control `name`s too.
+  const instanceId = useId();
+  const hexInputId = `${instanceId}-hex`;
 
   // Convert OKLCH to other spaces for the UI
   // Note: culori.rgb returns values from 0-1, so we'll scale for the UI
@@ -83,8 +85,13 @@ export function ColorSystem({ color: initialColor, onChange }: ColorSystemProps)
   return (
     <div className="flex flex-col gap-3 bg-white p-3 rounded-xl shadow-xl border border-slate-200 w-[320px] max-w-full" onClick={(e) => e.stopPropagation()}>
       <div className="flex gap-3 items-start">
-        {/* React Colorful Picker */}
-        <div className="w-[100px] flex-shrink-0">
+        {/* React Colorful Picker — wrapped in a labeled group so the
+            saturation/hue draggable surfaces have an accessible name. */}
+        <div
+          role="group"
+          aria-label="Color picker"
+          className="w-[100px] flex-shrink-0"
+        >
           <HexColorPicker color={hex} onChange={handleColorPickerChange} style={{ width: '100%', height: '120px' }} />
         </div>
         
@@ -100,7 +107,7 @@ export function ColorSystem({ color: initialColor, onChange }: ColorSystemProps)
             </label>
             <input
               id={hexInputId}
-              name="hex"
+              name={hexInputId}
               type="text"
               value={hexInput}
               onChange={(e) => handleHexChange(e.target.value)}
@@ -114,25 +121,25 @@ export function ColorSystem({ color: initialColor, onChange }: ColorSystemProps)
             {/* RGB Channels */}
             <div className="flex flex-col gap-1">
               <div className="text-[9px] font-bold text-slate-700 uppercase tracking-wider mb-0.5">RGB</div>
-              <ChannelSlider group="RGB" label="R" value={Math.round(rgb.r * 255)} min={0} max={255} onChange={(v) => handleChannelChange('rgb', 'r', v / 255)} />
-              <ChannelSlider group="RGB" label="G" value={Math.round(rgb.g * 255)} min={0} max={255} onChange={(v) => handleChannelChange('rgb', 'g', v / 255)} />
-              <ChannelSlider group="RGB" label="B" value={Math.round(rgb.b * 255)} min={0} max={255} onChange={(v) => handleChannelChange('rgb', 'b', v / 255)} />
+              <ChannelSlider instanceId={instanceId} group="RGB" label="R" value={Math.round(rgb.r * 255)} min={0} max={255} onChange={(v) => handleChannelChange('rgb', 'r', v / 255)} />
+              <ChannelSlider instanceId={instanceId} group="RGB" label="G" value={Math.round(rgb.g * 255)} min={0} max={255} onChange={(v) => handleChannelChange('rgb', 'g', v / 255)} />
+              <ChannelSlider instanceId={instanceId} group="RGB" label="B" value={Math.round(rgb.b * 255)} min={0} max={255} onChange={(v) => handleChannelChange('rgb', 'b', v / 255)} />
             </div>
 
             {/* HSL Channels */}
             <div className="flex flex-col gap-1">
               <div className="text-[9px] font-bold text-slate-700 uppercase tracking-wider mb-0.5">HSL</div>
-              <ChannelSlider group="HSL" label="H" value={Math.round(hsl.h || 0)} min={0} max={360} unit="deg" onChange={(v) => handleChannelChange('hsl', 'h', v)} />
-              <ChannelSlider group="HSL" label="S" value={Math.round(hsl.s * 100)} min={0} max={100} unit="percent" onChange={(v) => handleChannelChange('hsl', 's', v / 100)} />
-              <ChannelSlider group="HSL" label="L" value={Math.round(hsl.l * 100)} min={0} max={100} unit="percent" onChange={(v) => handleChannelChange('hsl', 'l', v / 100)} />
+              <ChannelSlider instanceId={instanceId} group="HSL" label="H" value={Math.round(hsl.h || 0)} min={0} max={360} unit="deg" onChange={(v) => handleChannelChange('hsl', 'h', v)} />
+              <ChannelSlider instanceId={instanceId} group="HSL" label="S" value={Math.round(hsl.s * 100)} min={0} max={100} unit="percent" onChange={(v) => handleChannelChange('hsl', 's', v / 100)} />
+              <ChannelSlider instanceId={instanceId} group="HSL" label="L" value={Math.round(hsl.l * 100)} min={0} max={100} unit="percent" onChange={(v) => handleChannelChange('hsl', 'l', v / 100)} />
             </div>
 
             {/* OKLCH Channels */}
             <div className="flex flex-col gap-1">
               <div className="text-[9px] font-bold text-slate-700 uppercase tracking-wider mb-0.5">OKLCH</div>
-              <ChannelSlider group="OKLCH" label="L" value={Math.round(internalColor.l * 100)} min={0} max={100} unit="percent" onChange={(v) => handleChannelChange('oklch', 'l', v / 100)} />
-              <ChannelSlider group="OKLCH" label="C" value={internalColor.c} min={0} max={0.4} step={0.01} onChange={(v) => handleChannelChange('oklch', 'c', v)} />
-              <ChannelSlider group="OKLCH" label="H" value={Math.round(internalColor.h || 0)} min={0} max={360} unit="deg" onChange={(v) => handleChannelChange('oklch', 'h', v)} />
+              <ChannelSlider instanceId={instanceId} group="OKLCH" label="L" value={Math.round(internalColor.l * 100)} min={0} max={100} unit="percent" onChange={(v) => handleChannelChange('oklch', 'l', v / 100)} />
+              <ChannelSlider instanceId={instanceId} group="OKLCH" label="C" value={internalColor.c} min={0} max={0.4} step={0.01} onChange={(v) => handleChannelChange('oklch', 'c', v)} />
+              <ChannelSlider instanceId={instanceId} group="OKLCH" label="H" value={Math.round(internalColor.h || 0)} min={0} max={360} unit="deg" onChange={(v) => handleChannelChange('oklch', 'h', v)} />
             </div>
           </div>
         </div>
@@ -145,6 +152,7 @@ type ChannelGroup = 'RGB' | 'HSL' | 'OKLCH';
 type ChannelUnit = 'percent' | 'deg' | undefined;
 
 function ChannelSlider({
+  instanceId,
   group,
   label,
   value,
@@ -154,6 +162,7 @@ function ChannelSlider({
   unit,
   onChange,
 }: {
+  instanceId: string;
   group: ChannelGroup;
   label: string;
   value: number;
@@ -163,13 +172,23 @@ function ChannelSlider({
   unit?: ChannelUnit;
   onChange: (v: number) => void;
 }) {
-  // Format the display value: integers as integers, decimals to 2 places
-  const displayValue = typeof value === 'number' && !Number.isInteger(value) ? value.toFixed(2) : value;
+  // Guard non-finite (NaN/Infinity from out-of-gamut conversions) and
+  // normalize negative zero so the readout never shows "-0" / "-0.00".
+  const safeValue = Number.isFinite(value)
+    ? Object.is(value, -0)
+      ? 0
+      : value
+    : min;
+  // Format the display value: integers as integers, decimals to 2 places.
+  const displayValue = Number.isInteger(safeValue)
+    ? safeValue
+    : ((d) => (d === '-0.00' ? '0.00' : d))(safeValue.toFixed(2));
   // Long-form for screen readers. Includes group so HSL Hue + OKLCH Hue (and
   // HSL Lightness + OKLCH Lightness) read as distinct controls.
   const ariaLabel = `${group} ${CHANNEL_LABELS[label] ?? label}`;
-  // Per-instance stable name for label/forms audits (Browser-1 completeness).
-  const name = `${group.toLowerCase()}-${label.toLowerCase()}`;
+  // Per-instance + per-channel stable name so multiple ColorSystem mounts on
+  // the same page don't collide (Browser-1 completeness).
+  const name = `${instanceId}-${group.toLowerCase()}-${label.toLowerCase()}`;
   // Units in the SR readout match the visual meaning.
   const valuetext =
     unit === 'percent'
@@ -195,7 +214,7 @@ function ChannelSlider({
         min={min}
         max={max}
         step={step}
-        value={value}
+        value={safeValue}
         onChange={(e) => onChange(Number(e.target.value))}
         aria-label={ariaLabel}
         aria-valuetext={valuetext}
