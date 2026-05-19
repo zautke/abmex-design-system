@@ -36,7 +36,7 @@ export function InputBar({
   const controller = useInputBarController({
     onSend,
     shiftEnterToSend,
-    ...(promptHistoryStorageKey ? { promptHistoryStorageKey } : {}),
+    ...(promptHistoryStorageKey !== undefined ? { promptHistoryStorageKey } : {}),
   });
   const {
     inputValue,

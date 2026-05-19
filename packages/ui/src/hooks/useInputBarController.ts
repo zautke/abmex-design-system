@@ -14,9 +14,12 @@ function readPromptHistoryFromStorage(key: string): string[] {
     if (!raw) return [];
     const parsed = JSON.parse(raw) as unknown;
     if (!Array.isArray(parsed)) return [];
-    return parsed.filter(
+    const filtered = parsed.filter(
       (value): value is string => typeof value === 'string' && value.length > 0,
     );
+    // Cap on read — bounds memory if storage was hand-edited or grew from
+    // a prior MAX_PROMPT_HISTORY_ITEMS limit.
+    return filtered.slice(-MAX_PROMPT_HISTORY_ITEMS);
   } catch {
     return [];
   }
@@ -75,6 +78,10 @@ export function useInputBarController(
 
   useEffect(() => {
     setPromptHistory(readPromptHistoryFromStorage(promptHistoryStorageKey));
+    // Reset navigation state — the prior index/draft point at a different
+    // history array now and would address wrong entries.
+    setNavigationIndex(null);
+    setNavigationDraft('');
   }, [promptHistoryStorageKey]);
 
   const submit = useCallback(() => {
