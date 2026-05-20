@@ -63,7 +63,7 @@ export function ColorSystem({ color: initialColor, onChange }: ColorSystemProps)
 
   const handleChannelChange = (space: 'oklch' | 'rgb' | 'hsl', channel: string, value: number) => {
     let newColor: any;
-    
+
     if (space === 'oklch') {
       newColor = { ...internalColor, [channel]: value };
     } else if (space === 'rgb') {
@@ -94,7 +94,7 @@ export function ColorSystem({ color: initialColor, onChange }: ColorSystemProps)
         >
           <HexColorPicker color={hex} onChange={handleColorPickerChange} style={{ width: '100%', height: '120px' }} />
         </div>
-        
+
         {/* Controls */}
         <div className="flex flex-col gap-2 flex-1 min-w-0">
           {/* Hex Input */}
