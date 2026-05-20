@@ -17,6 +17,29 @@ const CHANNEL_LABELS: Record<string, string> = {
   C: 'Chroma',
 };
 
+/**
+ * Guard a channel value before it reaches a range input / readout.
+ * culori conversions for out-of-gamut colors can yield NaN/Infinity; tiny
+ * negative rounding can yield -0. Returns a finite, sign-normalized number.
+ *
+ * @param value raw channel value
+ * @param fallback used when `value` is non-finite (typically the channel min)
+ */
+export function normalizeChannelValue(value: number, fallback: number): number {
+  if (!Number.isFinite(value)) return fallback;
+  return Object.is(value, -0) ? 0 : value;
+}
+
+/**
+ * Format a (pre-normalized) channel value for display: integers stay bare,
+ * fractionals go to 2 dp. A "-0.00" rounding artifact is stripped to "0.00".
+ */
+export function formatChannelDisplay(value: number): string {
+  if (Number.isInteger(value)) return String(value);
+  const fixed = value.toFixed(2);
+  return fixed === '-0.00' ? '0.00' : fixed;
+}
+
 export function ColorSystem({ color: initialColor, onChange }: ColorSystemProps) {
   // We'll manage the internal state in OKLCH, converting back and forth
   // Initialize from the incoming string, fallback to black if unparseable
@@ -172,17 +195,9 @@ function ChannelSlider({
   unit?: ChannelUnit;
   onChange: (v: number) => void;
 }) {
-  // Guard non-finite (NaN/Infinity from out-of-gamut conversions) and
-  // normalize negative zero so the readout never shows "-0" / "-0.00".
-  const safeValue = Number.isFinite(value)
-    ? Object.is(value, -0)
-      ? 0
-      : value
-    : min;
-  // Format the display value: integers as integers, decimals to 2 places.
-  const displayValue = Number.isInteger(safeValue)
-    ? safeValue
-    : ((d) => (d === '-0.00' ? '0.00' : d))(safeValue.toFixed(2));
+  // Guard non-finite + negative zero; min is the non-finite fallback.
+  const safeValue = normalizeChannelValue(value, min);
+  const displayValue = formatChannelDisplay(safeValue);
   // Long-form for screen readers. Includes group so HSL Hue + OKLCH Hue (and
   // HSL Lightness + OKLCH Lightness) read as distinct controls.
   const ariaLabel = `${group} ${CHANNEL_LABELS[label] ?? label}`;
