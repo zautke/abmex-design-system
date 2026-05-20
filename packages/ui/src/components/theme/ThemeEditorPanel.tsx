@@ -9,28 +9,7 @@ import {
   type ColorHS,
   type Theme,
 } from '../../types/theme';
-
-/**
- * Extract semantic (non-color-family) CSS custom properties from a stylesheet
- * string. A line counts as a semantic variable when it declares a
- * `--color-*` custom property whose name is NOT prefixed by a known color
- * family (`--color-{family}-…`). Exported for direct unit testing.
- */
-export function parseSemanticVariables(css: string) {
-  const vars: { name: string; defaultVal: string }[] = [];
-  const lines = css.split('\n');
-  for (const line of lines) {
-    const match = line.match(/^\s*(--color-[a-zA-Z0-9-]+):\s*([^;]+);/);
-    if (match) {
-      const name = match[1]!;
-      const defaultVal = match[2]!;
-      if (!COLOR_FAMILIES.some((f) => name.startsWith(`--color-${f}-`))) {
-        vars.push({ name, defaultVal });
-      }
-    }
-  }
-  return vars;
-}
+import { parseSemanticVariables } from '../../internal/parseSemanticVariables';
 
 function resolveColorValue(value: string): string {
   if (typeof document === 'undefined' || !value) return value;
