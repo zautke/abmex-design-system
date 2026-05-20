@@ -26,8 +26,9 @@ const CHANNEL_LABELS: Record<string, string> = {
  * @param fallback used when `value` is non-finite (typically the channel min)
  */
 export function normalizeChannelValue(value: number, fallback: number): number {
-  if (!Number.isFinite(value)) return fallback;
-  return Object.is(value, -0) ? 0 : value;
+  const finite = Number.isFinite(value) ? value : fallback;
+  // Sign-normalize after the fallback choice so a -0 fallback can't escape.
+  return Object.is(finite, -0) ? 0 : finite;
 }
 
 /**
