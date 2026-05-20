@@ -102,9 +102,11 @@ export function useInputBarController(
   const navigateHistoryUp = useCallback(() => {
     if (promptHistory.length === 0) return;
     if (navigationIndex === null) {
-      const shouldCaptureDraft =
-        inputValue.length > 0 && !promptHistory.includes(inputValue);
-      setNavigationDraft(shouldCaptureDraft ? inputValue : '');
+      // Capture the live input verbatim as the restore-draft. A previous
+      // `!promptHistory.includes(inputValue)` guard dropped the draft when
+      // the input happened to equal a history entry — navigating up then
+      // back down then silently lost the user's text.
+      setNavigationDraft(inputValue);
       const nextIndex = promptHistory.length - 1;
       setNavigationIndex(nextIndex);
       setInputValue(promptHistory[nextIndex] ?? '');

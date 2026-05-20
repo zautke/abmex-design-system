@@ -1,6 +1,10 @@
 import { useEffect, useId, useState } from 'react';
 import * as culori from 'culori';
 import { HexColorPicker } from 'react-colorful';
+import {
+  formatChannelDisplay,
+  normalizeChannelValue,
+} from '../../internal/channelValue';
 
 export interface ColorSystemProps {
   color: string; // The initial color (hex, rgb, oklch, etc)
@@ -16,30 +20,6 @@ const CHANNEL_LABELS: Record<string, string> = {
   L: 'Lightness',
   C: 'Chroma',
 };
-
-/**
- * Guard a channel value before it reaches a range input / readout.
- * culori conversions for out-of-gamut colors can yield NaN/Infinity; tiny
- * negative rounding can yield -0. Returns a finite, sign-normalized number.
- *
- * @param value raw channel value
- * @param fallback used when `value` is non-finite (typically the channel min)
- */
-export function normalizeChannelValue(value: number, fallback: number): number {
-  const finite = Number.isFinite(value) ? value : fallback;
-  // Sign-normalize after the fallback choice so a -0 fallback can't escape.
-  return Object.is(finite, -0) ? 0 : finite;
-}
-
-/**
- * Format a (pre-normalized) channel value for display: integers stay bare,
- * fractionals go to 2 dp. A "-0.00" rounding artifact is stripped to "0.00".
- */
-export function formatChannelDisplay(value: number): string {
-  if (Number.isInteger(value)) return String(value);
-  const fixed = value.toFixed(2);
-  return fixed === '-0.00' ? '0.00' : fixed;
-}
 
 export function ColorSystem({ color: initialColor, onChange }: ColorSystemProps) {
   // We'll manage the internal state in OKLCH, converting back and forth
@@ -196,8 +176,8 @@ function ChannelSlider({
   unit?: ChannelUnit;
   onChange: (v: number) => void;
 }) {
-  // Guard non-finite + negative zero; min is the non-finite fallback.
-  const safeValue = normalizeChannelValue(value, min);
+  // Guard non-finite, clamp to [min,max], normalize -0 before the range input.
+  const safeValue = normalizeChannelValue(value, min, max);
   const displayValue = formatChannelDisplay(safeValue);
   // Long-form for screen readers. Includes group so HSL Hue + OKLCH Hue (and
   // HSL Lightness + OKLCH Lightness) read as distinct controls.
