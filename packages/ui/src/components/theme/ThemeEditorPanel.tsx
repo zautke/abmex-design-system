@@ -10,7 +10,13 @@ import {
   type Theme,
 } from '../../types/theme';
 
-function parseSemanticVariables(css: string) {
+/**
+ * Extract semantic (non-color-family) CSS custom properties from a stylesheet
+ * string. A line counts as a semantic variable when it declares a
+ * `--color-*` custom property whose name is NOT prefixed by a known color
+ * family (`--color-{family}-…`). Exported for direct unit testing.
+ */
+export function parseSemanticVariables(css: string) {
   const vars: { name: string; defaultVal: string }[] = [];
   const lines = css.split('\n');
   for (const line of lines) {
