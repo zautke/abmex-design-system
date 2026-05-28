@@ -259,6 +259,9 @@ export function ChatPane({ history, showEmptyState = true }: Props) {
         <ul
           ref={scrollRef}
           onScroll={handleScroll}
+          role="log"
+          aria-label="Chat history"
+          aria-live="polite"
           className="flex min-w-0 flex-1 flex-col gap-2 overflow-y-auto overflow-x-hidden px-3 py-4"
         >
           {history.map((item) => {
