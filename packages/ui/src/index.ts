@@ -1,4 +1,4 @@
-// @merlyn/ui — public API.
+// @abmex/ui — public API.
 
 // Components (S1).
 export { ErrorBoundary } from './components/ErrorBoundary';

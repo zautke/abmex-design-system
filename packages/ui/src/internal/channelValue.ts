@@ -1,4 +1,4 @@
-// Internal helpers — NOT part of the @merlyn/ui public API. Live outside the
+// Internal helpers — NOT part of the @abmex/ui public API. Live outside the
 // `./components/*` export glob so they stay package-private; consumed only by
 // ColorSystem. Unit-tested directly via the repo source path.
 

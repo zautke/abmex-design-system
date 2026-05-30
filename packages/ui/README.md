@@ -1,11 +1,11 @@
-# @merlyn/ui
+# @abmex/ui
 
 Reusable React UI components extracted from [Merlyn](../../README.md) — a multi-browser WXT MV3 extension that ships a sidepanel chat UI over multiple LLM providers.
 
 ## Install
 
 ```bash
-pnpm add @merlyn/ui
+pnpm add @abmex/ui
 # Required peer dependencies:
 pnpm add react react-dom tailwindcss lucide-react
 ```
@@ -20,8 +20,8 @@ import {
   MarkdownRenderer,
   ColorSystem,
   ButtonGroup,
-} from '@merlyn/ui';
-import '@merlyn/ui/styles.css';
+} from '@abmex/ui';
+import '@abmex/ui/styles.css';
 ```
 
 Wrap your app once with `<MerlynUIProvider value={adapters}>` and pass the adapter bag. Required adapters: `persistence`, `providers`, `tools`. Optional (graceful degradation): `mcp`, `webContext`, `keyboard`, `theme`, `transportDebug`. See `examples/consumer/src/App.tsx` for in-memory mock adapters that exercise the full surface.
@@ -35,7 +35,7 @@ Wrap your app once with `<MerlynUIProvider value={adapters}>` and pass the adapt
 Tokens ship as CSS source inside the package — `dist/styles.css` contains the entire `@theme` block + bespoke component CSS. Consumers import the file once and Tailwind v4's `@source` directive picks up the package's compiled utility usage:
 
 ```css
-@import '@merlyn/ui/styles.css';
+@import '@abmex/ui/styles.css';
 @source '../src';
 ```
 

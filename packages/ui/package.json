@@ -1,5 +1,5 @@
 {
-  "name": "@merlyn/ui",
+  "name": "@abmex/ui",
   "version": "0.1.0",
   "description": "Reusable React UI components extracted from Merlyn (WXT MV3 extension).",
   "type": "module",
@@ -9,7 +9,7 @@
   "engines": {
     "node": ">=18"
   },
-  "files": ["dist", "README.md", "package.json"],
+  "files": ["dist", "README.md", "CHANGELOG.md", "package.json"],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",

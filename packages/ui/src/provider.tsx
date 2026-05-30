@@ -50,7 +50,7 @@ export function useMerlynAdapters(): MerlynUIAdapters {
   const ctx = useContext(MerlynUIContext);
   if (!ctx) {
     throw new Error(
-      '[@merlyn/ui] useMerlynAdapters() called outside <MerlynUIProvider>. Wrap the consuming tree in <MerlynUIProvider value={adapters}>.',
+      '[@abmex/ui] useMerlynAdapters() called outside <MerlynUIProvider>. Wrap the consuming tree in <MerlynUIProvider value={adapters}>.',
     );
   }
   return ctx;

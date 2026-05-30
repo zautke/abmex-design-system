@@ -38,7 +38,7 @@ function resolveColorValue(value: string): string {
 export interface ThemeEditorPanelProps {
   onClose: () => void;
   /** Raw CSS source whose `--color-*` declarations seed the semantic-variable
-   * list. Extension consumers pass `import cssText from '@merlyn/ui/styles.css?raw'`. */
+   * list. Extension consumers pass `import cssText from '@abmex/ui/styles.css?raw'`. */
   cssText: string;
   colors: Record<ColorFamily, ColorHS>;
   setColors: (next: Record<ColorFamily, ColorHS>) => void;

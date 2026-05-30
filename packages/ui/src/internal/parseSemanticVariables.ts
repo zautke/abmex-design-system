@@ -1,4 +1,4 @@
-// Internal helper — NOT part of the @merlyn/ui public API. Lives outside
+// Internal helper — NOT part of the @abmex/ui public API. Lives outside
 // the `./components/*` export glob so it stays package-private; consumed
 // only by ThemeEditorPanel. Unit-tested directly via the repo source path.
 
