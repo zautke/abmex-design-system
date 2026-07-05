@@ -1,5 +1,7 @@
-@import 'tailwindcss';
+@import 'tailwindcss' source(none);
 @source '../components';
+@source '../hooks';
+@source '../internal';
 
 @theme {
   --font-sans: 'Avenir Next', 'Segoe UI', 'Noto Sans', sans-serif;
@@ -423,6 +425,15 @@
   width: 0;
   height: 0;
   display: none;
+}
+
+@utility scrollbar-none {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 @keyframes blink {

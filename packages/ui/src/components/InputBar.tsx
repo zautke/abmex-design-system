@@ -21,6 +21,12 @@ interface Props {
    * `inputbar.promptHistory.v1`.
    */
   promptHistoryStorageKey?: string;
+  /**
+   * Optional side-effect callback fired after each localStorage write of the
+   * prompt history. The extension sidepanel wires this to db.syncOutbox so the
+   * Postgres mirror lane can capture the write without packages/ui importing db.
+   */
+  onStoragePersist?: (key: string, value: unknown) => void;
 }
 
 export function InputBar({
@@ -30,6 +36,7 @@ export function InputBar({
   disabled,
   shiftEnterToSend = false,
   promptHistoryStorageKey,
+  onStoragePersist,
 }: Props) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -37,6 +44,7 @@ export function InputBar({
     onSend,
     shiftEnterToSend,
     ...(promptHistoryStorageKey !== undefined ? { promptHistoryStorageKey } : {}),
+    ...(onStoragePersist !== undefined ? { onStoragePersist } : {}),
   });
   const {
     inputValue,

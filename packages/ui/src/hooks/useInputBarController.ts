@@ -43,6 +43,18 @@ export interface UseInputBarControllerInput {
    * is `inputbar.promptHistory.v1`.
    */
   promptHistoryStorageKey?: string;
+  /**
+   * Optional side-effect callback fired after each successful localStorage
+   * write of the prompt history. Consumers (e.g. the extension sidepanel)
+   * wire this to the Dexie syncOutbox so the Postgres mirror lane can track
+   * localStorage persistence without packages/ui depending on the main app's
+   * db instance.
+   *
+   * Decision: dependency-injection via callback rather than a direct import of
+   * db.ts, which would create a cross-package dependency from packages/ui into
+   * the main extension app — violating the package boundary.
+   */
+  onStoragePersist?: (key: string, value: unknown) => void;
 }
 
 export interface UseInputBarControllerResult {
@@ -69,6 +81,7 @@ export function useInputBarController(
     onSend,
     shiftEnterToSend = false,
     promptHistoryStorageKey = PROMPT_HISTORY_STORAGE_KEY,
+    onStoragePersist,
   } = input;
 
   const [inputValue, setInputValue] = useState('');
@@ -95,9 +108,10 @@ export function useInputBarController(
       if (prev.includes(text)) return prev;
       const next = [...prev, text].slice(-MAX_PROMPT_HISTORY_ITEMS);
       writePromptHistoryToStorage(promptHistoryStorageKey, next);
+      onStoragePersist?.(promptHistoryStorageKey, next);
       return next;
     });
-  }, [inputValue, onSend, promptHistoryStorageKey]);
+  }, [inputValue, onSend, promptHistoryStorageKey, onStoragePersist]);
 
   const navigateHistoryUp = useCallback(() => {
     if (promptHistory.length === 0) return;
