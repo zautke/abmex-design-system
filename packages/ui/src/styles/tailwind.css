@@ -2,6 +2,8 @@
 @source '../components';
 @source '../hooks';
 @source '../internal';
+@source '../primitives';
+@source '../utils';
 
 @theme {
   --font-sans: 'Avenir Next', 'Segoe UI', 'Noto Sans', sans-serif;
@@ -439,4 +441,51 @@
 @keyframes blink {
   0%, 100% { opacity: 1; }
   50%       { opacity: 0; }
+}
+
+/* ─── HeroUI v3 semantic token bridge ───────────────────────────────────────
+ *
+ * @heroui/react + @heroui/styles are PEER dependencies — the consuming app
+ * imports '@heroui/styles' in its own global stylesheet, which defines the
+ * HeroUI semantic surface (--accent, --surface, --danger, --field-*, …).
+ *
+ * This block re-points that surface at the kit's palette, so a bare HeroUI
+ * <Button variant="primary"> or <Modal> renders in the chat skin without any
+ * per-component overrides. It is the ONLY place the two vocabularies meet.
+ *
+ * To reskin the entire kit, override these ~15 variables in your own :root —
+ * do not fork the ~120 --color-* component tokens above, which exist to let
+ * you nudge one surface without disturbing the system.
+ *
+ * Must be imported AFTER '@heroui/styles' to win the cascade.
+ */
+:root {
+  --radius: 0.5rem;
+
+  /* Accent = the teal that already drives send buttons + active drawer rows. */
+  --accent: var(--color-teal-700);
+  --accent-foreground: var(--color-white);
+
+  /* Chrome. */
+  --background: var(--color-app-bg);
+  --surface: var(--color-white);
+  --overlay: var(--color-white);
+  --muted: var(--color-slate-500);
+  --border: var(--color-slate-200);
+  --separator: var(--color-slate-200);
+
+  /* Status — reuse the connection-indicator palette so a HeroUI <Chip
+   * variant="danger"> and a bespoke StatusDot agree on what "bad" looks like. */
+  --danger: var(--color-conn-disconnected);
+  --danger-foreground: var(--color-white);
+  --warning: var(--color-conn-probing);
+  --warning-foreground: var(--color-eclipse, oklch(0.2103 0.0059 285.89));
+  --success: var(--color-conn-connected);
+  --success-foreground: var(--color-white);
+
+  /* Form fields — match the existing input-bar treatment. */
+  --field-background: var(--color-inputbar-input-bg);
+  --field-foreground: var(--color-inputbar-input-text);
+  --field-placeholder: var(--color-inputbar-input-placeholder);
+  --field-border: var(--color-inputbar-input-border);
 }

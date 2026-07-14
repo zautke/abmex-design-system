@@ -1,12 +1,33 @@
 // @abmex/ui — public API.
+//
+// v0.2.0 reorganises the surface into families. Presentation lives in the
+// package; persistence, transports, provider registries, and browser APIs do
+// not. Where a component previously reached for one of those, its props now
+// carry a `// WIRING:` note naming what the consumer must supply.
+//
+// HeroUI v3 (`@heroui/react` + `@heroui/styles`) is a PEER dependency: the app
+// installs it and imports `@heroui/styles` BEFORE `@abmex/ui/styles.css`, so a
+// single copy of React Aria owns focus and portal context.
 
-// Components (S1).
+// ── Families ───────────────────────────────────────────────────────────────
+export * from './components/chat';
+export * from './components/composer';
+export * from './components/status';
+export * from './components/conversations';
+export * from './components/settings';
+export * from './components/theme';
+
+// ── Primitives ─────────────────────────────────────────────────────────────
+export { StatusDot } from './primitives/StatusDot';
+export type { StatusDotProps, StatusTone } from './primitives/StatusDot';
+
+export { CopyButton } from './primitives/CopyButton';
+export type { CopyButtonProps } from './primitives/CopyButton';
+
+export { cn } from './utils/cn';
+
+// ── Layout + resilience ────────────────────────────────────────────────────
 export { ErrorBoundary } from './components/ErrorBoundary';
-export { SplashLoader } from './components/SplashLoader';
-export { TokenCounter } from './components/TokenCounter';
-export { ConnectionIndicator } from './components/ConnectionIndicator';
-export { ContextWindowTracker } from './components/ContextWindowTracker';
-export { MarkdownRenderer, cn } from './components/MarkdownRenderer';
 
 export {
   LayoutContainer,
@@ -19,38 +40,22 @@ export {
   OverlayLayoutContainer,
 } from './components/layout/LayoutContainer';
 
-export { ButtonGroup } from './components/ui/ButtonGroup';
-export type { ButtonGroupOption, ButtonGroupProps } from './components/ui/ButtonGroup';
-
-export { AppFooter } from './components/AppFooter';
-
-export { ModelPicker } from './components/ModelPicker';
-
-export { InputBar } from './components/InputBar';
-export { InputBarKeyboardHandler } from './components/InputBarKeyboardHandler';
-
+// ── Deprecated (the v0.1 surface) ──────────────────────────────────────────
+// Kept so the Merlyn sidepanel keeps compiling until it is rewired; removed in
+// the next major. Each has a v0.2 replacement:
+//
+//   ChatPane    → MessageList + ChatBubble + the chat/* rows
+//   InputBar    → PromptComposer (controlled; persistence is no longer built in)
+//   ButtonGroup → SegmentedControl
 export { ChatPane } from './components/ChatPane';
+export { InputBar } from './components/InputBar';
+export { ButtonGroup } from './components/ui/ButtonGroup';
 
-export { ConversationsDrawer } from './components/ConversationsDrawer';
-
-export { ColorSystem } from './components/theme/ColorSystem';
-export type { ColorSystemProps } from './components/theme/ColorSystem';
-export { ThemeEditorPanel } from './components/theme/ThemeEditorPanel';
-export type { ThemeEditorPanelProps } from './components/theme/ThemeEditorPanel';
-
-export {
-  COLOR_FAMILIES,
-  DEFAULT_HS,
-  DEFAULT_THEME,
-  SHADES,
-} from './types/theme';
-
+// ── Hooks ──────────────────────────────────────────────────────────────────
 export { useReadlineKeys } from './hooks/useReadlineKeys';
 export { useTabIndent } from './hooks/useTabIndent';
 export type { TabIndentSpaces } from './hooks/useTabIndent';
 
-// Controller hooks (S11) — headless state for ChatPane + InputBar so
-// consumers can drive these surfaces with their own layout / chrome.
 export { useChatPaneController } from './hooks/useChatPaneController';
 export type {
   UseChatPaneControllerInput,
@@ -63,7 +68,7 @@ export type {
   UseInputBarControllerResult,
 } from './hooks/useInputBarController';
 
-// Adapters + Provider (S2).
+// ── Provider + adapters ────────────────────────────────────────────────────
 export {
   MerlynUIProvider,
   useMerlynAdapters,
@@ -74,11 +79,7 @@ export type { MerlynUIAdapters, MerlynUIProviderProps } from './provider';
 export type { PersistenceAdapter } from './adapters/persistence';
 export type { ProviderRegistryAdapter } from './adapters/providerRegistry';
 export type { ToolExecutorAdapter } from './adapters/toolExecutor';
-export type {
-  McpAdapter,
-  McpServerInfo,
-  McpServerStatus,
-} from './adapters/mcp';
+export type { McpAdapter, McpServerInfo, McpServerStatus } from './adapters/mcp';
 export type { WebContextAdapter, WebPageContent } from './adapters/webContext';
 export type { ThemeTokenAdapter } from './adapters/theme';
 export type {
@@ -86,7 +87,14 @@ export type {
   TransportDebugEntry,
 } from './adapters/transportDebug';
 
-// Types.
+// ── Types ──────────────────────────────────────────────────────────────────
+export {
+  COLOR_FAMILIES,
+  DEFAULT_HS,
+  DEFAULT_THEME,
+  SHADES,
+} from './types/theme';
+
 export type {
   ChatRole,
   TokenUsage,

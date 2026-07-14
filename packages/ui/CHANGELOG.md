@@ -1,5 +1,53 @@
 # @abmex/ui
 
+## 0.2.0
+
+Rebuilt on **HeroUI v3**, reorganised into families, and stripped of business logic. The package is now a presentation kit: it renders and it emits intent, and it does nothing else.
+
+### Breaking
+
+- **`@heroui/react` + `@heroui/styles` are new peer dependencies.** Consumers install them and import `@heroui/styles` **before** `@abmex/ui/styles.css` — that order is load-bearing, or HeroUI's stock accent wins the cascade. They are peers (not dependencies) so exactly one copy of React Aria owns focus and portal context; two copies silently break menus, overlays, and focus traps.
+- `ButtonGroup` → **`SegmentedControl`**. The old name described HeroUI's layout wrapper, not what this actually is. `ButtonGroupOption` / `ButtonGroupProps` remain as deprecated type aliases.
+- `ChatPane`, `InputBar`, and `ButtonGroup` still export, but are **deprecated** and will be removed next major. Replacements: `MessageList` + `ChatBubble` + the `chat/*` rows; `PromptComposer`; `SegmentedControl`.
+- `InputBar`'s built-in prompt-history persistence (`promptHistoryStorageKey`, `onStoragePersist`) does **not** carry over to `PromptComposer`, which is fully controlled. History remains available via the headless `useInputBarController` hook, which the consumer opts into.
+
+### Added — the chat elements
+
+Components that existed only as private functions inside `ChatPane.tsx` and `MarkdownRenderer.tsx` are now first-class and reusable:
+
+- `ChatBubble` (now takes `role`/`content` primitives, not a persistence row type), `StreamingCursor`, `StreamingRate`, `MessageList`, `ScrollResumeButton`, `SystemNoticeRow`, `ModelBadgeRow`, `JsonInspectorRow`, `TransportLogPanel`, `ChatEmptyState`, `MessageViewToggle`, `CodeBlock`.
+- `useStreamingRate` — the live tokens/sec computation, split out of the view it used to be fused with. The anti-jitter constants (minimum observation window, minimum chars, chars-per-token) came with it.
+
+### Added — settings, previously app-only
+
+`SettingsModal`, `ScrollableTabStrip`, `ProviderSettingsPanel`, `SecretKeyInput`, `JsonConfigEditor`, `McpServerList` / `McpServerRow`, `SecretsList`, `ToolsPanel`, `SettingsSection` / `SettingsField` / `SettingsRow` / `SettingsList`, `CopyCommandCallout`.
+
+`ToolsPanel` is the sharpest example of the boundary: its source wrote Dexie's `appState` table on every keystroke. It is now fully controlled — `values` in, `onChange` out — and where those values live is entirely the consumer's problem.
+
+### Added — conversations, primitives, theme
+
+- `ConversationsDrawer`, `ConversationListItem`, `ConversationSearchField`, `ConversationEmptyState`.
+- `StatusDot` and `CopyButton` — extracted from five separate hand-rolled copies (`statusDot` in `SettingsModal`, `statusColor` in `McpSection`, the dot in `ConnectionIndicator`, copy logic in `CodeBlock` and `OllamaOriginsHelper`). `CopyButton` takes an injectable `onCopy`, so it survives non-secure contexts where `navigator.clipboard` is undefined.
+- `ThemeEditorButton`, plus `cn` promoted out of `MarkdownRenderer.tsx` into `utils/cn`.
+
+### Accessibility
+
+HeroUI's React Aria foundation fixed real defects rather than merely restyling:
+
+- Conversation rows were `<div onClick>` — unreachable by keyboard, announced as nothing. They are real buttons now.
+- The conversation overflow menu was a hand-rolled div with a document-level `mousedown` listener: no menu roles, no arrow keys, no Escape, no focus return. It is now a HeroUI `Dropdown`.
+- The drawer gained Escape-to-close and `inert` when off-screen; it previously had no keyboard dismissal and kept its controls in the tab order while hidden.
+- `ScrollableTabStrip` kept its bespoke implementation deliberately: its roving tabindex, wheel-to-horizontal-scroll, and edge-scroll behavior are richer than the stock tabs, and a11y was not traded for a logo.
+
+### Styling
+
+`styles.css` gained a **HeroUI semantic token bridge**: ~15 variables map HeroUI's surface (`--accent`, `--surface`, `--danger`, `--field-*`, `--radius`) onto the kit's palette. Reskin the whole library by overriding those — not by forking the ~120 `--color-*` component tokens, which exist for nudging one surface without disturbing the system.
+
+### Notes
+
+- Every prop that replaced a piece of plumbing carries a `// WIRING:` comment naming what the consumer must supply and why. There are 36 of them; together they are the integration contract.
+- HeroUI is externalized in the build output (bare `from "@heroui/react"`, zero React Aria bundled).
+
 ## 0.1.0
 
 Initial public release. Reusable React UI extracted from Merlyn (the WXT MV3 browser extension).
