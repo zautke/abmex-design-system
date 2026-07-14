@@ -40,17 +40,6 @@ export {
   OverlayLayoutContainer,
 } from './components/layout/LayoutContainer';
 
-// ── Deprecated (the v0.1 surface) ──────────────────────────────────────────
-// Kept so the Merlyn sidepanel keeps compiling until it is rewired; removed in
-// the next major. Each has a v0.2 replacement:
-//
-//   ChatPane    → MessageList + ChatBubble + the chat/* rows
-//   InputBar    → PromptComposer (controlled; persistence is no longer built in)
-//   ButtonGroup → SegmentedControl
-export { ChatPane } from './components/ChatPane';
-export { InputBar } from './components/InputBar';
-export { ButtonGroup } from './components/ui/ButtonGroup';
-
 // ── Hooks ──────────────────────────────────────────────────────────────────
 export { useReadlineKeys } from './hooks/useReadlineKeys';
 export { useTabIndent } from './hooks/useTabIndent';

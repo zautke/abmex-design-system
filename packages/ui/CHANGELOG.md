@@ -8,8 +8,9 @@ Rebuilt on **HeroUI v3**, reorganised into families, and stripped of business lo
 
 - **`@heroui/react` + `@heroui/styles` are new peer dependencies.** Consumers install them and import `@heroui/styles` **before** `@abmex/ui/styles.css` — that order is load-bearing, or HeroUI's stock accent wins the cascade. They are peers (not dependencies) so exactly one copy of React Aria owns focus and portal context; two copies silently break menus, overlays, and focus traps.
 - `ButtonGroup` → **`SegmentedControl`**. The old name described HeroUI's layout wrapper, not what this actually is. `ButtonGroupOption` / `ButtonGroupProps` remain as deprecated type aliases.
-- `ChatPane`, `InputBar`, and `ButtonGroup` still export, but are **deprecated** and will be removed next major. Replacements: `MessageList` + `ChatBubble` + the `chat/*` rows; `PromptComposer`; `SegmentedControl`.
+- **`ChatPane`, `InputBar`, and `ButtonGroup` are removed.** Merlyn was cut over and the originals deleted in the same release, so no consumer was left stranded on them. Replacements: `MessageList` + `ChatBubble` + the `chat/*` rows; `PromptComposer`; `SegmentedControl`.
 - `InputBar`'s built-in prompt-history persistence (`promptHistoryStorageKey`, `onStoragePersist`) does **not** carry over to `PromptComposer`, which is fully controlled. History remains available via the headless `useInputBarController` hook, which the consumer opts into.
+- `ChatPane` has no drop-in replacement **by design**: it knew how to read a `DbConversationItem` union, which is a persistence shape. Mapping your domain onto `ChatBubble` / `ModelBadgeRow` / `SystemNoticeRow` / `JsonInspectorRow` is now the consumer's job — see `entrypoints/sidepanel/ChatTimeline.tsx` in the Merlyn repo for a worked example.
 
 ### Added — the chat elements
 

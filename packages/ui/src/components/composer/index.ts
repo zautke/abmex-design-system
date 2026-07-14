@@ -8,3 +8,4 @@ export { StopButton } from './StopButton';
 export type { StopButtonProps } from './StopButton';
 
 export { InputBarKeyboardHandler } from './InputBarKeyboardHandler';
+export type { InputBarKeyboardHandlerProps } from './InputBarKeyboardHandler';
