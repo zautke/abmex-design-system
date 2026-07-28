@@ -1,4 +1,5 @@
-import ReactMarkdown from 'react-markdown';
+import type { ReactNode } from 'react';
+import ReactMarkdown, { defaultUrlTransform } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { CodeBlock } from './CodeBlock';
 import { cn } from '../../utils/cn';
@@ -6,10 +7,34 @@ import { cn } from '../../utils/cn';
 export interface MarkdownRendererProps {
   content: string;
   className?: string;
+  /**
+   * Optional anchor override. Return `null` to fall through to the default
+   * link rendering.
+   *
+   * This is the seam that lets a host app render its own link schemes — a
+   * VFS-backed download, a deep link into app state — without the kit taking a
+   * dependency on app plumbing. The kit stays porcelain; resolution stays in
+   * the app.
+   */
+  renderLink?: (props: { href?: string; children: ReactNode }) => ReactNode | null;
+  /**
+   * Extra URL schemes (with trailing colon, e.g. `'vfs:'`) to pass through
+   * react-markdown's sanitizer. Its default transform blanks anything outside
+   * http/https/mailto/tel, which would strip a custom scheme before
+   * `renderLink` ever sees it.
+   */
+  allowedUrlSchemes?: readonly string[];
 }
 
 /** GitHub-flavored markdown with prose overrides tuned for the chat bubble width. */
-export function MarkdownRenderer({ content, className }: MarkdownRendererProps) {
+export function MarkdownRenderer({
+  content,
+  className,
+  renderLink,
+  allowedUrlSchemes,
+}: MarkdownRendererProps) {
+  const passThrough = (url: string) =>
+    (allowedUrlSchemes ?? []).some((scheme) => url.startsWith(scheme));
   return (
     <div
       className={cn(
@@ -19,6 +44,7 @@ export function MarkdownRenderer({ content, className }: MarkdownRendererProps) 
     >
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
+        urlTransform={(url) => (passThrough(url) ? url : defaultUrlTransform(url))}
         components={{
           // `pre` is unwrapped because CodeBlock supplies its own container;
           // leaving react-markdown's <pre> in place would double-wrap it.
@@ -48,14 +74,20 @@ export function MarkdownRenderer({ content, className }: MarkdownRendererProps) 
               />
             );
           },
-          a: ({ node: _node, ...props }) => (
-            <a
-              className="text-md-link hover:underline"
-              target="_blank"
-              rel="noreferrer"
-              {...props}
-            />
-          ),
+          a: ({ node: _node, children, ...props }) => {
+            const custom = renderLink?.({ href: props.href, children });
+            if (custom != null) return <>{custom}</>;
+            return (
+              <a
+                className="text-md-link hover:underline"
+                target="_blank"
+                rel="noreferrer"
+                {...props}
+              >
+                {children}
+              </a>
+            );
+          },
           ul: ({ node: _node, ...props }) => (
             <ul className="my-2 list-inside list-disc space-y-1" {...props} />
           ),
