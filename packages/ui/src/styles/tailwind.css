@@ -130,13 +130,8 @@
   --color-md-th-border: var(--color-slate-200);
   --color-md-td-border: var(--color-slate-100);
   --color-md-code-block-bg: #1E1E1E;
-  /* Paired foreground for the dark code-block surface. Any component that
-   * paints `bg-md-code-block-bg` MUST also set `text-md-code-block-text` —
-   * without it the element inherits the light-theme prose colour (slate-800)
-   * and the label is invisible on near-black. Same contract HeroUI v3 enforces
-   * with its `--surface` / `--surface-foreground` pairs. */
+  /* fg/link paired with --color-md-code-block-bg; use the `code-surface` utility so they travel together. */
   --color-md-code-block-text: var(--color-slate-200);
-  /* Links/accents on that dark surface: teal-600 is a 3.9:1 washout at #1E1E1E. */
   --color-md-code-block-link: var(--color-teal-300);
   --color-md-code-block-border: var(--color-slate-700);
   --color-md-code-header-bg: #2d2d2d;
@@ -435,6 +430,14 @@
   width: 0;
   height: 0;
   display: none;
+}
+
+/* Dark code-block surface: bg + fg + border in one class so no call site can
+ * paint the background and forget the foreground. */
+@utility code-surface {
+  background-color: var(--color-md-code-block-bg);
+  color: var(--color-md-code-block-text);
+  border-color: var(--color-md-code-block-border);
 }
 
 @utility scrollbar-none {
