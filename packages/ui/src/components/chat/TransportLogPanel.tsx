@@ -46,7 +46,10 @@ export function TransportLogPanel({
 
   return (
     <section
-      className={cn('border-t border-slate-200 bg-slate-50 px-3 py-2 text-[10px]', className)}
+      className={cn(
+        'flex min-h-0 flex-col border-t border-slate-200 bg-slate-50 px-3 py-2 text-[10px]',
+        className,
+      )}
     >
       <div className="mb-1 flex items-center justify-between">
         <span className="font-medium uppercase tracking-[0.14em] text-slate-500">
@@ -66,7 +69,7 @@ export function TransportLogPanel({
       {entries.length === 0 ? (
         <p className="text-slate-400">No transport activity yet.</p>
       ) : (
-        <ul className="flex max-h-64 flex-col gap-1 overflow-y-auto">
+        <ul className="flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto">
           {entries.map((entry) => (
             <li key={entry.id} className="rounded border border-slate-200 bg-white p-1">
               <div className="mb-0.5 flex items-center gap-2 text-slate-400">
