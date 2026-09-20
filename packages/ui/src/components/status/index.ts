@@ -5,10 +5,10 @@ export { ConnectionIndicator } from './ConnectionIndicator';
 export type { ConnectionIndicatorProps } from './ConnectionIndicator';
 
 export { ContextWindowTracker } from './ContextWindowTracker';
-export type { ContextWindowTrackerProps } from './ContextWindowTracker';
+export type { ContextMeterValues, ContextWindowTrackerProps } from './ContextWindowTracker';
 
 export { TokenCounter } from './TokenCounter';
-export type { TokenCounterProps, TokenCounterValues } from './TokenCounter';
+export type { TokenCounterProps } from './TokenCounter';
 
 export { SplashLoader } from './SplashLoader';
 export type { SplashLoaderProps } from './SplashLoader';
