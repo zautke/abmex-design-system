@@ -11,6 +11,13 @@ const EMPTY_ENTRIES: readonly TransportDebugEntry[] = Object.freeze([]);
 
 export interface UseChatPaneControllerInput {
   history: DbConversationItem[];
+  /**
+   * Controlled view mode. Omit both and the toggle is per-mount state, which
+   * is fine for a page that never unmounts — but a sidepanel unmounts every
+   * time it closes, so the host passes a persisted flag instead.
+   */
+  jsonFormat?: boolean;
+  onToggleJsonFormat?: () => void;
 }
 
 export interface UseChatPaneControllerResult {
@@ -78,16 +85,21 @@ function useTransportDebugEntries(
 export function useChatPaneController(
   input: UseChatPaneControllerInput,
 ): UseChatPaneControllerResult {
-  const { history } = input;
-  const [isJsonFormat, setIsJsonFormat] = useState(false);
+  const { history, jsonFormat, onToggleJsonFormat } = input;
+  const [uncontrolledJsonFormat, setUncontrolledJsonFormat] = useState(false);
+  const isJsonFormat = jsonFormat ?? uncontrolledJsonFormat;
 
   const adapters = useMerlynAdaptersOptional();
   const transportAdapter = adapters?.transportDebug;
   const transportEntries = useTransportDebugEntries(transportAdapter);
 
   const toggleJsonFormat = useCallback(() => {
-    setIsJsonFormat((v) => !v);
-  }, []);
+    if (onToggleJsonFormat) {
+      onToggleJsonFormat();
+      return;
+    }
+    setUncontrolledJsonFormat((v) => !v);
+  }, [onToggleJsonFormat]);
 
   // Stable bound reference across renders. `bind` defends against adapters
   // that implement `clear()` as a method using `this`; useMemo keeps the
