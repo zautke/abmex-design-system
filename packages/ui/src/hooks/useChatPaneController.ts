@@ -18,6 +18,17 @@ export interface UseChatPaneControllerInput {
    */
   jsonFormat?: boolean;
   onToggleJsonFormat?: () => void;
+  /**
+   * Show only entries whose `scopeId` matches (plus unattributed ones). The
+   * adapter's buffer spans the whole session, so a host that shows traffic
+   * per conversation must say which one, or every conversation's requests pile
+   * up in the same panel.
+   *
+   * `null` means "a scope applies, but nothing is open yet" — a new chat before
+   * its first message. That must show an empty panel, not every scope's
+   * traffic. Only `undefined` (the host does not scope at all) shows everything.
+   */
+  scopeId?: string | null;
 }
 
 export interface UseChatPaneControllerResult {
@@ -85,13 +96,25 @@ function useTransportDebugEntries(
 export function useChatPaneController(
   input: UseChatPaneControllerInput,
 ): UseChatPaneControllerResult {
-  const { history, jsonFormat, onToggleJsonFormat } = input;
+  const { history, jsonFormat, onToggleJsonFormat, scopeId } = input;
   const [uncontrolledJsonFormat, setUncontrolledJsonFormat] = useState(false);
   const isJsonFormat = jsonFormat ?? uncontrolledJsonFormat;
 
   const adapters = useMerlynAdaptersOptional();
   const transportAdapter = adapters?.transportDebug;
-  const transportEntries = useTransportDebugEntries(transportAdapter);
+  const allEntries = useTransportDebugEntries(transportAdapter);
+  // Memoised on the snapshot's identity: the adapter contract promises a stable
+  // reference between mutations, and a fresh array here on every render would
+  // defeat that guarantee for every consumer downstream.
+  const transportEntries = useMemo(
+    () =>
+      scopeId === undefined
+        ? allEntries
+        : // scopeId === null matches no attributed entry, which is the point:
+          // a chat that does not exist yet has no traffic of its own.
+          allEntries.filter((e) => e.scopeId === undefined || e.scopeId === scopeId),
+    [allEntries, scopeId],
+  );
 
   const toggleJsonFormat = useCallback(() => {
     if (onToggleJsonFormat) {

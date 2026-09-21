@@ -16,6 +16,13 @@ export interface TransportDebugEntry {
   /** Optional human-readable label (provider id, tool name, etc.). */
   label?: string;
   sizeBytes?: number;
+  /**
+   * Optional owner of this entry — a conversation, a session, whatever the host
+   * scopes traffic by. The buffer behind the adapter is global, so without this
+   * a panel shows every scope's traffic at once. Entries that leave it unset are
+   * unattributable and are always shown.
+   */
+  scopeId?: string;
 }
 
 export interface TransportDebugAdapter {
