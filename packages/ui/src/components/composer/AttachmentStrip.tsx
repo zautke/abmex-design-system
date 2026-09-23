@@ -29,34 +29,63 @@ export function AttachmentStrip({ attachments, onRemove, className }: Attachment
         <li
           key={a.id}
           title={a.status === 'error' ? a.error ?? 'Could not attach' : a.name}
-          className={cn(
-            'group relative h-14 w-14 overflow-hidden rounded-lg border bg-inputbar-input-bg',
-            a.status === 'error' ? 'border-chat-error-text' : 'border-inputbar-input-border',
-          )}
+          // `overflow-visible` on the tile, `overflow-hidden` on the inner frame:
+          // the × sits on the corner arc and must not be clipped.
+          className="relative m-1.5 h-14 w-14"
         >
-          {a.previewUrl ? (
-            <img src={a.previewUrl} alt={a.name} className="h-full w-full object-cover" />
-          ) : (
-            <div className="flex h-full w-full items-center justify-center text-[10px] text-inputbar-input-placeholder">
-              {a.status === 'error' ? '!' : '…'}
-            </div>
-          )}
-          {a.status === 'pending' && (
-            <div className="absolute inset-0 animate-pulse bg-black/20" aria-hidden />
-          )}
-          {onRemove && (
-            <button
-              type="button"
-              aria-label={`Remove ${a.name}`}
-              onClick={() => onRemove(a.id)}
-              className="absolute right-0.5 top-0.5 rounded-full bg-black/60 p-0.5 text-white opacity-0 transition-opacity focus:opacity-100 group-hover:opacity-100"
-            >
-              <X size={12} />
-            </button>
-          )}
+          <div
+            className={cn(
+              'h-full w-full overflow-hidden rounded-lg border bg-inputbar-input-bg',
+              a.status === 'error' ? 'border-chat-error-text' : 'border-inputbar-input-border',
+            )}
+          >
+            {a.previewUrl ? (
+              <img src={a.previewUrl} alt={a.name} className="h-full w-full object-cover" />
+            ) : (
+              <div className="flex h-full w-full items-center justify-center text-[10px] text-inputbar-input-placeholder">
+                {a.status === 'error' ? '!' : '…'}
+              </div>
+            )}
+            {a.status === 'pending' && (
+              <div className="absolute inset-0 animate-pulse rounded-lg bg-black/20" aria-hidden />
+            )}
+          </div>
+          {onRemove && <CornerRemoveButton label={`Remove ${a.name}`} onClick={() => onRemove(a.id)} />}
         </li>
       ))}
     </ul>
+  );
+}
+
+export interface CornerRemoveButtonProps {
+  label: string;
+  onClick: () => void;
+  /** Swap the × for another glyph (e.g. a restore arrow). */
+  children?: React.ReactNode;
+  pressed?: boolean;
+  className?: string;
+}
+
+/**
+ * The remove badge: an always-visible white disc with a dark × whose centre
+ * sits on the tile's rounded corner — offset `-6px` on a 16px disc puts the
+ * centre 2px inside each edge, which is where an 8px corner arc passes at 45°.
+ * Always visible (not hover-only) so it reads on dark thumbnails and on touch.
+ */
+export function CornerRemoveButton({ label, onClick, children, pressed, className }: CornerRemoveButtonProps) {
+  return (
+    <button
+      type="button"
+      aria-label={label}
+      {...(pressed !== undefined ? { 'aria-pressed': pressed } : {})}
+      onClick={onClick}
+      className={cn(
+        'absolute -right-1.5 -top-1.5 z-10 flex h-4 w-4 items-center justify-center rounded-full border border-black/15 bg-white text-neutral-900 shadow-[0_1px_3px_rgba(0,0,0,.45)] transition-transform hover:scale-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-inputbar-input-border-focus',
+        className,
+      )}
+    >
+      {children ?? <X size={11} strokeWidth={2.5} />}
+    </button>
   );
 }
 
