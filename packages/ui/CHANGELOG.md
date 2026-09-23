@@ -1,5 +1,17 @@
 # @abmex/ui
 
+## 0.3.0
+
+Image attachments in the composer — presentation only, as always.
+
+### Added
+
+- `PromptComposer` gains `attachments`, `onFiles`, `onRemoveAttachment`. With `onFiles` wired, pasting (Ctrl/Cmd+V) or dropping image files hands the `File`s to the host; the composer claims the paste only when it carried an image, so plain text keeps landing in the textarea. A dashed border marks an active drag. Send is enabled for image-only messages once every chip is `ready`, and blocked while any chip is `pending`.
+- `AttachmentStrip` + `ComposerAttachment` — the pending chips (56 px thumbnails, spinner, error ring, hover ×). The host owns ingest, storage and the preview object URLs.
+- `imageFilesFromDataTransfer(dt)` — the paste/drop extraction rule (`files` when present, else image `items`; never both), exported for hosts with their own drop zones.
+- `useInputBarController().submit({ allowEmpty })` — lets an image-only send through with empty text; nothing is written to prompt history for it.
+- `OOCMessageType` gains `'images_dropped'`.
+
 ## 0.2.0
 
 Rebuilt on **HeroUI v3**, reorganised into families, and stripped of business logic. The package is now a presentation kit: it renders and it emits intent, and it does nothing else.

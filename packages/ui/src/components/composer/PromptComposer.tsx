@@ -1,9 +1,10 @@
-import { useEffect, useRef } from 'react';
-import type { ChangeEvent, ReactNode } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import type { ChangeEvent, ClipboardEvent, DragEvent, ReactNode } from 'react';
 import { useReadlineKeys } from '../../hooks/useReadlineKeys';
 import { InputBarKeyboardHandler } from './InputBarKeyboardHandler';
 import { SendButton } from './SendButton';
 import { StopButton } from './StopButton';
+import { AttachmentStrip, imageFilesFromDataTransfer, type ComposerAttachment } from './AttachmentStrip';
 import { cn } from '../../utils/cn';
 
 const MAX_TEXTAREA_HEIGHT_PX = 120;
@@ -18,7 +19,7 @@ export interface PromptComposerProps {
   /**
    * Called with the trimmed text on submit. The consumer clears `value` and
    * records prompt history — `useInputBarController().submit` does both and is
-   * directly assignable here.
+   * directly assignable here. With pending attachments the text may be empty.
    */
   onSend: (text: string) => void;
   onStop: () => void;
@@ -39,6 +40,15 @@ export interface PromptComposerProps {
   onHistoryUp?: () => void;
   onHistoryDown?: () => void;
   onCancelHistoryNavigation?: () => void;
+  /**
+   * Image attachments. The host owns ingest and storage: `onFiles` receives
+   * the image `File`s the user pasted or dropped, `attachments` is what the
+   * strip renders, `onRemoveAttachment` fires from a chip's ×. Omitting
+   * `onFiles` leaves paste/drop as plain text (no image handling at all).
+   */
+  attachments?: ComposerAttachment[];
+  onFiles?: (files: File[]) => void;
+  onRemoveAttachment?: (id: string) => void;
   /** Toolbar content rendered before the send/stop control (settings, tools, …). */
   leading?: ReactNode;
   /** Toolbar content rendered after the send/stop control. */
@@ -58,11 +68,15 @@ export function PromptComposer({
   onHistoryUp,
   onHistoryDown,
   onCancelHistoryNavigation,
+  attachments = [],
+  onFiles,
+  onRemoveAttachment,
   leading,
   trailing,
   className,
 }: PromptComposerProps) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const [dragging, setDragging] = useState(false);
 
   const readlineOnKeyDown = useReadlineKeys(textareaRef, value, onChange);
 
@@ -73,11 +87,15 @@ export function PromptComposer({
     el.style.height = `${Math.min(el.scrollHeight, MAX_TEXTAREA_HEIGHT_PX)}px`;
   }, [value]);
 
+  const hasReadyAttachments = attachments.some((a) => a.status === 'ready');
+  const hasPendingAttachments = attachments.some((a) => a.status === 'pending');
+
   // After submit clears value, also reset textarea height back to its
   // single-row baseline so the toolbar doesn't stay at a multi-line height.
   function handleSubmit(): void {
     const text = value.trim();
-    if (!text) return;
+    if (!text && !hasReadyAttachments) return;
+    if (hasPendingAttachments) return;
     onSend(text);
     if (textareaRef.current) textareaRef.current.style.height = 'auto';
   }
@@ -89,14 +107,54 @@ export function PromptComposer({
     onChange(e.currentTarget.value);
   }
 
-  const sendDisabled = disabled || value.trim().length === 0;
+  // Only claim the paste when it carried an image; plain text must still
+  // land in the textarea through the browser's default action.
+  function handlePaste(e: ClipboardEvent<HTMLTextAreaElement>): void {
+    if (!onFiles || disabled) return;
+    const files = imageFilesFromDataTransfer(e.clipboardData);
+    if (files.length === 0) return;
+    e.preventDefault();
+    onFiles(files);
+  }
+
+  function handleDragOver(e: DragEvent<HTMLDivElement>): void {
+    if (!onFiles || disabled) return;
+    if (!Array.from(e.dataTransfer.types).includes('Files')) return;
+    // Without preventDefault the panel navigates to the dropped file.
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'copy';
+    if (!dragging) setDragging(true);
+  }
+
+  function handleDrop(e: DragEvent<HTMLDivElement>): void {
+    setDragging(false);
+    if (!onFiles || disabled) return;
+    if (!Array.from(e.dataTransfer.types).includes('Files')) return;
+    e.preventDefault();
+    const files = imageFilesFromDataTransfer(e.dataTransfer);
+    if (files.length > 0) onFiles(files);
+  }
+
+  const sendDisabled = disabled || hasPendingAttachments || (value.trim().length === 0 && !hasReadyAttachments);
   const resolvedPlaceholder =
     placeholder ??
     (shiftEnterToSend ? DEFAULT_PLACEHOLDER_SHIFT_ENTER_SENDS : DEFAULT_PLACEHOLDER_ENTER_SENDS);
 
   return (
-    <div className={cn('border-t border-inputbar-border bg-inputbar-bg px-3 py-2', className)}>
-      <div className="flex flex-col gap-1.5 rounded-xl border border-inputbar-input-border bg-inputbar-input-bg focus-within:border-inputbar-input-border-focus">
+    <div
+      className={cn('border-t border-inputbar-border bg-inputbar-bg px-3 py-2', className)}
+      onDragOver={handleDragOver}
+      onDragLeave={() => setDragging(false)}
+      onDrop={handleDrop}
+    >
+      <div
+        className={cn(
+          'flex flex-col gap-1.5 rounded-xl border border-inputbar-input-border bg-inputbar-input-bg focus-within:border-inputbar-input-border-focus',
+          dragging && 'border-dashed border-inputbar-input-border-focus',
+        )}
+        data-dragging={dragging || undefined}
+      >
+        <AttachmentStrip attachments={attachments} onRemove={onRemoveAttachment} />
         <InputBarKeyboardHandler
           streaming={streaming}
           disabled={disabled}
@@ -118,6 +176,7 @@ export function PromptComposer({
                 if (!e.defaultPrevented) keyboardOnKeyDown(e);
               }}
               onChange={handleInputChange}
+              onPaste={handlePaste}
               disabled={disabled || streaming}
               aria-label="Chat input"
             />
