@@ -31,7 +31,7 @@ export function AttachmentStrip({ attachments, onRemove, className }: Attachment
           title={a.status === 'error' ? a.error ?? 'Could not attach' : a.name}
           // `overflow-visible` on the tile, `overflow-hidden` on the inner frame:
           // the × sits on the corner arc and must not be clipped.
-          className="relative m-1.5 h-14 w-14"
+          className="group relative m-1.5 h-14 w-14"
         >
           <div
             className={cn(
@@ -67,10 +67,12 @@ export interface CornerRemoveButtonProps {
 }
 
 /**
- * The remove badge: an always-visible white disc with a dark × whose centre
- * sits on the tile's rounded corner — offset `-6px` on a 16px disc puts the
- * centre 2px inside each edge, which is where an 8px corner arc passes at 45°.
- * Always visible (not hover-only) so it reads on dark thumbnails and on touch.
+ * The remove badge: a white disc with a dark × whose centre sits on the
+ * tile's rounded corner — offset `-6px` on a 16px disc puts the centre 2px
+ * inside each edge, which is where an 8px corner arc passes at 45°. Shown
+ * only while the tile (a `group` ancestor) is hovered, or while the button
+ * itself has keyboard focus; the white disc keeps it legible on dark
+ * thumbnails when it does appear (user direction 2026-09-23).
  */
 export function CornerRemoveButton({ label, onClick, children, pressed, className }: CornerRemoveButtonProps) {
   return (
@@ -80,7 +82,7 @@ export function CornerRemoveButton({ label, onClick, children, pressed, classNam
       {...(pressed !== undefined ? { 'aria-pressed': pressed } : {})}
       onClick={onClick}
       className={cn(
-        'absolute -right-1.5 -top-1.5 z-10 flex h-4 w-4 items-center justify-center rounded-full border border-black/15 bg-white text-neutral-900 shadow-[0_1px_3px_rgba(0,0,0,.45)] transition-transform hover:scale-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-inputbar-input-border-focus',
+        'absolute -right-1.5 -top-1.5 z-10 flex h-4 w-4 items-center justify-center rounded-full border border-black/15 bg-white text-neutral-900 shadow-[0_1px_3px_rgba(0,0,0,.45)] opacity-0 transition-[opacity,transform] group-hover:opacity-100 hover:scale-110 focus:outline-none focus-visible:opacity-100 focus-visible:ring-2 focus-visible:ring-inputbar-input-border-focus',
         className,
       )}
     >
