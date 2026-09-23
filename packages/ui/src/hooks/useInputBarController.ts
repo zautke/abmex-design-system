@@ -63,7 +63,14 @@ export interface UseInputBarControllerResult {
   promptHistory: readonly string[];
   /** -1 = not navigating; 0..len-1 = current history entry shown. */
   navigationIndex: number | null;
-  submit: () => void;
+  /**
+   * Trim, send, clear, record history. `allowEmpty` lets an image-only send
+   * through with '' text (nothing is recorded in prompt history for it).
+   * Also accepts the composer's `(text: string)` callback shape so
+   * `onSend={composer.submit}` keeps type-checking; the string is ignored —
+   * the controller always sends its own trimmed `inputValue`.
+   */
+  submit: (opts?: { allowEmpty?: boolean } | string) => void;
   navigateHistoryUp: () => void;
   navigateHistoryDown: () => void;
   cancelHistoryNavigation: () => void;
@@ -97,13 +104,15 @@ export function useInputBarController(
     setNavigationDraft('');
   }, [promptHistoryStorageKey]);
 
-  const submit = useCallback(() => {
+  const submit = useCallback((opts?: { allowEmpty?: boolean } | string) => {
+    const allowEmpty = typeof opts === 'object' && opts !== null && opts.allowEmpty === true;
     const text = inputValue.trim();
-    if (!text) return;
+    if (!text && !allowEmpty) return;
     onSend(text);
     setInputValue('');
     setNavigationIndex(null);
     setNavigationDraft('');
+    if (!text) return;
     setPromptHistory((prev) => {
       if (prev.includes(text)) return prev;
       const next = [...prev, text].slice(-MAX_PROMPT_HISTORY_ITEMS);

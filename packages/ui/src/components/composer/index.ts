@@ -1,6 +1,9 @@
 export { PromptComposer } from './PromptComposer';
 export type { PromptComposerProps } from './PromptComposer';
 
+export { AttachmentStrip, CornerRemoveButton, imageFilesFromDataTransfer } from './AttachmentStrip';
+export type { AttachmentStripProps, ComposerAttachment, CornerRemoveButtonProps } from './AttachmentStrip';
+
 export { SendButton } from './SendButton';
 export type { SendButtonProps } from './SendButton';
 

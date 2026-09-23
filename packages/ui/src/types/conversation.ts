@@ -76,7 +76,7 @@ export interface ModelInfoMessage extends TimelineItemBase {
   modelSnapshot: ModelSnapshot;
 }
 
-export type OOCMessageType = 'conversation_interrupted';
+export type OOCMessageType = 'conversation_interrupted' | 'images_dropped';
 
 export interface OOCMessage extends TimelineItemBase {
   kind: 'ooc';
