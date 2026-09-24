@@ -6,6 +6,25 @@
 @source '../utils';
 
 @theme {
+  /* Motion — design tokens, reusable by any component.
+     `animate-pop-in`: fade in while scaling up from --scale-pop to 1.
+     `animate-pop-out`: the exact reverse; pair with onAnimationEnd to unmount.
+     Wrap in `motion-safe:` so reduced-motion users get an instant state change. */
+  --scale-pop: 0.85;
+  --duration-pop: 180ms;
+  --ease-pop: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --animate-pop-in: pop-in var(--duration-pop) var(--ease-pop) both;
+  --animate-pop-out: pop-out var(--duration-pop) var(--ease-pop) both;
+
+  @keyframes pop-in {
+    from { opacity: 0; transform: scale(var(--scale-pop)); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  @keyframes pop-out {
+    from { opacity: 1; transform: scale(1); }
+    to { opacity: 0; transform: scale(var(--scale-pop)); }
+  }
+
   --font-sans: 'Avenir Next', 'Segoe UI', 'Noto Sans', sans-serif;
   --font-code: 'Victor Mono Variable', 'Victor Mono', ui-monospace, 'SFMono-Regular', Menlo, Monaco, Consolas, monospace;
 

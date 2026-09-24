@@ -1,5 +1,6 @@
 import { X } from 'lucide-react';
 import { cn } from '../../utils/cn';
+import { useExitAnimation } from '../../hooks/useExitAnimation';
 
 export interface ComposerAttachment {
   id: string;
@@ -22,6 +23,7 @@ export interface AttachmentStripProps {
  * ingest, storage and the object URLs (and revokes them).
  */
 export function AttachmentStrip({ attachments, onRemove, className }: AttachmentStripProps) {
+  const exit = useExitAnimation(onRemove);
   if (attachments.length === 0) return null;
   return (
     <ul className={cn('flex flex-wrap gap-2 px-2 pt-2', className)} aria-label="Pending attachments">
@@ -31,7 +33,8 @@ export function AttachmentStrip({ attachments, onRemove, className }: Attachment
           title={a.status === 'error' ? a.error ?? 'Could not attach' : a.name}
           // `overflow-visible` on the tile, `overflow-hidden` on the inner frame:
           // the × sits on the corner arc and must not be clipped.
-          className="group relative m-1.5 h-14 w-14"
+          className={cn('group relative m-1.5 h-14 w-14', exit.className(a.id))}
+          onAnimationEnd={exit.onAnimationEnd(a.id)}
         >
           <div
             className={cn(
@@ -50,7 +53,7 @@ export function AttachmentStrip({ attachments, onRemove, className }: Attachment
               <div className="absolute inset-0 animate-pulse rounded-lg bg-black/20" aria-hidden />
             )}
           </div>
-          {onRemove && <CornerRemoveButton label={`Remove ${a.name}`} onClick={() => onRemove(a.id)} />}
+          {onRemove && <CornerRemoveButton label={`Remove ${a.name}`} onClick={() => exit.start(a.id)} />}
         </li>
       ))}
     </ul>
