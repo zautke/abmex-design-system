@@ -358,34 +358,37 @@ export function ThemeEditorPanel({
                         className="flex-1 px-1.5 py-1 text-[10px] font-mono border border-slate-200 rounded focus:outline-none focus:border-teal-400 bg-white"
                       />
                       <div className="flex items-center gap-2 relative">
-                        <button 
-                          onClick={() => setActiveColorSystemVar(activeColorSystemVar === v.name ? null : v.name)}
-                          className="w-5 h-5 rounded border border-slate-300 flex-shrink-0 shadow-inner cursor-pointer hover:border-teal-500 transition-colors z-10"
-                          style={{ 
-                            backgroundColor: overrides[v.name] || `var(${v.name})`,
-                            backgroundImage: (overrides[v.name] || v.defaultVal).includes('transparent') ? 'repeating-conic-gradient(#eee 0 4px, transparent 0 8px)' : 'none'
-                          }}
-                          title="Click to open Color System"
-                          type="button"
-                        />
-                        
-                        {/* Render Color System directly aligned with the button */}
-                        {activeColorSystemVar === v.name && (
-                          <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
-                            {/* Invisible overlay to close when clicking outside */}
-                            <div 
-                              className="absolute inset-0 bg-slate-900/20 backdrop-blur-[1px]" 
-                              onClick={() => setActiveColorSystemVar(null)}
-                            />
-                            <div className="relative z-10">
-                              <ColorSystem 
-                                color={resolveColorValue(overrides[v.name] || v.defaultVal)}
-                                onChange={(newColor) => handleOverrideChange(v.name, newColor)}
+                        {v.isColor && (<>
+                          <button 
+                            onClick={() => setActiveColorSystemVar(activeColorSystemVar === v.name ? null : v.name)}
+                            className="w-5 h-5 rounded border border-slate-300 flex-shrink-0 shadow-inner cursor-pointer hover:border-teal-500 transition-colors z-10"
+                            style={{ 
+                              backgroundColor: overrides[v.name] || `var(${v.name})`,
+                              backgroundImage: (overrides[v.name] || v.defaultVal).includes('transparent') ? 'repeating-conic-gradient(#eee 0 4px, transparent 0 8px)' : 'none'
+                            }}
+                            title="Click to open Color System"
+                            type="button"
+                          />
+                          
+                          {/* Render Color System directly aligned with the button */}
+                          {activeColorSystemVar === v.name && (
+                            <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
+                              {/* Invisible overlay to close when clicking outside */}
+                              <div 
+                                className="absolute inset-0 bg-slate-900/20 backdrop-blur-[1px]" 
+                                onClick={() => setActiveColorSystemVar(null)}
                               />
+                              <div className="relative z-10">
+                                <ColorSystem 
+                                  color={resolveColorValue(overrides[v.name] || v.defaultVal)}
+                                  onChange={(newColor) => handleOverrideChange(v.name, newColor)}
+                                />
+                              </div>
                             </div>
-                          </div>
-                        )}
-    
+                          )}
+      
+                        </>)}
+
                         <button 
                           onClick={() => handleOverrideChange(v.name, '')}
                           className={`text-[9px] font-medium px-1.5 py-1 rounded text-slate-400 hover:bg-rose-50 hover:text-rose-500 transition-all ${overrides[v.name] ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
