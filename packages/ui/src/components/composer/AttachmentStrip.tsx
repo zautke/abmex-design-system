@@ -1,18 +1,28 @@
 import { X } from 'lucide-react';
 import { cn } from '../../utils/cn';
+import { prefersReducedMotion } from '../../utils/motion';
 
 export interface ComposerAttachment {
   id: string;
   name: string;
   /** Object URL (or data URL) for the thumbnail; absent while pending. */
   previewUrl?: string;
-  status: 'pending' | 'ready' | 'error';
+  /**
+   * `removing`: the host has already taken the chip out of the sendable set
+   * and keeps it here only for the pop-out; the strip calls `onRemove` once
+   * more when that animation ends so the host can drop it for real.
+   */
+  status: 'pending' | 'ready' | 'error' | 'removing';
   /** Shown as the tile's title when status is 'error'. */
   error?: string;
 }
 
 export interface AttachmentStripProps {
   attachments: ComposerAttachment[];
+  /**
+   * Called on × (host: mark `removing`, or drop at once under reduced motion —
+   * see `prefersReducedMotion`) and again when the pop-out ends (host: drop).
+   */
   onRemove?: (id: string) => void;
   className?: string;
 }
@@ -31,7 +41,13 @@ export function AttachmentStrip({ attachments, onRemove, className }: Attachment
           title={a.status === 'error' ? a.error ?? 'Could not attach' : a.name}
           // `overflow-visible` on the tile, `overflow-hidden` on the inner frame:
           // the × sits on the corner arc and must not be clipped.
-          className="group relative m-1.5 h-14 w-14"
+          className={cn(
+            'group relative m-1.5 h-14 w-14',
+            a.status === 'removing' ? 'motion-safe:animate-pop-out' : 'motion-safe:animate-pop-in',
+          )}
+          onAnimationEnd={(e) => {
+            if (e.target === e.currentTarget && e.animationName === 'pop-out') onRemove?.(a.id);
+          }}
         >
           <div
             className={cn(

@@ -52,6 +52,7 @@ export type {
 } from './hooks/useChatPaneController';
 
 export { useInputBarController } from './hooks/useInputBarController';
+export { prefersReducedMotion } from './utils/motion';
 export type {
   UseInputBarControllerInput,
   UseInputBarControllerResult,
