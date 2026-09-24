@@ -496,6 +496,9 @@
  * you nudge one surface without disturbing the system.
  *
  * Must be imported AFTER '@heroui/styles' to win the cascade.
+ *
+ * theme-editor: heroui-bridge — parseSemanticVariables lists every
+ * declaration below this marker as the editor's "heroui" group. Keep it last.
  */
 :root {
   --radius: 0.5rem;
