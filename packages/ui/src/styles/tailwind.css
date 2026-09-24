@@ -7,22 +7,30 @@
 
 @theme {
   /* Motion — design tokens, reusable by any component.
-     `animate-pop-in`: fade in while scaling up from --scale-pop to 1.
-     `animate-pop-out`: the exact reverse; pair with onAnimationEnd to unmount.
-     Wrap in `motion-safe:` so reduced-motion users get an instant state change. */
+     `animate-pop-in`: fade in while scaling up from --scale-pop, overshoot to
+     --scale-pop-over and spring back to 1 (ease-in on the way up, ease-out on
+     the settle). `animate-pop-out`: the exact reverse; pair with onAnimationEnd
+     to unmount. Wrap in `motion-safe:` so reduced-motion users get an instant
+     state change. */
   --scale-pop: 0.85;
-  --duration-pop: 180ms;
-  --ease-pop: cubic-bezier(0.2, 0.8, 0.2, 1);
-  --animate-pop-in: pop-in var(--duration-pop) var(--ease-pop) both;
-  --animate-pop-out: pop-out var(--duration-pop) var(--ease-pop) both;
+  --scale-pop-over: 1.08;
+  --duration-pop: 360ms;
+  --ease-pop-in: cubic-bezier(0.42, 0, 1, 1);
+  --ease-pop-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --animate-pop-in: pop-in var(--duration-pop) both;
+  --animate-pop-out: pop-out var(--duration-pop) both;
 
   @keyframes pop-in {
-    from { opacity: 0; transform: scale(var(--scale-pop)); }
-    to { opacity: 1; transform: scale(1); }
+    0% { opacity: 0; transform: scale(var(--scale-pop)); animation-timing-function: var(--ease-pop-in); }
+    55% { opacity: 1; transform: scale(var(--scale-pop-over)); animation-timing-function: var(--ease-pop-out); }
+    78% { transform: scale(0.98); animation-timing-function: var(--ease-pop-out); }
+    100% { opacity: 1; transform: scale(1); }
   }
   @keyframes pop-out {
-    from { opacity: 1; transform: scale(1); }
-    to { opacity: 0; transform: scale(var(--scale-pop)); }
+    0% { opacity: 1; transform: scale(1); animation-timing-function: var(--ease-pop-in); }
+    22% { transform: scale(1.02); animation-timing-function: var(--ease-pop-in); }
+    45% { opacity: 1; transform: scale(var(--scale-pop-over)); animation-timing-function: var(--ease-pop-out); }
+    100% { opacity: 0; transform: scale(var(--scale-pop)); }
   }
 
   --font-sans: 'Avenir Next', 'Segoe UI', 'Noto Sans', sans-serif;
