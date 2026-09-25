@@ -17,28 +17,21 @@ function groupLabel(group: string): string {
   return GROUP_LABELS[group] ?? group.charAt(0).toUpperCase() + group.slice(1);
 }
 
+/** Resolve a token's default (a `var()` chain, `color-mix()`, a fallback such as
+ * `var(--color-eclipse, oklch(...))`) to a concrete color by letting the CSS
+ * engine compute it on a probe element. Anything it cannot compute (or a
+ * non-browser environment) returns the raw value for the picker to reject. */
 function resolveColorValue(value: string): string {
   if (typeof document === 'undefined' || !value) return value;
-  
-  let resolvedValue = value;
-  let iterations = 0;
-  // Resolve CSS variables up to 5 levels deep
-  while (resolvedValue.includes('var(') && iterations < 5) {
-    const match = resolvedValue.match(/var\(([^),]+)/);
-    if (match) {
-      const varName = match[1]!.trim();
-      const computed = getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
-      if (computed) {
-        resolvedValue = resolvedValue.replace(/var\([^)]+\)/, computed);
-      } else {
-        break;
-      }
-    } else {
-      break;
-    }
-    iterations++;
-  }
-  return resolvedValue || value;
+  const probe = document.createElement('span');
+  probe.style.color = value;
+  if (!probe.style.color) return value;
+  probe.style.position = 'absolute';
+  probe.style.visibility = 'hidden';
+  document.documentElement.appendChild(probe);
+  const resolved = getComputedStyle(probe).color;
+  probe.remove();
+  return resolved || value;
 }
 
 export interface ThemeEditorPanelProps {
