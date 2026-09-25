@@ -1,5 +1,15 @@
 # @abmex/ui
 
+## 0.3.2
+
+Theme editor brought up to the current token surface.
+
+### Changed
+
+- `ThemeEditorPanel` groups the semantic variables by component prefix (Chat, Drawer, Input bar, Markdown, …) in collapsible sections with a per-group override count, adds a filter field, and lists the HeroUI v3 bridge (`--accent`, `--surface`, `--field-*`, …) as its own "HeroUI bridge" group — that block is the ~15-variable reskin seam and was not editable before. Every override input carries `aria-label="Override <token>"`.
+- The panel now consumes its own `--color-themeedit-*` tokens (background, borders, title, family labels, slider track/thumb, reset button) instead of hard-coded `slate`/`teal` classes, so those tokens are no longer dead.
+- `parseSemanticVariables` returns a `group` per variable and honours the `theme-editor: heroui-bridge` marker comment in `styles.css`; everything declared after the marker is exported as group `heroui`.
+
 ## 0.3.0
 
 Image attachments in the composer — presentation only, as always.

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, type KeyboardEvent, type RefObject } from 'react';
+import { useState, useEffect, useMemo, useRef, type KeyboardEvent, type RefObject } from 'react';
 import { SlidersHorizontal, RefreshCw, X, ChevronDown, Plus, Trash2, Pencil } from 'lucide-react';
 import { ColorSystem } from './ColorSystem';
 import { useOnClickOutside } from 'usehooks-ts';
@@ -9,30 +9,29 @@ import {
   type ColorHS,
   type Theme,
 } from '../../types/theme';
-import { parseSemanticVariables } from '../../internal/parseSemanticVariables';
+import { parseSemanticVariables, type SemanticVariable } from '../../internal/parseSemanticVariables';
 
+const GROUP_LABELS: Record<string, string> = { heroui: 'HeroUI bridge', md: 'Markdown', conn: 'Connection', oocm: 'Out-of-context message', tictac: 'Tic Tac accent' };
+
+function groupLabel(group: string): string {
+  return GROUP_LABELS[group] ?? group.charAt(0).toUpperCase() + group.slice(1);
+}
+
+/** Resolve a token's default (a `var()` chain, `color-mix()`, a fallback such as
+ * `var(--color-eclipse, oklch(...))`) to a concrete color by letting the CSS
+ * engine compute it on a probe element. Anything it cannot compute (or a
+ * non-browser environment) returns the raw value for the picker to reject. */
 function resolveColorValue(value: string): string {
   if (typeof document === 'undefined' || !value) return value;
-  
-  let resolvedValue = value;
-  let iterations = 0;
-  // Resolve CSS variables up to 5 levels deep
-  while (resolvedValue.includes('var(') && iterations < 5) {
-    const match = resolvedValue.match(/var\(([^),]+)/);
-    if (match) {
-      const varName = match[1]!.trim();
-      const computed = getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
-      if (computed) {
-        resolvedValue = resolvedValue.replace(/var\([^)]+\)/, computed);
-      } else {
-        break;
-      }
-    } else {
-      break;
-    }
-    iterations++;
-  }
-  return resolvedValue || value;
+  const probe = document.createElement('span');
+  probe.style.color = value;
+  if (!probe.style.color) return value;
+  probe.style.position = 'absolute';
+  probe.style.visibility = 'hidden';
+  document.documentElement.appendChild(probe);
+  const resolved = getComputedStyle(probe).color;
+  probe.remove();
+  return resolved || value;
 }
 
 export interface ThemeEditorPanelProps {
@@ -70,7 +69,17 @@ export function ThemeEditorPanel({
   deleteTheme,
   renameTheme,
 }: ThemeEditorPanelProps) {
-  const [semanticVars, setSemanticVars] = useState<{ name: string; defaultVal: string }[]>([]);
+  const [semanticVars, setSemanticVars] = useState<SemanticVariable[]>([]);
+  const [filter, setFilter] = useState('');
+  const groups = useMemo(() => {
+    const q = filter.trim().toLowerCase();
+    const map = new Map<string, SemanticVariable[]>();
+    for (const v of semanticVars) {
+      if (q && !v.name.toLowerCase().includes(q)) continue;
+      (map.get(v.group) ?? map.set(v.group, []).get(v.group)!).push(v);
+    }
+    return [...map.entries()];
+  }, [semanticVars, filter]);
   const [activeColorSystemVar, setActiveColorSystemVar] = useState<string | null>(null);
   
   const [isThemeDropdownOpen, setIsThemeDropdownOpen] = useState(false);
@@ -124,12 +133,12 @@ export function ThemeEditorPanel({
   };
 
   return (
-    <div className="bg-app-bg text-slate-800 font-sans p-4 flex flex-col border-l border-slate-200 w-full sm:w-[350px] max-w-[350px] flex-shrink-0 h-full overflow-hidden">
-      <header className="mb-4 flex flex-col gap-3 pb-4 border-b border-slate-200 flex-shrink-0">
+    <div className="bg-themeedit-bg text-slate-800 font-sans p-4 flex flex-col border-l border-themeedit-border w-full sm:w-[350px] max-w-[350px] flex-shrink-0 h-full overflow-hidden">
+      <header className="mb-4 flex flex-col gap-3 pb-4 border-b border-themeedit-title-border flex-shrink-0">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 relative">
             <SlidersHorizontal className="text-teal-600 flex-shrink-0" size={20} />
-            <h1 className="text-lg font-semibold text-slate-800 flex-shrink-0">Theme Editor</h1>
+            <h1 className="text-lg font-semibold text-themeedit-title-text flex-shrink-0">Theme Editor</h1>
             
             {/* Theme Selector Dropdown */}
             <div className="relative ml-2" ref={dropdownRef}>
@@ -239,7 +248,7 @@ export function ThemeEditorPanel({
         </div>
         <button 
           onClick={() => { setColors(DEFAULT_HS); setOverrides({}); }}
-          className="flex items-center justify-center gap-2 px-3 py-1.5 text-sm font-medium text-slate-600 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors w-full"
+          className="flex items-center justify-center gap-2 px-3 py-1.5 text-sm font-medium text-themeedit-reset-text hover:text-themeedit-reset-text-hover bg-white border border-themeedit-reset-border rounded-lg hover:bg-slate-50 transition-colors w-full"
         >
           <RefreshCw size={14} />
           Reset All
@@ -258,7 +267,7 @@ export function ThemeEditorPanel({
 
           {COLOR_FAMILIES.map(family => (
             <div key={family} className="bg-white p-3 rounded-xl shadow-sm border border-slate-200 flex flex-col gap-2.5">
-              <div className="text-xs font-bold uppercase text-slate-700 flex items-center gap-2">
+              <div className="text-xs font-bold uppercase text-themeedit-family-label flex items-center gap-2">
                 <div 
                   className="w-3.5 h-3.5 rounded-sm shadow-inner"
                   style={{ backgroundColor: `hsl(${colors[family].h} ${colors[family].s}% 50%)` }}
@@ -267,27 +276,27 @@ export function ThemeEditorPanel({
               </div>
               
               <div className="flex items-center gap-2">
-                <span className="text-[10px] font-medium text-slate-400 w-3">H</span>
+                <span className="text-[10px] font-medium text-themeedit-slider-label w-3">H</span>
                 <input
                   type="range"
                   min="0"
                   max="360"
                   value={colors[family].h}
                   onChange={(e) => handleRawChange(family, 'h', Number(e.target.value))}
-                  className="flex-1 h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-teal-500"
+                  className="flex-1 h-1.5 bg-themeedit-slider-track rounded-lg appearance-none cursor-pointer accent-themeedit-slider-thumb"
                 />
                 <span className="text-[10px] text-slate-400 w-5 text-right font-mono">{colors[family].h}</span>
               </div>
 
               <div className="flex items-center gap-2">
-                <span className="text-[10px] font-medium text-slate-400 w-3">S</span>
+                <span className="text-[10px] font-medium text-themeedit-slider-label w-3">S</span>
                 <input
                   type="range"
                   min="0"
                   max="100"
                   value={colors[family].s}
                   onChange={(e) => handleRawChange(family, 's', Number(e.target.value))}
-                  className="flex-1 h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-teal-500"
+                  className="flex-1 h-1.5 bg-themeedit-slider-track rounded-lg appearance-none cursor-pointer accent-themeedit-slider-thumb"
                 />
                 <span className="text-[10px] text-slate-400 w-5 text-right font-mono">{colors[family].s}%</span>
               </div>
@@ -304,60 +313,89 @@ export function ThemeEditorPanel({
             </p>
           </div>
 
-          <div className="flex flex-col gap-2">
-            {semanticVars.map(v => (
-              <div key={v.name} className="flex flex-col p-2.5 rounded-lg border border-slate-100 bg-slate-50 hover:border-teal-200 transition-colors group gap-2">
-                <div className="flex flex-col overflow-hidden">
-                  <span className="text-[11px] font-mono text-slate-700 truncate" title={v.name}>{v.name.replace('--color-', '')}</span>
-                  <span className="text-[9px] text-slate-400 font-mono truncate">{v.defaultVal}</span>
-                </div>
-                <div className="flex items-center gap-2 justify-between">
-                  <input
-                    type="text"
-                    value={overrides[v.name] || ''}
-                    onChange={(e) => handleOverrideChange(v.name, e.target.value)}
-                    placeholder={v.defaultVal}
-                    className="flex-1 px-1.5 py-1 text-[10px] font-mono border border-slate-200 rounded focus:outline-none focus:border-teal-400 bg-white"
-                  />
-                  <div className="flex items-center gap-2 relative">
-                    <button 
-                      onClick={() => setActiveColorSystemVar(activeColorSystemVar === v.name ? null : v.name)}
-                      className="w-5 h-5 rounded border border-slate-300 flex-shrink-0 shadow-inner cursor-pointer hover:border-teal-500 transition-colors z-10"
-                      style={{ 
-                        backgroundColor: overrides[v.name] || `var(${v.name})`,
-                        backgroundImage: (overrides[v.name] || v.defaultVal).includes('transparent') ? 'repeating-conic-gradient(#eee 0 4px, transparent 0 8px)' : 'none'
-                      }}
-                      title="Click to open Color System"
-                      type="button"
-                    />
-                    
-                    {/* Render Color System directly aligned with the button */}
-                    {activeColorSystemVar === v.name && (
-                      <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
-                        {/* Invisible overlay to close when clicking outside */}
-                        <div 
-                          className="absolute inset-0 bg-slate-900/20 backdrop-blur-[1px]" 
-                          onClick={() => setActiveColorSystemVar(null)}
-                        />
-                        <div className="relative z-10">
-                          <ColorSystem 
-                            color={resolveColorValue(overrides[v.name] || v.defaultVal)}
-                            onChange={(newColor) => handleOverrideChange(v.name, newColor)}
-                          />
-                        </div>
-                      </div>
-                    )}
+          <input
+            type="search"
+            value={filter}
+            onChange={(e) => setFilter(e.target.value)}
+            placeholder="Filter variables…"
+            aria-label="Filter variables"
+            className="w-full px-2 py-1.5 text-xs font-mono border border-slate-200 rounded-lg bg-white focus:outline-none focus:border-teal-400"
+          />
 
-                    <button 
-                      onClick={() => handleOverrideChange(v.name, '')}
-                      className={`text-[9px] font-medium px-1.5 py-1 rounded text-slate-400 hover:bg-rose-50 hover:text-rose-500 transition-all ${overrides[v.name] ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
-                    >
-                      CLEAR
-                    </button>
+          <div className="flex flex-col gap-2" aria-label="Semantic variable groups">
+            {groups.map(([group, vars]) => (
+              <details key={group} open={filter.trim().length > 0 || undefined} className="rounded-lg border border-slate-200 bg-white">
+                <summary className="flex cursor-pointer items-center justify-between px-2.5 py-1.5 text-xs font-semibold text-slate-700 select-none">
+                  <span>{groupLabel(group)}</span>
+                  <span className="text-[10px] font-mono text-slate-500">
+                    {vars.filter((v) => overrides[v.name]).length > 0 && (
+                      <span className="mr-1.5 text-teal-600">{vars.filter((v) => overrides[v.name]).length} set</span>
+                    )}
+                    {vars.length}
+                  </span>
+                </summary>
+                <div className="flex flex-col gap-2 p-2 pt-0">
+                  {vars.map(v => (
+                    <div key={v.name} className="flex flex-col p-2.5 rounded-lg border border-slate-100 bg-slate-50 hover:border-teal-200 transition-colors group gap-2">
+                    <div className="flex flex-col overflow-hidden">
+                      <span className="text-[11px] font-mono text-slate-700 truncate" title={v.name}>{v.name.replace('--color-', '')}</span>
+                      <span className="text-[9px] text-slate-400 font-mono truncate">{v.defaultVal}</span>
+                    </div>
+                    <div className="flex items-center gap-2 justify-between">
+                      <input
+                        type="text"
+                        value={overrides[v.name] || ''}
+                        onChange={(e) => handleOverrideChange(v.name, e.target.value)}
+                        placeholder={v.defaultVal}
+                        aria-label={`Override ${v.name}`}
+                        className="flex-1 px-1.5 py-1 text-[10px] font-mono border border-slate-200 rounded focus:outline-none focus:border-teal-400 bg-white"
+                      />
+                      <div className="flex items-center gap-2 relative">
+                        {v.isColor && (<>
+                          <button 
+                            onClick={() => setActiveColorSystemVar(activeColorSystemVar === v.name ? null : v.name)}
+                            className="w-5 h-5 rounded border border-slate-300 flex-shrink-0 shadow-inner cursor-pointer hover:border-teal-500 transition-colors z-10"
+                            style={{ 
+                              backgroundColor: overrides[v.name] || `var(${v.name})`,
+                              backgroundImage: (overrides[v.name] || v.defaultVal).includes('transparent') ? 'repeating-conic-gradient(#eee 0 4px, transparent 0 8px)' : 'none'
+                            }}
+                            title="Click to open Color System"
+                            type="button"
+                          />
+                          
+                          {/* Render Color System directly aligned with the button */}
+                          {activeColorSystemVar === v.name && (
+                            <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
+                              {/* Invisible overlay to close when clicking outside */}
+                              <div 
+                                className="absolute inset-0 bg-slate-900/20 backdrop-blur-[1px]" 
+                                onClick={() => setActiveColorSystemVar(null)}
+                              />
+                              <div className="relative z-10">
+                                <ColorSystem 
+                                  color={resolveColorValue(overrides[v.name] || v.defaultVal)}
+                                  onChange={(newColor) => handleOverrideChange(v.name, newColor)}
+                                />
+                              </div>
+                            </div>
+                          )}
+      
+                        </>)}
+
+                        <button 
+                          onClick={() => handleOverrideChange(v.name, '')}
+                          className={`text-[9px] font-medium px-1.5 py-1 rounded text-slate-400 hover:bg-rose-50 hover:text-rose-500 transition-all ${overrides[v.name] ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+                        >
+                          CLEAR
+                        </button>
+                      </div>
+                    </div>
                   </div>
+                  ))}
                 </div>
-              </div>
+              </details>
             ))}
+            {groups.length === 0 && <p className="text-[10px] text-slate-500 px-1">No variables match "{filter}".</p>}
           </div>
         </div>
       </div>
