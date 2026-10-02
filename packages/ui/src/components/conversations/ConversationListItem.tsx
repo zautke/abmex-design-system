@@ -27,6 +27,12 @@ export interface ConversationListItemProps {
  *
  * The rename input is a sibling of the select button, never a child — a button
  * nested inside a button is invalid HTML and browsers disagree about the result.
+ *
+ * Delete is a two-state confirm, mirroring the rename idiom (local state stands
+ * in for a dialog): choosing Delete swaps the overflow menu for an inline
+ * "Delete? [Delete] [Cancel]" cluster. Escape, Tab/click away, any other row
+ * action, or ~4s of inactivity disarm it — only the explicit Delete button
+ * calls `onDelete`.
  */
 export function ConversationListItem({
   conversation,
@@ -38,7 +44,10 @@ export function ConversationListItem({
 }: ConversationListItemProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [draftTitle, setDraftTitle] = useState(conversation.title);
+  const [pendingDelete, setPendingDelete] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const deleteGroupRef = useRef<HTMLDivElement>(null);
+  const deleteConfirmRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     if (isEditing) {
@@ -46,6 +55,22 @@ export function ConversationListItem({
       inputRef.current?.select();
     }
   }, [isEditing]);
+
+  useEffect(() => {
+    if (!pendingDelete) return;
+    deleteConfirmRef.current?.focus();
+    // Clicking/tapping elsewhere cancels. Blur alone can't carry this: Safari
+    // and macOS Firefox don't move focus to buttons on pointer click.
+    const onPointerDown = (e: PointerEvent) => {
+      if (!deleteGroupRef.current?.contains(e.target as Node)) setPendingDelete(false);
+    };
+    document.addEventListener('pointerdown', onPointerDown);
+    const timer = window.setTimeout(() => setPendingDelete(false), 4000);
+    return () => {
+      document.removeEventListener('pointerdown', onPointerDown);
+      window.clearTimeout(timer);
+    };
+  }, [pendingDelete]);
 
   const commitRename = () => {
     const next = draftTitle.trim();
@@ -55,8 +80,14 @@ export function ConversationListItem({
   };
 
   const startRename = () => {
+    setPendingDelete(false); // any other row action disarms the confirm
     setDraftTitle(conversation.title);
     setIsEditing(true);
+  };
+
+  const confirmDelete = () => {
+    setPendingDelete(false);
+    onDelete(conversation.id);
   };
 
   return (
@@ -86,6 +117,46 @@ export function ConversationListItem({
             className="min-w-0 flex-1 rounded border border-drawer-edit-border bg-drawer-edit-bg px-1.5 py-0.5 text-sm outline-none"
           />
         </div>
+      ) : pendingDelete ? (
+        <>
+          <span className="truncate text-sm">{conversation.title}</span>
+          <div
+            ref={deleteGroupRef}
+            role="group"
+            aria-label="Confirm delete conversation"
+            className="flex shrink-0 items-center gap-1"
+            onKeyDown={(e) => {
+              if (e.key === 'Escape') {
+                e.stopPropagation(); // cancel the confirm, not the drawer
+                setPendingDelete(false);
+              }
+            }}
+            onBlur={(e) => {
+              if (!e.currentTarget.contains(e.relatedTarget as Node | null)) {
+                setPendingDelete(false);
+              }
+            }}
+          >
+            <span className="text-xs text-ph-danger-soft-fg">Delete?</span>
+            <Button
+              ref={deleteConfirmRef}
+              variant="ghost"
+              size="sm"
+              onPress={confirmDelete}
+              className="text-ph-danger-soft-fg"
+            >
+              Delete
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onPress={() => setPendingDelete(false)}
+              className="text-drawer-item-text"
+            >
+              Cancel
+            </Button>
+          </div>
+        </>
       ) : (
         <>
           <button
@@ -115,7 +186,7 @@ export function ConversationListItem({
               <Dropdown.Menu
                 onAction={(key) => {
                   if (key === 'rename') startRename();
-                  if (key === 'delete') onDelete(conversation.id);
+                  if (key === 'delete') setPendingDelete(true);
                 }}
               >
                 {onRename ? (

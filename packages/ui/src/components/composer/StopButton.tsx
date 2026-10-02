@@ -9,9 +9,9 @@ export interface StopButtonProps {
 }
 
 /**
- * Rose stop affordance, shown in place of {@link SendButton} while streaming.
- * `variant="danger"` resolves to `--danger`, bridged to `--color-conn-disconnected`
- * (rose-500) in the kit stylesheet.
+ * Brick stop affordance, shown in place of {@link SendButton} while streaming.
+ * `variant="danger"` resolves to `--danger`, bridged to `--ph-danger` by the
+ * Phosphor HeroUI adapter.
  */
 export function StopButton({ onStop, disabled = false, className }: StopButtonProps) {
   return (

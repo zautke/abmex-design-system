@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Button } from '@heroui/react';
 import { cn } from '../../utils/cn';
 
@@ -32,7 +32,12 @@ export interface TransportLogPanelProps {
   className?: string;
 }
 
-/** Raw request/response log for the JSON view. (Was `TransportBufferPanel`.) */
+/** Raw request/response log for the JSON view. (Was `TransportBufferPanel`.)
+ *
+ * Clear is a two-state confirm: Clear buffer swaps to an inline
+ * "Clear? [Clear] [Cancel]" cluster. Escape, Tab/click away or ~4s of
+ * inactivity disarm it — only the explicit Clear button calls `onClear`.
+ */
 export function TransportLogPanel({
   entries,
   onClear,
@@ -40,9 +45,31 @@ export function TransportLogPanel({
   className,
 }: TransportLogPanelProps) {
   const tailRef = useRef<HTMLDivElement>(null);
+  const [pendingClear, setPendingClear] = useState(false);
+  const clearGroupRef = useRef<HTMLDivElement>(null);
+  const clearConfirmRef = useRef<HTMLButtonElement>(null);
   useEffect(() => {
     tailRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
   }, [entries.length]);
+
+  useEffect(() => {
+    if (!pendingClear) return;
+    clearConfirmRef.current?.focus();
+    const onPointerDown = (e: PointerEvent) => {
+      if (!clearGroupRef.current?.contains(e.target as Node)) setPendingClear(false);
+    };
+    document.addEventListener('pointerdown', onPointerDown);
+    const timer = window.setTimeout(() => setPendingClear(false), 4000);
+    return () => {
+      document.removeEventListener('pointerdown', onPointerDown);
+      window.clearTimeout(timer);
+    };
+  }, [pendingClear]);
+
+  const confirmClear = () => {
+    setPendingClear(false);
+    onClear?.();
+  };
 
   return (
     <section
@@ -55,16 +82,55 @@ export function TransportLogPanel({
         <span className="font-medium uppercase tracking-[0.14em] text-ph-fg-muted">
           {title} ({entries.length})
         </span>
-        {onClear && (
-          <Button
-            variant="ghost"
-            size="sm"
-            onPress={onClear}
-            className="text-xs uppercase tracking-[0.14em] text-chat-clearbtn-text hover:text-chat-clearbtn-text-hover"
-          >
-            Clear buffer
-          </Button>
-        )}
+        {onClear ? (
+          pendingClear ? (
+            <div
+              ref={clearGroupRef}
+              role="group"
+              aria-label="Confirm clear transport buffer"
+              className="flex items-center gap-1"
+              onKeyDown={(e) => {
+                if (e.key === 'Escape') {
+                  e.stopPropagation();
+                  setPendingClear(false);
+                }
+              }}
+              onBlur={(e) => {
+                if (!e.currentTarget.contains(e.relatedTarget as Node | null)) {
+                  setPendingClear(false);
+                }
+              }}
+            >
+              <span className="text-xs text-ph-danger-soft-fg">Clear?</span>
+              <Button
+                ref={clearConfirmRef}
+                variant="ghost"
+                size="sm"
+                onPress={confirmClear}
+                className="text-xs uppercase tracking-[0.14em] text-ph-danger-soft-fg"
+              >
+                Clear
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onPress={() => setPendingClear(false)}
+                className="text-xs uppercase tracking-[0.14em] text-chat-clearbtn-text"
+              >
+                Cancel
+              </Button>
+            </div>
+          ) : (
+            <Button
+              variant="ghost"
+              size="sm"
+              onPress={() => setPendingClear(true)}
+              className="text-xs uppercase tracking-[0.14em] text-chat-clearbtn-text hover:text-chat-clearbtn-text-hover"
+            >
+              Clear buffer
+            </Button>
+          )
+        ) : null}
       </div>
       {entries.length === 0 ? (
         <p className="text-ph-fg-muted">No transport activity yet.</p>

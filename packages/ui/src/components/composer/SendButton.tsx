@@ -10,9 +10,9 @@ export interface SendButtonProps {
 }
 
 /**
- * Teal send affordance. `variant="primary"` resolves to `--accent`, which the
- * kit's HeroUI token bridge points at `--color-teal-700` — the same teal the
- * bespoke send button used. No per-component color override needed.
+ * Mint send affordance. `variant="primary"` resolves to `--accent`, which the
+ * Phosphor HeroUI adapter points at `--ph-primary`. No per-component color
+ * override needed.
  */
 export function SendButton({ onSend, disabled = false, className }: SendButtonProps) {
   return (

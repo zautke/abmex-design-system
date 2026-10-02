@@ -1,7 +1,7 @@
-import { useState, useEffect, useMemo, useRef, type KeyboardEvent, type RefObject } from 'react';
+import { useState, useEffect, useMemo, useRef, type KeyboardEvent } from 'react';
 import { SlidersHorizontal, RefreshCw, X, ChevronDown, Plus, Trash2, Pencil } from 'lucide-react';
+import { Popover } from '@heroui/react';
 import { ColorSystem } from './ColorSystem';
-import { useOnClickOutside } from 'usehooks-ts';
 import {
   COLOR_FAMILIES,
   DEFAULT_HS,
@@ -90,15 +90,7 @@ export function ThemeEditorPanel({
   const [editingThemeId, setEditingThemeId] = useState<string | null>(null);
   const [editThemeName, setEditThemeName] = useState('');
   
-  const dropdownRef = useRef<HTMLDivElement>(null);
   const createInputRef = useRef<HTMLInputElement>(null);
-
-  useOnClickOutside(dropdownRef as unknown as RefObject<HTMLElement>, () => {
-    setIsThemeDropdownOpen(false);
-    setIsCreatingTheme(false);
-    setNewThemeName('');
-    setEditingThemeId(null);
-  });
 
   useEffect(() => {
     setSemanticVars(parseSemanticVariables(cssText));
@@ -141,102 +133,118 @@ export function ThemeEditorPanel({
             <SlidersHorizontal className="text-ph-primary-soft-fg flex-shrink-0" size={20} />
             <h1 className="text-lg font-semibold text-themeedit-title-text flex-shrink-0">Theme Editor</h1>
             
-            {/* Theme Selector Dropdown */}
-            <div className="relative ml-2" ref={dropdownRef}>
+            {/* Theme Selector Dropdown — HeroUI Popover: portals own stacking
+                and press-outside dismissal (no useOnClickOutside, no z-index). */}
+            <div className="relative ml-2">
               <div className="flex items-center">
-                <button 
-                  onClick={() => setIsThemeDropdownOpen(!isThemeDropdownOpen)}
-                  className="flex items-center gap-1.5 px-2 py-1 text-xs font-medium text-ph-fg bg-ph-surface-2 hover:bg-ph-surface-3 rounded border border-ph-border transition-colors"
-                >
-                  <span className="truncate max-w-[100px]">{activeTheme.name}</span>
-                  <ChevronDown size={12} className={`transition-transform ${isThemeDropdownOpen ? 'rotate-180' : ''}`} />
-                </button>
-                <button
-                  onClick={() => {
-                    setIsThemeDropdownOpen(true);
-                    setIsCreatingTheme(true);
+                <Popover
+                  isOpen={isThemeDropdownOpen}
+                  onOpenChange={(open) => {
+                    setIsThemeDropdownOpen(open);
+                    if (!open) {
+                      // Closing abandons create/rename drafts, matching the old
+                      // outside-click behavior.
+                      setIsCreatingTheme(false);
+                      setNewThemeName('');
+                      setEditingThemeId(null);
+                    }
                   }}
-                  className="ml-1 p-1 text-ph-fg-muted hover:text-ph-primary-soft-fg hover:bg-ph-primary-soft rounded transition-colors"
-                  title="Create New Theme"
                 >
-                  <Plus size={14} />
-                </button>
-              </div>
+                  <Popover.Trigger>
+                    <button
+                      className="flex items-center gap-1.5 px-2 py-1 text-xs font-medium text-ph-fg bg-ph-surface-2 hover:bg-ph-surface-3 rounded border border-ph-border transition-colors"
+                    >
+                      <span className="truncate max-w-[100px]">{activeTheme.name}</span>
+                      <ChevronDown size={12} className={`transition-transform ${isThemeDropdownOpen ? 'rotate-180' : ''}`} />
+                    </button>
+                  </Popover.Trigger>
+                  <button
+                    onClick={() => {
+                      setIsThemeDropdownOpen(true);
+                      setIsCreatingTheme(true);
+                    }}
+                    className="ml-1 p-1 text-ph-fg-muted hover:text-ph-primary-soft-fg hover:bg-ph-primary-soft rounded transition-colors"
+                    title="Create New Theme"
+                  >
+                    <Plus size={14} />
+                  </button>
 
-              {isThemeDropdownOpen && (
-                <div className="absolute top-full right-0 sm:left-0 sm:right-auto mt-1 w-48 bg-ph-overlay border border-ph-border rounded-lg shadow-ph-overlay py-1 z-[100]">
-                  {isCreatingTheme && (
-                    <div className="px-2 py-1.5 border-b border-ph-border mb-1">
-                      <input
-                        ref={createInputRef}
-                        type="text"
-                        value={newThemeName}
-                        onChange={(e) => setNewThemeName(e.target.value)}
-                        onKeyDown={handleCreateThemeSubmit}
-                        placeholder="Theme name..."
-                        className="w-full text-xs px-2 py-1 bg-ph-field text-ph-fg border border-ph-border-strong rounded focus:outline-none focus:border-ph-focus"
-                      />
-                      <p className="text-xs text-ph-fg-muted mt-1 ml-1">Press Enter to save</p>
-                    </div>
-                  )}
-                  
-                  <div className="max-h-48 overflow-y-auto">
-                    {themes.map((theme) => (
-                      <div 
-                        key={theme.id}
-                        className={`flex items-center justify-between px-3 py-1.5 text-xs hover:bg-ph-surface-2 cursor-pointer group ${activeTheme.id === theme.id ? 'bg-ph-primary-soft text-ph-primary-soft-fg font-medium' : 'text-ph-fg'}`}
-                        onClick={() => {
-                          if (editingThemeId !== theme.id) {
-                            setActiveThemeId(theme.id);
-                            setIsThemeDropdownOpen(false);
-                          }
-                        }}
-                      >
-                        {editingThemeId === theme.id ? (
+                  <Popover.Content placement="bottom start" className="w-48 bg-ph-overlay border border-ph-border rounded-lg shadow-ph-overlay py-1">
+                    <Popover.Dialog aria-label="Theme selector" className="p-0">
+                      {isCreatingTheme && (
+                        <div className="px-2 py-1.5 border-b border-ph-border mb-1">
                           <input
+                            ref={createInputRef}
                             type="text"
-                            value={editThemeName}
-                            onChange={(e) => setEditThemeName(e.target.value)}
-                            onKeyDown={(e) => handleEditThemeSubmit(e, theme.id)}
-                            autoFocus
-                            onClick={(e) => e.stopPropagation()}
-                            className="w-full text-xs px-1 py-0.5 bg-ph-field text-ph-fg border border-ph-border-strong rounded focus:outline-none focus:border-ph-focus mr-2"
+                            value={newThemeName}
+                            onChange={(e) => setNewThemeName(e.target.value)}
+                            onKeyDown={handleCreateThemeSubmit}
+                            placeholder="Theme name..."
+                            className="w-full text-xs px-2 py-1 bg-ph-field text-ph-fg border border-ph-border-strong rounded focus:outline-none focus:border-ph-focus"
                           />
-                        ) : (
-                          <>
-                            <span className="truncate pr-2">{theme.name}</span>
-                            {!theme.isDefault && (
-                              <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all">
-                                <button
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    setEditingThemeId(theme.id);
-                                    setEditThemeName(theme.name);
-                                  }}
-                                  className="p-1 text-ph-fg-muted hover:text-ph-primary-soft-fg hover:bg-ph-primary-soft rounded"
-                                  title="Rename Theme"
-                                >
-                                  <Pencil size={12} />
-                                </button>
-                                <button
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    deleteTheme(theme.id);
-                                  }}
-                                  className="p-1 text-ph-fg-muted hover:text-ph-danger-soft-fg hover:bg-ph-danger-soft rounded"
-                                  title="Delete Theme"
-                                >
-                                  <Trash2 size={12} />
-                                </button>
-                              </div>
+                          <p className="text-xs text-ph-fg-muted mt-1 ml-1">Press Enter to save</p>
+                        </div>
+                      )}
+
+                      <div className="max-h-48 overflow-y-auto">
+                        {themes.map((theme) => (
+                          <div
+                            key={theme.id}
+                            className={`flex items-center justify-between px-3 py-1.5 text-xs hover:bg-ph-surface-2 cursor-pointer group ${activeTheme.id === theme.id ? 'bg-ph-primary-soft text-ph-primary-soft-fg font-medium' : 'text-ph-fg'}`}
+                            onClick={() => {
+                              if (editingThemeId !== theme.id) {
+                                setActiveThemeId(theme.id);
+                                setIsThemeDropdownOpen(false);
+                              }
+                            }}
+                          >
+                            {editingThemeId === theme.id ? (
+                              <input
+                                type="text"
+                                value={editThemeName}
+                                onChange={(e) => setEditThemeName(e.target.value)}
+                                onKeyDown={(e) => handleEditThemeSubmit(e, theme.id)}
+                                autoFocus
+                                onClick={(e) => e.stopPropagation()}
+                                className="w-full text-xs px-1 py-0.5 bg-ph-field text-ph-fg border border-ph-border-strong rounded focus:outline-none focus:border-ph-focus mr-2"
+                              />
+                            ) : (
+                              <>
+                                <span className="truncate pr-2">{theme.name}</span>
+                                {!theme.isDefault && (
+                                  <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all">
+                                    <button
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        setEditingThemeId(theme.id);
+                                        setEditThemeName(theme.name);
+                                      }}
+                                      className="p-1 text-ph-fg-muted hover:text-ph-primary-soft-fg hover:bg-ph-primary-soft rounded"
+                                      title="Rename Theme"
+                                    >
+                                      <Pencil size={12} />
+                                    </button>
+                                    <button
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        deleteTheme(theme.id);
+                                      }}
+                                      className="p-1 text-ph-fg-muted hover:text-ph-danger-soft-fg hover:bg-ph-danger-soft rounded"
+                                      title="Delete Theme"
+                                    >
+                                      <Trash2 size={12} />
+                                    </button>
+                                  </div>
+                                )}
+                              </>
                             )}
-                          </>
-                        )}
+                          </div>
+                        ))}
                       </div>
-                    ))}
-                  </div>
-                </div>
-              )}
+                    </Popover.Dialog>
+                  </Popover.Content>
+                </Popover>
+              </div>
             </div>
           </div>
           <button 
@@ -352,36 +360,40 @@ export function ThemeEditorPanel({
                         className="flex-1 px-1.5 py-1 text-xs font-mono border border-ph-border-strong rounded focus:outline-none focus:border-ph-focus bg-ph-field text-ph-fg"
                       />
                       <div className="flex items-center gap-2 relative">
-                        {v.isColor && (<>
-                          <button 
-                            onClick={() => setActiveColorSystemVar(activeColorSystemVar === v.name ? null : v.name)}
-                            className="w-5 h-5 rounded border border-ph-border-strong flex-shrink-0 cursor-pointer hover:border-ph-focus transition-colors z-10"
-                            style={{ 
-                              backgroundColor: overrides[v.name] || `var(${v.name})`,
-                              backgroundImage: (overrides[v.name] || v.defaultVal).includes('transparent') ? 'repeating-conic-gradient(var(--ph-surface-3) 0 4px, transparent 0 8px)' : 'none'
-                            }}
-                            title="Click to open Color System"
-                            type="button"
-                          />
-                          
-                          {/* Render Color System directly aligned with the button */}
-                          {activeColorSystemVar === v.name && (
-                            <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
-                              {/* Invisible overlay to close when clicking outside */}
-                              <div 
-                                className="absolute inset-0 bg-ph-backdrop" 
-                                onClick={() => setActiveColorSystemVar(null)}
+                        {v.isColor && (
+                          // Color picker in a HeroUI Popover anchored to the
+                          // swatch — replaces the bespoke fixed/z-[200] center
+                          // overlay + backdrop; the portal owns stacking and
+                          // press-outside dismissal.
+                          <Popover
+                            isOpen={activeColorSystemVar === v.name}
+                            onOpenChange={(open) => setActiveColorSystemVar(open ? v.name : null)}
+                          >
+                            <Popover.Trigger>
+                              <button
+                                type="button"
+                                className="w-5 h-5 rounded border border-ph-border-strong flex-shrink-0 cursor-pointer hover:border-ph-focus transition-colors"
+                                style={{
+                                  backgroundColor: overrides[v.name] || `var(${v.name})`,
+                                  backgroundImage: (overrides[v.name] || v.defaultVal).includes('transparent') ? 'repeating-conic-gradient(var(--ph-surface-3) 0 4px, transparent 0 8px)' : 'none'
+                                }}
+                                title="Click to open Color System"
+                                aria-label={`Pick color for ${v.name}`}
                               />
-                              <div className="relative z-10">
-                                <ColorSystem 
+                            </Popover.Trigger>
+                            <Popover.Content placement="bottom end">
+                              {/* ColorSystem supplies its own surface chrome;
+                                  kill the default dialog padding so it sits
+                                  flush in the popover. */}
+                              <Popover.Dialog className="p-0" aria-label={`Color picker for ${v.name}`}>
+                                <ColorSystem
                                   color={resolveColorValue(overrides[v.name] || v.defaultVal)}
                                   onChange={(newColor) => handleOverrideChange(v.name, newColor)}
                                 />
-                              </div>
-                            </div>
-                          )}
-      
-                        </>)}
+                              </Popover.Dialog>
+                            </Popover.Content>
+                          </Popover>
+                        )}
 
                         <button 
                           onClick={() => handleOverrideChange(v.name, '')}
