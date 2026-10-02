@@ -1,0 +1,8 @@
+/* ============================================================================
+ * Phosphor — fonts. Variable woff2, latin subset (Fontsource 5.3.0, SIL OFL 1.1).
+ * Import once, before phosphor.tailwind.css; keep ./fonts/ beside this file.
+ * ========================================================================== */
+@font-face { font-family: "Rethink Sans"; src: url("./fonts/RethinkSans-Variable.woff2") format("woff2-variations"), url("./fonts/RethinkSans-Variable.woff2") format("woff2"); font-weight: 400 800; font-style: normal; font-display: swap; }
+@font-face { font-family: "Rethink Sans"; src: url("./fonts/RethinkSans-Variable-Italic.woff2") format("woff2-variations"), url("./fonts/RethinkSans-Variable-Italic.woff2") format("woff2"); font-weight: 400 800; font-style: italic; font-display: swap; }
+@font-face { font-family: "Victor Mono"; src: url("./fonts/VictorMono-Variable.woff2") format("woff2-variations"), url("./fonts/VictorMono-Variable.woff2") format("woff2"); font-weight: 100 700; font-style: normal; font-display: swap; }
+@font-face { font-family: "Victor Mono"; src: url("./fonts/VictorMono-Variable-Italic.woff2") format("woff2-variations"), url("./fonts/VictorMono-Variable-Italic.woff2") format("woff2"); font-weight: 100 700; font-style: italic; font-display: swap; }

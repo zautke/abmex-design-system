@@ -27,8 +27,8 @@ export class ErrorBoundary extends Component<Props, State> {
   public render() {
     if (this.state.hasError) {
       return (
-        <div className="flex h-full flex-col items-center justify-center bg-slate-50 p-6 text-center text-slate-800">
-          <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-rose-100 text-rose-500">
+        <div className="flex h-full flex-col items-center justify-center bg-ph-bg p-6 text-center text-ph-fg-strong">
+          <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-ph-danger-soft text-ph-danger-soft-fg">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
               <line x1="12" y1="9" x2="12" y2="13" />
@@ -36,12 +36,12 @@ export class ErrorBoundary extends Component<Props, State> {
             </svg>
           </div>
           <h1 className="mb-2 text-xl font-semibold">Something went wrong</h1>
-          <p className="text-sm text-slate-500">
+          <p className="text-sm text-ph-fg-muted">
             {this.state.error?.message || 'An unexpected error occurred.'}
           </p>
           <button
             onClick={() => this.setState({ hasError: false })}
-            className="mt-6 rounded-md bg-teal-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-teal-700"
+            className="mt-6 rounded-md bg-ph-primary px-4 py-2 text-sm font-medium text-ph-primary-fg transition-colors hover:bg-ph-primary-hover"
           >
             Try again
           </button>

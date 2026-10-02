@@ -25,6 +25,7 @@ export { CopyButton } from './primitives/CopyButton';
 export type { CopyButtonProps } from './primitives/CopyButton';
 
 export { cn } from './utils/cn';
+export { phosphorPrism } from './utils/phosphorPrism';
 
 // ── Layout + resilience ────────────────────────────────────────────────────
 export { ErrorBoundary } from './components/ErrorBoundary';

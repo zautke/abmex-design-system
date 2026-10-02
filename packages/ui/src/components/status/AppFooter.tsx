@@ -10,8 +10,8 @@ export interface AppFooterProps {
 export function AppFooter({ version, className }: AppFooterProps) {
   return (
     <footer className={cn('flex justify-center py-1.5', className)}>
-      <div className="flex w-[90vw] items-center border-t border-slate-200 pt-1.5">
-        <span className="font-mono text-[10px] text-slate-400">({version})</span>
+      <div className="flex w-[90vw] items-center border-t border-ph-border pt-1.5">
+        <span className="font-mono text-xs text-ph-fg-muted">({version})</span>
       </div>
     </footer>
   );

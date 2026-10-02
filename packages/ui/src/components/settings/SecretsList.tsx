@@ -57,7 +57,7 @@ export function SecretsList({ names, onAdd, onRemove, className }: SecretsListPr
                   </Button>
                 }
               >
-                <span className="truncate font-mono text-xs text-slate-700">{name}</span>
+                <span className="truncate font-mono text-xs text-ph-fg">{name}</span>
               </SettingsRow>
             </li>
           ))}

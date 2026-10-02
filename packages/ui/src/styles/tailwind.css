@@ -1,4 +1,27 @@
+/* @abmex/ui — Phosphor skin.
+ *
+ * Phosphor is the kit's design system: a matte instrument-panel theme, dark by
+ * default with a bone-paper light twin. Its framework-agnostic `--ph-*`
+ * interface lives in ./phosphor/ (generated from ./phosphor/build/palette.py —
+ * never hand-edit those values). This file only wires it into the kit.
+ *
+ * Consumers import '@heroui/styles' FIRST, then this file: the Phosphor layer
+ * replaces HeroUI's `dark` variant and the adapter re-points HeroUI's semantic
+ * surface at `--ph-*`. Reverse the order and HeroUI's stock blue wins.
+ *
+ * Theme scope: no class → dark; `.light` / `[data-theme="light"]` → light, on
+ * any element, nesting allowed.
+ *
+ * dist/styles.css is this file with the ./phosphor imports inlined
+ * (scripts/copy-css.mjs), so the theme editor can parse one string.
+ */
 @import 'tailwindcss' source(none);
+@import './phosphor/phosphor.fonts.css';
+@import './phosphor/phosphor.tailwind.css';
+/* theme-editor: heroui-bridge — parseSemanticVariables lists every declaration
+ * between this marker and the end marker as the editor's "heroui" group. */
+@import './phosphor/adapters/heroui.css';
+/* theme-editor: heroui-bridge-end */
 @source '../components';
 @source '../hooks';
 @source '../internal';
@@ -32,255 +55,113 @@
     45% { opacity: 1; transform: scale(var(--scale-pop-over)); animation-timing-function: var(--ease-pop-out); }
     100% { opacity: 0; transform: scale(var(--scale-pop)); }
   }
-
-  --font-sans: 'Avenir Next', 'Segoe UI', 'Noto Sans', sans-serif;
-  --font-code: 'Victor Mono Variable', 'Victor Mono', ui-monospace, 'SFMono-Regular', Menlo, Monaco, Consolas, monospace;
-
-  /* App Layout */
-  --color-app-bg: var(--color-slate-50);
-
-  /* Tic Tac orange — primary accent for hovers + active backgrounds. */
-  --color-tictac-orange: #ff6e27;
-  --color-tictac-orange-soft: color-mix(in oklch, #ff6e27 18%, transparent);
-  --color-tictac-orange-softer: color-mix(in oklch, #ff6e27 10%, transparent);
-  --color-tictac-orange-tint: color-mix(in oklch, #ff6e27 6%, white);
-
-  /* Header */
-  --color-header-bg: var(--color-white);
-  --color-header-border: var(--color-slate-200);
-  --color-header-btn-icon: var(--color-slate-500);
-  --color-header-btn-icon-hover: var(--color-tictac-orange);
-  --color-header-btn-bg-hover: var(--color-tictac-orange-soft);
-  --color-header-btn-bg-active: var(--color-tictac-orange);
-
-  /* Loader */
-  --color-loader-text: var(--color-slate-400);
-  --color-loader-spinner: var(--color-slate-200);
-  --color-loader-spinner-highlight: var(--color-teal-500);
-  --color-splash-bg: var(--color-slate-50);
-  --color-splash-text: var(--color-slate-400);
-  --color-splash-ring: var(--color-teal-200);
-
-  /* Empty State */
-  --color-empty-icon-bg: var(--color-teal-50);
-  --color-empty-icon: color-mix(in srgb, var(--color-teal-500) 50%, transparent);
-  --color-empty-title: var(--color-slate-800);
-  --color-empty-desc: var(--color-slate-400);
-  --oocm-text: var(--color-slate-500);
-
-  /* Chat Pane */
-  --color-chat-formatbtn-bg: color-mix(in srgb, var(--color-white) 90%, transparent);
-  --color-chat-formatbtn-text: var(--color-slate-600);
-  --color-chat-formatbtn-bg-hover: var(--color-white);
-  --color-chat-formatbtn-text-hover: var(--color-slate-900);
-  --color-chat-formatbtn-border: var(--color-slate-200);
-  --color-chat-empty-text: var(--color-slate-400);
-  --color-chat-bubble-user-bg: var(--color-teal-700);
-  --color-chat-bubble-user-text: var(--color-white);
-  --color-chat-bubble-ai-bg: var(--color-white);
-  --color-chat-bubble-ai-text: var(--color-slate-800);
-  --color-chat-bubble-ai-border: var(--color-slate-200);
-  --color-chat-error-text: var(--color-rose-400);
-  --color-chat-clearbtn-text: var(--color-slate-400);
-  --color-chat-clearbtn-text-hover: var(--color-rose-500);
-
-  /* Connection Indicator */
-  --color-conn-probing: var(--color-amber-400);
-  --color-conn-connected: var(--color-emerald-500);
-  --color-conn-disconnected: var(--color-rose-500);
-  --color-conn-label: var(--color-slate-500);
-  --color-conn-input-bg: var(--color-slate-50);
-  --color-conn-input-text: var(--color-slate-700);
-  --color-conn-input-border: var(--color-slate-200);
-  --color-conn-input-border-focus: var(--color-teal-400);
-  --color-conn-error-text: var(--color-rose-400);
-
-  /* Conversations Drawer */
-  --color-drawer-backdrop: color-mix(in srgb, var(--color-slate-900) 20%, transparent);
-  --color-drawer-bg: var(--color-slate-50);
-  --color-drawer-border: var(--color-slate-200);
-  --color-drawer-header-bg: var(--color-white);
-  --color-drawer-header-border: var(--color-slate-200);
-  --color-drawer-newbtn-bg: var(--color-teal-50);
-  --color-drawer-newbtn-text: var(--color-teal-700);
-  --color-drawer-newbtn-bg-hover: var(--color-teal-100);
-  --color-drawer-closebtn-icon: var(--color-slate-400);
-  --color-drawer-closebtn-icon-hover: var(--color-slate-600);
-  --color-drawer-closebtn-bg-hover: var(--color-slate-100);
-  --color-drawer-search-bg: var(--color-white);
-  --color-drawer-search-border: var(--color-slate-200);
-  --color-drawer-search-icon: var(--color-slate-400);
-  --color-drawer-search-input-bg: var(--color-slate-100);
-  --color-drawer-search-input-border: var(--color-slate-200);
-  --color-drawer-search-input-bg-focus: var(--color-white);
-  --color-drawer-search-input-border-focus: var(--color-teal-400);
-  --color-drawer-empty-text: var(--color-slate-400);
-  --color-drawer-item-bg-active: var(--color-teal-50);
-  --color-drawer-item-text-active: var(--color-teal-900);
-  --color-drawer-item-text: var(--color-slate-600);
-  --color-drawer-item-bg-hover: var(--color-white);
-  --color-drawer-item-text-hover: var(--color-slate-900);
-  --color-drawer-item-icon: var(--color-slate-400);
-  --color-drawer-item-icon-active: var(--color-teal-600);
-  --color-drawer-edit-bg: var(--color-white);
-  --color-drawer-edit-border: var(--color-teal-400);
-  --color-drawer-optbtn-icon: var(--color-slate-400);
-  --color-drawer-optbtn-icon-hover: var(--color-slate-700);
-  --color-drawer-optbtn-bg-hover: var(--color-slate-200);
-  --color-drawer-optbtn-bg-active: var(--color-slate-200);
-  --color-drawer-dropdown-bg: var(--color-white);
-  --color-drawer-dropdown-border: var(--color-slate-200);
-  --color-drawer-dropdown-item-text: var(--color-slate-700);
-  --color-drawer-dropdown-item-bg-hover: var(--color-slate-100);
-  --color-drawer-dropdown-delete-text: var(--color-rose-600);
-  --color-drawer-dropdown-delete-bg-hover: var(--color-rose-50);
-
-  /* Input Bar */
-  --color-inputbar-bg: var(--color-white);
-  --color-inputbar-border: var(--color-slate-200);
-  --color-inputbar-input-bg: var(--color-slate-50);
-  --color-inputbar-input-border: var(--color-slate-200);
-  --color-inputbar-input-text: var(--color-slate-800);
-  --color-inputbar-input-placeholder: var(--color-slate-400);
-  --color-inputbar-input-border-focus: var(--color-teal-400);
-  --color-inputbar-stopbtn-bg: var(--color-rose-600);
-  --color-inputbar-stopbtn-text: var(--color-white);
-  --color-inputbar-stopbtn-bg-hover: var(--color-rose-500);
-  --color-inputbar-sendbtn-bg: var(--color-teal-700);
-  --color-inputbar-sendbtn-text: var(--color-white);
-  --color-inputbar-sendbtn-bg-hover: var(--color-teal-600);
-
-  /* Markdown Renderer */
-  --color-md-code-inline-bg: color-mix(in srgb, var(--color-slate-200) 50%, transparent);
-  --color-md-code-inline-text: var(--color-slate-800);
-  --color-md-link: var(--color-teal-600);
-  --color-md-th-border: var(--color-slate-200);
-  --color-md-td-border: var(--color-slate-100);
-  --color-md-code-block-bg: #1E1E1E;
-  /* fg/link paired with --color-md-code-block-bg; use the `code-surface` utility so they travel together. */
-  --color-md-code-block-text: var(--color-slate-200);
-  --color-md-code-block-link: var(--color-teal-300);
-  --color-md-code-block-border: var(--color-slate-700);
-  --color-md-code-header-bg: #2d2d2d;
-  --color-md-code-header-text: var(--color-slate-300);
-  --color-md-code-header-border: var(--color-slate-700);
-  --color-md-code-copy-bg-hover: color-mix(in srgb, var(--color-white) 10%, transparent);
-  --color-md-code-copy-text-hover: var(--color-white);
-  --color-md-code-copied-icon: var(--color-emerald-400);
-
-  /* Model Picker */
-  --color-modelpicker-empty-bg: var(--color-slate-50);
-  --color-modelpicker-empty-border: var(--color-slate-200);
-  --color-modelpicker-empty-text: var(--color-slate-400);
-  --color-modelpicker-bg: var(--color-white);
-  --color-modelpicker-border: var(--color-slate-200);
-  --color-modelpicker-text: var(--color-slate-800);
-  --color-modelpicker-border-focus: var(--color-teal-400);
-
-  /* Theme Editor */
-  --color-themebtn-icon: var(--color-slate-500);
-  --color-themebtn-icon-hover: var(--color-slate-800);
-  --color-themebtn-bg-hover: var(--color-slate-100);
-  --color-themebtn-bg-active: var(--color-slate-200);
-  --color-themebtn-icon-active: var(--color-slate-800);
-  --color-themeedit-bg: var(--color-white);
-  --color-themeedit-border: var(--color-slate-200);
-  --color-themeedit-title-text: var(--color-slate-700);
-  --color-themeedit-title-border: var(--color-slate-100);
-  --color-themeedit-family-label: var(--color-slate-500);
-  --color-themeedit-slider-label: var(--color-slate-400);
-  --color-themeedit-slider-track: var(--color-slate-200);
-  --color-themeedit-slider-thumb: var(--color-teal-500);
-  --color-themeedit-reset-text: var(--color-slate-400);
-  --color-themeedit-reset-text-hover: var(--color-slate-700);
-  --color-themeedit-reset-border: var(--color-slate-100);
-
-  /* Error Boundary */
-  --color-error-bg: var(--color-slate-50);
-  --color-error-text: var(--color-slate-800);
-  --color-error-icon-bg: var(--color-rose-100);
-  --color-error-icon: var(--color-rose-500);
-  --color-error-desc: var(--color-slate-500);
-  --color-error-btn-bg: var(--color-teal-600);
-  --color-error-btn-text: var(--color-white);
-  --color-error-btn-bg-hover: var(--color-teal-700);
 }
 
-/* ─── SplashLoader @property registrations ─── */
-/* initial-values approximate Tailwind v4 teal-400, teal-600, rose-300, slate-400 */
-@property --splash-c1 {
-  syntax: '<color>';
-  inherits: false;
-  initial-value: oklch(0.777 0.135 183); /* teal-400 */
-}
-@property --splash-c2 {
-  syntax: '<color>';
-  inherits: false;
-  initial-value: oklch(0.600 0.135 182); /* teal-600 */
-}
-@property --splash-c3 {
-  syntax: '<color>';
-  inherits: false;
-  initial-value: oklch(0.805 0.115 12);  /* rose-300 */
-}
-@property --splash-c4 {
-  syntax: '<color>';
-  inherits: false;
-  initial-value: oklch(0.704 0.026 261); /* slate-400 */
+/* Component tokens. The names are the kit's stable per-surface API
+ * (`bg-chat-bubble-user-bg`, `border-drawer-border`, …); every value is a
+ * Phosphor role, `inline` so a nested `.light` scope re-resolves it. Nudge one
+ * surface by overriding its `--ph-*` role, or reskin everything via `--ph-*`. */
+@theme inline {
+  --font-code: var(--ph-font-mono);
+
+  --color-app-bg: var(--ph-bg);
+
+  --color-header-bg: var(--ph-surface);
+  --color-header-border: var(--ph-border);
+
+  --color-splash-bg: var(--ph-bg);
+  --color-splash-text: var(--ph-fg-muted);
+  --color-splash-ring: var(--ph-border-strong);
+
+  --color-chat-empty-text: var(--ph-fg-muted);
+  --color-chat-bubble-user-bg: var(--ph-surface-2);
+  --color-chat-bubble-user-text: var(--ph-fg);
+  --color-chat-bubble-ai-bg: var(--ph-surface);
+  --color-chat-bubble-ai-text: var(--ph-fg);
+  --color-chat-bubble-ai-border: var(--ph-border);
+  --color-chat-error-text: var(--ph-danger-soft-fg);
+  --color-chat-clearbtn-text: var(--ph-fg-muted);
+  --color-chat-clearbtn-text-hover: var(--ph-danger-soft-fg);
+
+  --color-conn-probing: var(--ph-warning);
+  --color-conn-connected: var(--ph-success);
+  --color-conn-disconnected: var(--ph-danger);
+  --color-conn-label: var(--ph-fg-muted);
+
+  --color-drawer-backdrop: var(--ph-backdrop);
+  --color-drawer-bg: var(--ph-surface);
+  --color-drawer-border: var(--ph-border);
+  --color-drawer-header-bg: var(--ph-surface);
+  --color-drawer-header-border: var(--ph-border);
+  --color-drawer-newbtn-bg: var(--ph-primary-soft);
+  --color-drawer-newbtn-text: var(--ph-primary-soft-fg);
+  --color-drawer-newbtn-bg-hover: var(--ph-surface-3);
+  --color-drawer-search-bg: var(--ph-surface);
+  --color-drawer-search-border: var(--ph-border);
+  --color-drawer-empty-text: var(--ph-fg-muted);
+  --color-drawer-item-bg-active: var(--ph-primary-soft);
+  --color-drawer-item-text-active: var(--ph-fg-strong);
+  --color-drawer-item-text: var(--ph-fg);
+  --color-drawer-item-bg-hover: var(--ph-surface-2);
+  --color-drawer-item-text-hover: var(--ph-fg-strong);
+  --color-drawer-item-icon: var(--ph-fg-muted);
+  --color-drawer-item-icon-active: var(--ph-primary-soft-fg);
+  --color-drawer-edit-bg: var(--ph-field);
+  --color-drawer-edit-border: var(--ph-focus);
+
+  --color-inputbar-bg: var(--ph-bg);
+  --color-inputbar-border: var(--ph-border);
+  --color-inputbar-input-bg: var(--ph-field);
+  --color-inputbar-input-border: var(--ph-field);
+  --color-inputbar-input-text: var(--ph-fg);
+  --color-inputbar-input-placeholder: var(--ph-fg-muted);
+  --color-inputbar-input-border-focus: var(--ph-focus);
+
+  --color-md-code-inline-bg: var(--ph-surface-2);
+  --color-md-code-inline-text: var(--ph-success-soft-fg);
+  --color-md-link: var(--ph-link);
+  --color-md-th-border: var(--ph-border);
+  --color-md-td-border: var(--ph-border);
+  /* code-block bg/fg/border travel together: use the `code-surface` utility. */
+  --color-md-code-block-bg: var(--ph-code-bg);
+  --color-md-code-block-text: var(--ph-fg);
+  --color-md-code-block-link: var(--ph-link);
+  --color-md-code-block-border: var(--ph-border);
+  --color-md-code-header-bg: var(--ph-surface);
+  --color-md-code-header-text: var(--ph-fg-muted);
+  --color-md-code-header-border: var(--ph-border);
+  --color-md-code-copy-bg-hover: var(--ph-surface-2);
+  --color-md-code-copy-text-hover: var(--ph-fg-strong);
+  --color-md-code-copied-icon: var(--ph-success);
+
+  --color-modelpicker-empty-bg: var(--ph-surface-2);
+  --color-modelpicker-empty-border: var(--ph-border);
+  --color-modelpicker-empty-text: var(--ph-fg-muted);
+
+  --color-themeedit-bg: var(--ph-overlay);
+  --color-themeedit-border: var(--ph-border);
+  --color-themeedit-title-text: var(--ph-fg-strong);
+  --color-themeedit-title-border: var(--ph-border);
+  --color-themeedit-family-label: var(--ph-fg-muted);
+  --color-themeedit-slider-label: var(--ph-fg-muted);
+  --color-themeedit-slider-track: var(--ph-surface-3);
+  --color-themeedit-slider-thumb: var(--ph-primary);
+  --color-themeedit-reset-text: var(--ph-fg-muted);
+  --color-themeedit-reset-text-hover: var(--ph-fg-strong);
+  --color-themeedit-reset-border: var(--ph-border);
+
+  --color-error-text: var(--ph-fg-strong);
 }
 
-@keyframes splash-orb-a {
-  0%   { transform: translate(0%, 0%) scale(1);     --splash-c1: oklch(0.777 0.135 183); }
-  33%  { transform: translate(12%, -8%) scale(1.1); --splash-c1: oklch(0.855 0.107 184); }
-  66%  { transform: translate(-8%, 6%) scale(0.92); --splash-c1: oklch(0.704 0.14 182);  }
-  100% { transform: translate(0%, 0%) scale(1);     --splash-c1: oklch(0.777 0.135 183); }
-}
-@keyframes splash-orb-b {
-  0%   { transform: translate(0%, 0%) scale(1);       --splash-c2: oklch(0.600 0.135 182); }
-  25%  { transform: translate(-10%, 10%) scale(1.08); --splash-c2: oklch(0.704 0.026 261); }
-  75%  { transform: translate(8%, -12%) scale(0.94);  --splash-c2: oklch(0.712 0.143 13);  }
-  100% { transform: translate(0%, 0%) scale(1);       --splash-c2: oklch(0.600 0.135 182); }
-}
-@keyframes splash-orb-c {
-  0%   { transform: translate(0%, 0%) scale(1);        --splash-c3: oklch(0.805 0.115 12);  }
-  40%  { transform: translate(6%, 14%) scale(1.12);    --splash-c3: oklch(0.712 0.143 13);  }
-  80%  { transform: translate(-14%, -6%) scale(0.88);  --splash-c3: oklch(0.855 0.107 184); }
-  100% { transform: translate(0%, 0%) scale(1);        --splash-c3: oklch(0.805 0.115 12);  }
-}
-@keyframes splash-orb-d {
-  0%   { transform: translate(0%, 0%) scale(1);     --splash-c4: oklch(0.704 0.026 261); }
-  50%  { transform: translate(10%, 8%) scale(1.06); --splash-c4: oklch(0.554 0.046 257); }
-  100% { transform: translate(0%, 0%) scale(1);     --splash-c4: oklch(0.704 0.026 261); }
-}
-@keyframes splash-pulse-ring {
-  0%   { transform: scale(0.95); opacity: 0.6; }
-  50%  { transform: scale(1.05); opacity: 0.9; }
-  100% { transform: scale(0.95); opacity: 0.6; }
-}
-@keyframes splash-text-in {
-  from { opacity: 0; transform: translateY(6px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-@keyframes header-orb-a {
-  0%   { transform: translate(0%, 0%) scale(1); }
-  33%  { transform: translate(8%, -5%) scale(1.08); }
-  66%  { transform: translate(-5%, 4%) scale(0.94); }
-  100% { transform: translate(0%, 0%) scale(1); }
-}
-@keyframes header-orb-b {
-  0%   { transform: translate(0%, 0%) scale(1); }
-  25%  { transform: translate(-8%, 6%) scale(1.06); }
-  75%  { transform: translate(6%, -8%) scale(0.95); }
-  100% { transform: translate(0%, 0%) scale(1); }
-}
-@keyframes header-orb-c {
-  0%   { transform: translate(0%, 0%) scale(1); }
-  40%  { transform: translate(4%, 8%) scale(1.1); }
-  80%  { transform: translate(-8%, -4%) scale(0.9); }
-  100% { transform: translate(0%, 0%) scale(1); }
+/* Out-of-context system notices (SystemNoticeRow). */
+:root {
+  --oocm-text: var(--ph-fg-muted);
 }
 
-/* ─── SplashLoader component CSS ─── */
+/* ─── SplashLoader: one quiet ring, mint arc, mono label ─── */
+@keyframes ph-spin {
+  to { transform: rotate(360deg); }
+}
 .splash-loader {
   position: relative;
   display: flex;
@@ -290,86 +171,29 @@
   justify-content: center;
   overflow: hidden;
   background-color: var(--color-splash-bg);
-  isolation: isolate;
-}
-.splash-orbs {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-}
-.splash-orb {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(52px);
-  will-change: transform;
-  transform: translateZ(0);
-}
-.splash-orb--a {
-  width: 55%; height: 55%;
-  top: -10%; left: -5%;
-  background: radial-gradient(circle at 60% 60%, color-mix(in oklch, var(--splash-c1) 55%, transparent), transparent 70%);
-  animation: splash-orb-a 7s ease-in-out infinite;
-}
-.splash-orb--b {
-  width: 60%; height: 60%;
-  bottom: -15%; right: -10%;
-  background: radial-gradient(circle at 40% 40%, color-mix(in oklch, var(--splash-c2) 45%, transparent), transparent 70%);
-  animation: splash-orb-b 9s ease-in-out infinite;
-  animation-delay: -3s;
-}
-.splash-orb--c {
-  width: 45%; height: 45%;
-  top: 30%; right: 5%;
-  background: radial-gradient(circle at 50% 50%, color-mix(in oklch, var(--splash-c3) 35%, transparent), transparent 65%);
-  animation: splash-orb-c 11s ease-in-out infinite;
-  animation-delay: -5s;
-}
-.splash-orb--d {
-  width: 40%; height: 40%;
-  top: 5%; right: 10%;
-  background: radial-gradient(circle at 50% 50%, color-mix(in oklch, var(--splash-c4) 30%, transparent), transparent 60%);
-  animation: splash-orb-d 13s ease-in-out infinite;
-  animation-delay: -7s;
 }
 .splash-center {
   position: relative;
-  z-index: 1;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 .splash-ring {
-  width: 2.5rem;
-  height: 2.5rem;
-  border-radius: 50%;
-  border: 1.5px solid color-mix(in oklch, var(--color-teal-400) 50%, transparent);
-  box-shadow:
-    0 0 0 4px color-mix(in oklch, var(--color-teal-300) 15%, transparent),
-    0 0 16px 2px color-mix(in oklch, var(--color-teal-400) 20%, transparent);
-  will-change: transform, opacity;
-  transform: translateZ(0);
-  animation: splash-pulse-ring 3.5s ease-in-out infinite;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 9999px;
+  border: 2px solid var(--color-splash-ring);
+  border-top-color: var(--ph-primary);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .splash-ring { animation: ph-spin 0.9s linear infinite; }
 }
 .splash-text {
-  position: relative;
-  z-index: 1;
-  margin-top: 1.25rem;
-  font-size: 0.7rem;
-  font-weight: 500;
-  letter-spacing: 0.04em;
+  margin-top: 1rem;
+  font-family: var(--ph-font-mono);
+  font-size: 0.75rem;
+  line-height: 1.125rem;
   color: var(--color-splash-text);
-  opacity: 0;
-  animation: splash-text-in 0.4s ease-out 0.4s forwards;
-}
-
-/* ─── Header gradient (sits behind aurora orbs, above plain bg-white) ─── */
-.header-gradient {
-  background: linear-gradient(
-    135deg,
-    var(--color-white) 0%,
-    var(--color-tictac-orange-tint) 60%,
-    color-mix(in oklch, var(--color-tictac-orange) 14%, white) 100%
-  );
 }
 
 /* ─── 32×32 icon button (header + input bar toolbar) ─── */
@@ -379,73 +203,32 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 8px;
+  flex-shrink: 0;
+  border-radius: var(--ph-radius);
   border: 1px solid transparent;
   background: transparent;
-  color: var(--color-header-btn-icon);
-  transition: background-color 120ms ease, color 120ms ease, opacity 120ms ease, border-color 120ms ease;
-  flex-shrink: 0;
+  color: var(--ph-fg-muted);
+  transition: background-color var(--ph-duration) var(--ph-ease), color var(--ph-duration) var(--ph-ease);
 }
 .icon-btn-32:hover:not(:disabled) {
-  background: var(--color-tictac-orange-soft);
-  color: var(--color-tictac-orange);
-  opacity: 0.85;
+  background: var(--ph-surface-2);
+  color: var(--ph-fg-strong);
+}
+.icon-btn-32:focus-visible {
+  outline: var(--ph-ring-width) solid var(--ph-focus);
+  outline-offset: var(--ph-ring-offset);
 }
 .icon-btn-32:disabled {
-  opacity: 0.4;
+  color: var(--ph-fg-disabled);
   cursor: not-allowed;
 }
 .icon-btn-32[data-active='true'] {
-  background: var(--color-tictac-orange);
-  color: var(--color-white);
+  background: var(--ph-primary-soft);
+  color: var(--ph-primary-soft-fg);
 }
 .icon-btn-32[data-active='true']:hover {
-  background: var(--color-tictac-orange);
-  opacity: 0.7;
-}
-
-/* ─── Header Aurora (title bar background) ─── */
-.header-title-row {
-  position: relative;
-  overflow: hidden;
-  isolation: isolate;
-}
-.header-aurora {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-}
-.header-orb {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(38px);
-  will-change: transform;
-  transform: translateZ(0);
-}
-.header-orb--a {
-  width: 100%; height: 200px;
-  left: 0; top: -84px;
-  background: radial-gradient(ellipse 50% 70% at 20% 60%, color-mix(in oklch, var(--color-teal-400) 80%, transparent), transparent);
-  animation: header-orb-a 7s ease-in-out infinite;
-}
-.header-orb--b {
-  width: 100%; height: 180px;
-  left: 0; top: -74px;
-  background: radial-gradient(ellipse 50% 70% at 80% 55%, color-mix(in oklch, var(--color-teal-600) 75%, transparent), transparent);
-  animation: header-orb-b 9s ease-in-out infinite;
-  animation-delay: -3s;
-}
-.header-orb--c {
-  width: 100%; height: 160px;
-  left: 0; top: -64px;
-  background: radial-gradient(ellipse 45% 65% at 50% 50%, color-mix(in oklch, var(--color-rose-200) 60%, transparent), transparent);
-  animation: header-orb-c 11s ease-in-out infinite;
-  animation-delay: -5s;
-}
-
-:root {
-  font-family: var(--font-sans);
+  background: var(--ph-surface-3);
+  color: var(--ph-fg-strong);
 }
 
 .inputbar-textarea {
@@ -459,8 +242,8 @@
   display: none;
 }
 
-/* Dark code-block surface: bg + fg + border in one class so no call site can
- * paint the background and forget the foreground. */
+/* Code surface: bg + fg + border in one class so no call site can paint the
+ * background and forget the foreground. */
 @utility code-surface {
   background-color: var(--color-md-code-block-bg);
   color: var(--color-md-code-block-text);
@@ -479,54 +262,4 @@
 @keyframes blink {
   0%, 100% { opacity: 1; }
   50%       { opacity: 0; }
-}
-
-/* ─── HeroUI v3 semantic token bridge ───────────────────────────────────────
- *
- * @heroui/react + @heroui/styles are PEER dependencies — the consuming app
- * imports '@heroui/styles' in its own global stylesheet, which defines the
- * HeroUI semantic surface (--accent, --surface, --danger, --field-*, …).
- *
- * This block re-points that surface at the kit's palette, so a bare HeroUI
- * <Button variant="primary"> or <Modal> renders in the chat skin without any
- * per-component overrides. It is the ONLY place the two vocabularies meet.
- *
- * To reskin the entire kit, override these ~15 variables in your own :root —
- * do not fork the ~120 --color-* component tokens above, which exist to let
- * you nudge one surface without disturbing the system.
- *
- * Must be imported AFTER '@heroui/styles' to win the cascade.
- *
- * theme-editor: heroui-bridge — parseSemanticVariables lists every
- * declaration below this marker as the editor's "heroui" group. Keep it last.
- */
-:root {
-  --radius: 0.5rem;
-
-  /* Accent = the teal that already drives send buttons + active drawer rows. */
-  --accent: var(--color-teal-700);
-  --accent-foreground: var(--color-white);
-
-  /* Chrome. */
-  --background: var(--color-app-bg);
-  --surface: var(--color-white);
-  --overlay: var(--color-white);
-  --muted: var(--color-slate-500);
-  --border: var(--color-slate-200);
-  --separator: var(--color-slate-200);
-
-  /* Status — reuse the connection-indicator palette so a HeroUI <Chip
-   * variant="danger"> and a bespoke StatusDot agree on what "bad" looks like. */
-  --danger: var(--color-conn-disconnected);
-  --danger-foreground: var(--color-white);
-  --warning: var(--color-conn-probing);
-  --warning-foreground: var(--color-eclipse, oklch(0.2103 0.0059 285.89));
-  --success: var(--color-conn-connected);
-  --success-foreground: var(--color-white);
-
-  /* Form fields — match the existing input-bar treatment. */
-  --field-background: var(--color-inputbar-input-bg);
-  --field-foreground: var(--color-inputbar-input-text);
-  --field-placeholder: var(--color-inputbar-input-placeholder);
-  --field-border: var(--color-inputbar-input-border);
 }

@@ -62,8 +62,8 @@ export function McpServerRow({ server }: McpServerRowProps) {
           pulse={settling}
           label={`${server.name}: ${server.status}`}
         />
-        <span className="truncate font-mono text-xs text-slate-700">{server.name}</span>
-        <span className="flex-shrink-0 text-[10px] tracking-wide text-slate-400 uppercase">
+        <span className="truncate font-mono text-xs text-ph-fg">{server.name}</span>
+        <span className="flex-shrink-0 text-xs tracking-wide text-ph-fg-muted uppercase">
           {server.status}
         </span>
       </SettingsRow>
@@ -84,7 +84,7 @@ export function McpServerList({
   className,
 }: McpServerListProps) {
   if (servers.length === 0) {
-    return <p className={cn('text-[11px] text-slate-500', className)}>{emptyMessage}</p>;
+    return <p className={cn('text-xs text-ph-fg-muted', className)}>{emptyMessage}</p>;
   }
 
   return (

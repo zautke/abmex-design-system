@@ -22,7 +22,6 @@ import {
   useEffect,
   useRef,
   useState,
-  type CSSProperties,
   type KeyboardEvent,
   type ReactNode,
 } from 'react';
@@ -46,12 +45,6 @@ export interface ScrollableTabStripProps {
 
 const SCROLL_STEP_PX = 120;
 const KEY_SCROLL_STEP_PX = 80;
-
-function activeTabStyle(isActive: boolean): CSSProperties | undefined {
-  return isActive
-    ? { color: 'var(--color-tictac-orange)', borderBottomColor: 'var(--color-tictac-orange)' }
-    : undefined;
-}
 
 export function ScrollableTabStrip({
   activeTab,
@@ -160,7 +153,7 @@ export function ScrollableTabStrip({
   return (
     <div
       className={cn(
-        'flex min-w-0 flex-shrink-0 items-stretch border-b border-slate-200 bg-slate-50',
+        'flex min-w-0 flex-shrink-0 items-stretch border-b border-ph-border bg-ph-surface',
         className,
       )}
     >
@@ -170,7 +163,7 @@ export function ScrollableTabStrip({
           aria-label="Scroll tabs left"
           tabIndex={0}
           onClick={() => scrollBy(-SCROLL_STEP_PX)}
-          className="flex flex-shrink-0 items-center justify-center px-1 text-slate-400 transition-colors hover:text-slate-600"
+          className="flex flex-shrink-0 items-center justify-center px-1 text-ph-fg-muted transition-colors hover:text-ph-fg-strong"
         >
           <ChevronLeft size={14} />
         </button>
@@ -199,10 +192,9 @@ export function ScrollableTabStrip({
               className={cn(
                 'relative flex-shrink-0 px-3 py-2 text-xs font-medium whitespace-nowrap transition-colors',
                 isActive
-                  ? '-mb-px border-b-2 bg-white'
-                  : 'text-slate-500 hover:bg-white hover:text-slate-700',
+                  ? '-mb-px border-b-2 border-ph-primary bg-ph-surface-2 text-ph-fg-strong'
+                  : 'text-ph-fg-sage hover:bg-ph-surface-2 hover:text-ph-fg-strong',
               )}
-              style={activeTabStyle(isActive)}
             >
               {tab.label}
               {tab.adornment}
@@ -217,7 +209,7 @@ export function ScrollableTabStrip({
           aria-label="Scroll tabs right"
           tabIndex={0}
           onClick={() => scrollBy(SCROLL_STEP_PX)}
-          className="flex flex-shrink-0 items-center justify-center px-1 text-slate-400 transition-colors hover:text-slate-600"
+          className="flex flex-shrink-0 items-center justify-center px-1 text-ph-fg-muted transition-colors hover:text-ph-fg-strong"
         >
           <ChevronRight size={14} />
         </button>

@@ -58,12 +58,12 @@ export function AttachmentStrip({ attachments, onRemove, className }: Attachment
             {a.previewUrl ? (
               <img src={a.previewUrl} alt={a.name} className="h-full w-full object-cover" />
             ) : (
-              <div className="flex h-full w-full items-center justify-center text-[10px] text-inputbar-input-placeholder">
+              <div className="flex h-full w-full items-center justify-center text-xs text-inputbar-input-placeholder">
                 {a.status === 'error' ? '!' : '…'}
               </div>
             )}
             {a.status === 'pending' && (
-              <div className="absolute inset-0 animate-pulse rounded-lg bg-black/20" aria-hidden />
+              <div className="absolute inset-0 animate-pulse rounded-lg bg-ph-backdrop" aria-hidden />
             )}
           </div>
           {onRemove && <CornerRemoveButton label={`Remove ${a.name}`} onClick={() => onRemove(a.id)} />}
@@ -98,7 +98,7 @@ export function CornerRemoveButton({ label, onClick, children, pressed, classNam
       {...(pressed !== undefined ? { 'aria-pressed': pressed } : {})}
       onClick={onClick}
       className={cn(
-        'absolute -right-1.5 -top-1.5 z-10 flex h-4 w-4 items-center justify-center rounded-full border border-black/15 bg-white text-neutral-900 shadow-[0_1px_3px_rgba(0,0,0,.45)] opacity-0 transition-[opacity,transform] group-hover:opacity-100 hover:scale-110 focus:outline-none focus-visible:opacity-100 focus-visible:ring-2 focus-visible:ring-inputbar-input-border-focus',
+        'absolute -right-1.5 -top-1.5 z-10 flex h-4 w-4 items-center justify-center rounded-full border border-ph-border-strong bg-ph-overlay text-ph-fg-strong shadow-ph-overlay opacity-0 transition-[opacity,transform] group-hover:opacity-100 hover:scale-110 focus:outline-none focus-visible:opacity-100 focus-visible:ring-2 focus-visible:ring-inputbar-input-border-focus',
         className,
       )}
     >

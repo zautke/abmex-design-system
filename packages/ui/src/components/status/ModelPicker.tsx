@@ -90,7 +90,7 @@ export function ModelPicker({
                         API key, unsupported tools, …). The old <select> dropped
                         it; a listbox item can carry it. */}
                     {model.disabled && model.disabledReason ? (
-                      <span className="block text-[11px] text-modelpicker-empty-text">
+                      <span className="block text-xs text-modelpicker-empty-text">
                         {model.disabledReason}
                       </span>
                     ) : null}

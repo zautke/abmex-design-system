@@ -1,5 +1,5 @@
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import vscDarkPlus from 'react-syntax-highlighter/dist/esm/styles/prism/vsc-dark-plus.js';
+import { phosphorPrism } from '../../utils/phosphorPrism';
 import { CopyButton } from '../../primitives/CopyButton';
 import { cn } from '../../utils/cn';
 
@@ -14,12 +14,12 @@ export function CodeBlock({ language, value, className }: CodeBlockProps) {
   return (
     <div
       className={cn(
-        'group relative my-4 min-w-0 max-w-full overflow-hidden rounded-lg border border-md-code-block-border bg-md-code-block-bg shadow-sm',
+        'group relative my-4 min-w-0 max-w-full overflow-hidden rounded-ph border border-ph-border code-surface',
         className,
       )}
     >
-      <div className="flex items-center justify-between border-b border-md-code-header-border bg-md-code-header-bg px-4 py-1.5 text-xs text-md-code-header-text">
-        <span className="font-mono">{language || 'text'}</span>
+      <div className="flex items-center justify-between border-b border-ph-border bg-ph-surface px-4 py-1.5 text-xs">
+        <span className="font-mono text-ph-fg-muted">{language || 'text'}</span>
         <CopyButton
           value={value}
           label="Copy"
@@ -29,12 +29,12 @@ export function CodeBlock({ language, value, className }: CodeBlockProps) {
       <div className="min-w-0 max-w-full overflow-x-auto p-4 text-[13px] leading-relaxed">
         <SyntaxHighlighter
           language={language || 'text'}
-          style={vscDarkPlus}
+          style={phosphorPrism}
           customStyle={{
             margin: 0,
             padding: 0,
             background: 'transparent',
-            fontFamily: 'var(--font-code)',
+            fontFamily: 'var(--ph-font-mono)',
             whiteSpace: 'pre-wrap',
             overflowWrap: 'anywhere',
             wordBreak: 'break-word',

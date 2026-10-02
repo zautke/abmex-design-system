@@ -22,7 +22,7 @@ export function MessageViewToggle({ mode, onChange, className }: MessageViewTogg
         if (next === 'text' || next === 'json') onChange(next);
       }}
       aria-label="Message view"
-      className={cn('text-[11px] uppercase tracking-[0.14em]', className)}
+      className={cn('text-xs uppercase tracking-[0.14em]', className)}
     >
       <ToggleButton id="text">Text</ToggleButton>
       <ToggleButton id="json">

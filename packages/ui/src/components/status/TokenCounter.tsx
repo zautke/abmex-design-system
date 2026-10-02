@@ -32,7 +32,7 @@ export function TokenCounter({
     return (
       <div
         className={cn(
-          'text-[11px] font-medium uppercase tracking-[0.14em] text-slate-400',
+          'text-xs font-medium uppercase tracking-[0.14em] text-ph-fg-muted',
           className,
         )}
       >
@@ -48,7 +48,7 @@ export function TokenCounter({
   const cost = cumulative?.cost?.total;
 
   return (
-    <div className={cn('flex items-center gap-3 text-[11px] font-medium text-slate-500', className)}>
+    <div className={cn('flex items-center gap-3 text-xs font-medium text-ph-fg-muted', className)}>
       <div className="flex items-center gap-1" aria-label="Latest roundtrip tokens" title={describe(latest)}>
         {estimated && <span aria-label="estimated">~</span>}
         <ArrowUp size={12} strokeWidth={1.5} />
@@ -71,7 +71,7 @@ export function TokenCounter({
         >
           <Database size={12} strokeWidth={1.5} />
           <span>{formatTokenCount(cacheRead)}</span>
-          {hitRate !== undefined && <span className="text-slate-400">({hitRate}%)</span>}
+          {hitRate !== undefined && <span className="text-ph-fg-muted">({hitRate}%)</span>}
         </div>
       )}
 

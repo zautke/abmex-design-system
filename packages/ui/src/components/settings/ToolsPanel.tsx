@@ -157,10 +157,10 @@ export function ToolsPanel({
               <Switch.Thumb />
             </Switch.Control>
             <span className="flex flex-col">
-              <span className="text-sm font-medium text-slate-700">
+              <span className="text-sm font-medium text-ph-fg">
                 {values.shellEnabled ? 'Enabled' : 'Disabled'}
               </span>
-              <span className="text-[11px] text-slate-500">Reload the extension after toggling.</span>
+              <span className="text-xs text-ph-fg-muted">Reload the extension after toggling.</span>
             </span>
           </Switch.Content>
         </Switch>

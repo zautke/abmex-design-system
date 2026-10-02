@@ -15,14 +15,20 @@ export interface SemanticVariable {
   isColor: boolean;
 }
 
-/** Marker comment in the kit stylesheet; every `--*` declaration after it is
- * the HeroUI v3 semantic bridge (`--accent`, `--surface`, `--field-*`, …) — the
- * ~15-variable reskin seam, which the theme editor exposes as one group. */
+/** Marker comments in the kit stylesheet; every `--*` declaration between them
+ * is the HeroUI v3 semantic bridge (`--accent`, `--surface`, `--field-*`, …),
+ * which the theme editor exposes as one group. */
 export const HEROUI_BRIDGE_MARKER = 'theme-editor: heroui-bridge';
+export const HEROUI_BRIDGE_END_MARKER = 'theme-editor: heroui-bridge-end';
+
+/** A `--color-*` token whose value is just a Phosphor role. These are `@theme
+ * inline` aliases: utilities read the `--ph-*` role directly, so overriding the
+ * alias changes nothing — the editor lists the role instead. */
+const PH_ALIAS = /^var\(--ph-[a-z0-9-]+\)$/;
 
 const DECLARATION = /^\s*(--[a-zA-Z][a-zA-Z0-9-]*):\s*([^;]+);/;
 
-const COLOR_VALUE = /var\(--color-|color-mix\(|oklch\(|oklab\(|hsla?\(|rgba?\(|#[0-9a-f]{3,8}\b|\btransparent\b|\bwhite\b|\bblack\b/i;
+const COLOR_VALUE = /var\(--color-|var\(--ph-(?!radius|border-width|ring-|font-|display-|duration|ease|shadow)|color-mix\(|oklch\(|oklab\(|hsla?\(|rgba?\(|#[0-9a-f]{3,8}\b|\btransparent\b|\bwhite\b|\bblack\b/i;
 
 export function isColorVariable(name: string, defaultVal: string): boolean {
   return name.startsWith('--color-') || COLOR_VALUE.test(defaultVal);
@@ -35,25 +41,37 @@ export function groupOf(name: string): string {
 
 /**
  * Extract the editable semantic variables from a stylesheet string:
- *  - every `--color-*` custom property that is not a palette ramp entry
- *    (`--color-{family}-…`), and
- *  - every custom property declared after {@link HEROUI_BRIDGE_MARKER}.
+ *  - the Phosphor `--ph-*` interface (group `phosphor`; the first declaration —
+ *    the dark default — wins),
+ *  - every custom property between {@link HEROUI_BRIDGE_MARKER} and
+ *    {@link HEROUI_BRIDGE_END_MARKER}, and
+ *  - every `--color-*` custom property that is neither a palette ramp entry
+ *    (`--color-{family}-…`) nor an alias of a `--ph-*` role.
  */
 export function parseSemanticVariables(css: string): SemanticVariable[] {
   const vars: SemanticVariable[] = [];
   const seen = new Set<string>();
   let inBridge = false;
   for (const line of css.split('\n')) {
-    if (line.includes(HEROUI_BRIDGE_MARKER)) inBridge = true;
+    if (line.includes(HEROUI_BRIDGE_END_MARKER)) inBridge = false;
+    else if (line.includes(HEROUI_BRIDGE_MARKER)) inBridge = true;
     const match = line.match(DECLARATION);
     if (!match) continue;
     const name = match[1]!;
     const defaultVal = match[2]!.trim();
     if (seen.has(name)) continue;
-    if (inBridge) {
+    if (name.startsWith('--ph-')) {
+      seen.add(name);
+      // Shadows contain rgba() but are not pickable colors.
+      vars.push({ name, defaultVal, group: 'phosphor', isColor: !name.includes('shadow') && isColorVariable(name, defaultVal) });
+    } else if (inBridge) {
       seen.add(name);
       vars.push({ name, defaultVal, group: 'heroui', isColor: isColorVariable(name, defaultVal) });
-    } else if (name.startsWith('--color-') && !COLOR_FAMILIES.some((f) => name.startsWith(`--color-${f}-`))) {
+    } else if (
+      name.startsWith('--color-') &&
+      !PH_ALIAS.test(defaultVal) &&
+      !COLOR_FAMILIES.some((f) => name.startsWith(`--color-${f}-`))
+    ) {
       seen.add(name);
       vars.push({ name, defaultVal, group: groupOf(name), isColor: true });
     }

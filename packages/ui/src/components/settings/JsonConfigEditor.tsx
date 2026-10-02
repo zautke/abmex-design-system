@@ -69,10 +69,10 @@ export function JsonConfigEditor({
         onKeyDown={onKeyDown}
         disabled={!isLoaded}
         fullWidth
-        className="resize-y font-mono text-[11px]"
+        className="resize-y font-mono text-xs"
       />
 
-      {error ? <p className="mt-1 text-[11px] text-conn-disconnected">{error}</p> : null}
+      {error ? <p className="mt-1 text-xs text-conn-disconnected">{error}</p> : null}
 
       <div className="mt-3 flex flex-wrap items-center gap-1.5">
         <Button
@@ -102,8 +102,8 @@ export function JsonConfigEditor({
             input, which stays in the tab order. */}
         <label
           className={cn(
-            'cursor-pointer rounded border border-slate-300 bg-white px-2 py-1 text-xs text-slate-700',
-            'hover:bg-slate-50 focus-within:ring-2 focus-within:ring-slate-400',
+            'cursor-pointer rounded border border-ph-border-strong bg-ph-field px-2 py-1 text-xs text-ph-fg',
+            'hover:bg-ph-surface-2 focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-ph-focus',
           )}
         >
           Import
@@ -121,7 +121,7 @@ export function JsonConfigEditor({
         </label>
 
         <div className="ml-auto flex items-center gap-1.5">
-          <span className="text-[10px] tracking-wide text-slate-400 uppercase">indent</span>
+          <span className="text-xs tracking-wide text-ph-fg-muted uppercase">indent</span>
           <SegmentedControl
             options={INDENT_OPTIONS}
             value={indentSpaces}

@@ -23,7 +23,7 @@ export function ScrollResumeButton({
       size="sm"
       onPress={onPress}
       className={cn(
-        'absolute bottom-3 right-3 z-10 rounded-full bg-white text-xs text-slate-500 shadow-sm hover:text-slate-800',
+        'absolute bottom-3 right-3 z-10 rounded-full bg-ph-overlay text-xs text-ph-fg-muted shadow-sm hover:text-ph-fg-strong',
         className,
       )}
     >

@@ -20,8 +20,8 @@ export interface SettingsSectionProps {
 export function SettingsSection({ title, description, children, className }: SettingsSectionProps) {
   return (
     <section className={className}>
-      <h3 className="mb-1 text-xs font-semibold tracking-wide text-slate-500 uppercase">{title}</h3>
-      {description ? <p className="mb-3 text-[11px] text-slate-500">{description}</p> : null}
+      <h3 className="mb-1 text-xs font-semibold tracking-wide text-ph-fg-muted uppercase">{title}</h3>
+      {description ? <p className="mb-3 text-xs text-ph-fg-muted">{description}</p> : null}
       {children}
     </section>
   );
@@ -52,8 +52,8 @@ export function SettingsField({
 
   return (
     <div className={cn('space-y-1', className)}>
-      <span className="block text-[11px] font-medium text-slate-600">{label}</span>
-      {description ? <p className="text-[11px] text-slate-500">{description}</p> : null}
+      <span className="block text-xs font-medium text-ph-fg">{label}</span>
+      {description ? <p className="text-xs text-ph-fg-muted">{description}</p> : null}
       <div role="group" aria-label={groupLabel}>
         {children}
       </div>
@@ -74,7 +74,7 @@ export function SettingsRow({ children, trailing, className }: SettingsRowProps)
     <div className={cn('flex items-center justify-between gap-2 px-2 py-1.5', className)}>
       <div className="flex min-w-0 items-center gap-2">{children}</div>
       {trailing ? (
-        <div className="flex flex-shrink-0 items-center gap-2 text-[11px] text-slate-500">
+        <div className="flex flex-shrink-0 items-center gap-2 text-xs text-ph-fg-muted">
           {trailing}
         </div>
       ) : null}
@@ -85,7 +85,7 @@ export function SettingsRow({ children, trailing, className }: SettingsRowProps)
 /** Bordered, divided container for a stack of SettingsRow items. */
 export function SettingsList({ children, className }: { children: ReactNode; className?: string }) {
   return (
-    <ul className={cn('divide-y divide-slate-100 rounded border border-slate-200', className)}>
+    <ul className={cn('divide-y divide-ph-border rounded border border-ph-border', className)}>
       {children}
     </ul>
   );

@@ -57,7 +57,7 @@ export function CopyCommandCallout({
   const full = variant === 'full';
 
   return (
-    <Alert status={status} className={cn('text-[11px]', className)}>
+    <Alert status={status} className={cn('text-xs', className)}>
       <Alert.Indicator />
       <Alert.Content>
         <Alert.Title>{title}</Alert.Title>
@@ -73,7 +73,7 @@ export function CopyCommandCallout({
                 onCopy={onCopy}
               />
               {full ? (
-                <code className="min-w-0 flex-1 truncate rounded bg-md-code-inline-bg px-1.5 py-1 font-mono text-[10px] text-md-code-inline-text">
+                <code className="min-w-0 flex-1 truncate rounded bg-md-code-inline-bg px-1.5 py-1 font-mono text-xs text-md-code-inline-text">
                   {cmd.command}
                 </code>
               ) : null}

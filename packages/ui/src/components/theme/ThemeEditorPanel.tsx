@@ -11,7 +11,7 @@ import {
 } from '../../types/theme';
 import { parseSemanticVariables, type SemanticVariable } from '../../internal/parseSemanticVariables';
 
-const GROUP_LABELS: Record<string, string> = { heroui: 'HeroUI bridge', md: 'Markdown', conn: 'Connection', oocm: 'Out-of-context message', tictac: 'Tic Tac accent' };
+const GROUP_LABELS: Record<string, string> = { heroui: 'HeroUI bridge', md: 'Markdown', conn: 'Connection', oocm: 'Out-of-context message', phosphor: 'Phosphor' };
 
 function groupLabel(group: string): string {
   return GROUP_LABELS[group] ?? group.charAt(0).toUpperCase() + group.slice(1);
@@ -78,7 +78,8 @@ export function ThemeEditorPanel({
       if (q && !v.name.toLowerCase().includes(q)) continue;
       (map.get(v.group) ?? map.set(v.group, []).get(v.group)!).push(v);
     }
-    return [...map.entries()];
+    // Phosphor roles first: they are what the kit actually reads.
+    return [...map.entries()].sort(([a], [b]) => Number(b === 'phosphor') - Number(a === 'phosphor'));
   }, [semanticVars, filter]);
   const [activeColorSystemVar, setActiveColorSystemVar] = useState<string | null>(null);
   
@@ -133,11 +134,11 @@ export function ThemeEditorPanel({
   };
 
   return (
-    <div className="bg-themeedit-bg text-slate-800 font-sans p-4 flex flex-col border-l border-themeedit-border w-full sm:w-[350px] max-w-[350px] flex-shrink-0 h-full overflow-hidden">
+    <div className="bg-themeedit-bg text-ph-fg-strong font-sans p-4 flex flex-col border-l border-themeedit-border w-full sm:w-[350px] max-w-[350px] flex-shrink-0 h-full overflow-hidden">
       <header className="mb-4 flex flex-col gap-3 pb-4 border-b border-themeedit-title-border flex-shrink-0">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 relative">
-            <SlidersHorizontal className="text-teal-600 flex-shrink-0" size={20} />
+            <SlidersHorizontal className="text-ph-primary-soft-fg flex-shrink-0" size={20} />
             <h1 className="text-lg font-semibold text-themeedit-title-text flex-shrink-0">Theme Editor</h1>
             
             {/* Theme Selector Dropdown */}
@@ -145,7 +146,7 @@ export function ThemeEditorPanel({
               <div className="flex items-center">
                 <button 
                   onClick={() => setIsThemeDropdownOpen(!isThemeDropdownOpen)}
-                  className="flex items-center gap-1.5 px-2 py-1 text-xs font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 rounded border border-slate-200 transition-colors"
+                  className="flex items-center gap-1.5 px-2 py-1 text-xs font-medium text-ph-fg bg-ph-surface-2 hover:bg-ph-surface-3 rounded border border-ph-border transition-colors"
                 >
                   <span className="truncate max-w-[100px]">{activeTheme.name}</span>
                   <ChevronDown size={12} className={`transition-transform ${isThemeDropdownOpen ? 'rotate-180' : ''}`} />
@@ -155,7 +156,7 @@ export function ThemeEditorPanel({
                     setIsThemeDropdownOpen(true);
                     setIsCreatingTheme(true);
                   }}
-                  className="ml-1 p-1 text-slate-500 hover:text-teal-600 hover:bg-teal-50 rounded transition-colors"
+                  className="ml-1 p-1 text-ph-fg-muted hover:text-ph-primary-soft-fg hover:bg-ph-primary-soft rounded transition-colors"
                   title="Create New Theme"
                 >
                   <Plus size={14} />
@@ -163,9 +164,9 @@ export function ThemeEditorPanel({
               </div>
 
               {isThemeDropdownOpen && (
-                <div className="absolute top-full right-0 sm:left-0 sm:right-auto mt-1 w-48 bg-white border border-slate-200 rounded-lg shadow-lg py-1 z-[100]">
+                <div className="absolute top-full right-0 sm:left-0 sm:right-auto mt-1 w-48 bg-ph-overlay border border-ph-border rounded-lg shadow-ph-overlay py-1 z-[100]">
                   {isCreatingTheme && (
-                    <div className="px-2 py-1.5 border-b border-slate-100 mb-1">
+                    <div className="px-2 py-1.5 border-b border-ph-border mb-1">
                       <input
                         ref={createInputRef}
                         type="text"
@@ -173,9 +174,9 @@ export function ThemeEditorPanel({
                         onChange={(e) => setNewThemeName(e.target.value)}
                         onKeyDown={handleCreateThemeSubmit}
                         placeholder="Theme name..."
-                        className="w-full text-xs px-2 py-1 border border-teal-300 rounded focus:outline-none focus:ring-1 focus:ring-teal-500"
+                        className="w-full text-xs px-2 py-1 bg-ph-field text-ph-fg border border-ph-border-strong rounded focus:outline-none focus:border-ph-focus"
                       />
-                      <p className="text-[9px] text-slate-400 mt-1 ml-1">Press Enter to save</p>
+                      <p className="text-xs text-ph-fg-muted mt-1 ml-1">Press Enter to save</p>
                     </div>
                   )}
                   
@@ -183,7 +184,7 @@ export function ThemeEditorPanel({
                     {themes.map((theme) => (
                       <div 
                         key={theme.id}
-                        className={`flex items-center justify-between px-3 py-1.5 text-xs hover:bg-slate-50 cursor-pointer group ${activeTheme.id === theme.id ? 'bg-teal-50 text-teal-700 font-medium' : 'text-slate-700'}`}
+                        className={`flex items-center justify-between px-3 py-1.5 text-xs hover:bg-ph-surface-2 cursor-pointer group ${activeTheme.id === theme.id ? 'bg-ph-primary-soft text-ph-primary-soft-fg font-medium' : 'text-ph-fg'}`}
                         onClick={() => {
                           if (editingThemeId !== theme.id) {
                             setActiveThemeId(theme.id);
@@ -199,7 +200,7 @@ export function ThemeEditorPanel({
                             onKeyDown={(e) => handleEditThemeSubmit(e, theme.id)}
                             autoFocus
                             onClick={(e) => e.stopPropagation()}
-                            className="w-full text-xs px-1 py-0.5 border border-teal-300 rounded focus:outline-none focus:ring-1 focus:ring-teal-500 mr-2"
+                            className="w-full text-xs px-1 py-0.5 bg-ph-field text-ph-fg border border-ph-border-strong rounded focus:outline-none focus:border-ph-focus mr-2"
                           />
                         ) : (
                           <>
@@ -212,7 +213,7 @@ export function ThemeEditorPanel({
                                     setEditingThemeId(theme.id);
                                     setEditThemeName(theme.name);
                                   }}
-                                  className="p-1 text-slate-400 hover:text-teal-600 hover:bg-teal-50 rounded"
+                                  className="p-1 text-ph-fg-muted hover:text-ph-primary-soft-fg hover:bg-ph-primary-soft rounded"
                                   title="Rename Theme"
                                 >
                                   <Pencil size={12} />
@@ -222,7 +223,7 @@ export function ThemeEditorPanel({
                                     e.stopPropagation();
                                     deleteTheme(theme.id);
                                   }}
-                                  className="p-1 text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded"
+                                  className="p-1 text-ph-fg-muted hover:text-ph-danger-soft-fg hover:bg-ph-danger-soft rounded"
                                   title="Delete Theme"
                                 >
                                   <Trash2 size={12} />
@@ -240,7 +241,7 @@ export function ThemeEditorPanel({
           </div>
           <button 
             onClick={onClose}
-            className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors flex-shrink-0"
+            className="p-1.5 text-ph-fg-muted hover:text-ph-fg-strong hover:bg-ph-surface-2 rounded-lg transition-colors flex-shrink-0"
             title="Close"
           >
             <X size={18} />
@@ -248,7 +249,7 @@ export function ThemeEditorPanel({
         </div>
         <button 
           onClick={() => { setColors(DEFAULT_HS); setOverrides({}); }}
-          className="flex items-center justify-center gap-2 px-3 py-1.5 text-sm font-medium text-themeedit-reset-text hover:text-themeedit-reset-text-hover bg-white border border-themeedit-reset-border rounded-lg hover:bg-slate-50 transition-colors w-full"
+          className="flex items-center justify-center gap-2 px-3 py-1.5 text-sm font-medium text-themeedit-reset-text hover:text-themeedit-reset-text-hover bg-ph-surface border border-themeedit-reset-border rounded-lg hover:bg-ph-surface-2 transition-colors w-full"
         >
           <RefreshCw size={14} />
           Reset All
@@ -259,24 +260,24 @@ export function ThemeEditorPanel({
         {/* Raw Colors Section */}
         <div className="flex flex-col gap-3">
           <div>
-            <h2 className="text-sm font-semibold mb-1 text-slate-800">Raw Palettes</h2>
-            <p className="text-[10px] text-slate-500 leading-relaxed">
+            <h2 className="text-sm font-semibold mb-1 text-ph-fg-strong">Raw Palettes</h2>
+            <p className="text-xs text-ph-fg-muted leading-relaxed">
               Adjusting these will update all semantic variables that reference them.
             </p>
           </div>
 
           {COLOR_FAMILIES.map(family => (
-            <div key={family} className="bg-white p-3 rounded-xl shadow-sm border border-slate-200 flex flex-col gap-2.5">
+            <div key={family} className="bg-ph-surface p-3 rounded-xl border border-ph-border flex flex-col gap-2.5">
               <div className="text-xs font-bold uppercase text-themeedit-family-label flex items-center gap-2">
                 <div 
-                  className="w-3.5 h-3.5 rounded-sm shadow-inner"
+                  className="w-3.5 h-3.5 rounded-sm"
                   style={{ backgroundColor: `hsl(${colors[family].h} ${colors[family].s}% 50%)` }}
                 />
                 {family}
               </div>
               
               <div className="flex items-center gap-2">
-                <span className="text-[10px] font-medium text-themeedit-slider-label w-3">H</span>
+                <span className="text-xs font-medium text-themeedit-slider-label w-3">H</span>
                 <input
                   type="range"
                   min="0"
@@ -285,11 +286,11 @@ export function ThemeEditorPanel({
                   onChange={(e) => handleRawChange(family, 'h', Number(e.target.value))}
                   className="flex-1 h-1.5 bg-themeedit-slider-track rounded-lg appearance-none cursor-pointer accent-themeedit-slider-thumb"
                 />
-                <span className="text-[10px] text-slate-400 w-5 text-right font-mono">{colors[family].h}</span>
+                <span className="text-xs text-ph-fg-muted w-7 text-right font-mono">{colors[family].h}</span>
               </div>
 
               <div className="flex items-center gap-2">
-                <span className="text-[10px] font-medium text-themeedit-slider-label w-3">S</span>
+                <span className="text-xs font-medium text-themeedit-slider-label w-3">S</span>
                 <input
                   type="range"
                   min="0"
@@ -298,7 +299,7 @@ export function ThemeEditorPanel({
                   onChange={(e) => handleRawChange(family, 's', Number(e.target.value))}
                   className="flex-1 h-1.5 bg-themeedit-slider-track rounded-lg appearance-none cursor-pointer accent-themeedit-slider-thumb"
                 />
-                <span className="text-[10px] text-slate-400 w-5 text-right font-mono">{colors[family].s}%</span>
+                <span className="text-xs text-ph-fg-muted w-7 text-right font-mono">{colors[family].s}%</span>
               </div>
             </div>
           ))}
@@ -307,8 +308,8 @@ export function ThemeEditorPanel({
         {/* Semantic Variables Section */}
         <div className="flex flex-col gap-3">
           <div>
-            <h2 className="text-sm font-semibold mb-1 text-slate-800">Semantic Variables</h2>
-            <p className="text-[10px] text-slate-500 leading-relaxed">
+            <h2 className="text-sm font-semibold mb-1 text-ph-fg-strong">Semantic Variables</h2>
+            <p className="text-xs text-ph-fg-muted leading-relaxed">
               Override individual component variables here.
             </p>
           </div>
@@ -319,27 +320,27 @@ export function ThemeEditorPanel({
             onChange={(e) => setFilter(e.target.value)}
             placeholder="Filter variables…"
             aria-label="Filter variables"
-            className="w-full px-2 py-1.5 text-xs font-mono border border-slate-200 rounded-lg bg-white focus:outline-none focus:border-teal-400"
+            className="w-full px-2 py-1.5 text-xs font-mono border border-ph-border-strong rounded-lg bg-ph-field text-ph-fg focus:outline-none focus:border-ph-focus"
           />
 
           <div className="flex flex-col gap-2" aria-label="Semantic variable groups">
             {groups.map(([group, vars]) => (
-              <details key={group} open={filter.trim().length > 0 || undefined} className="rounded-lg border border-slate-200 bg-white">
-                <summary className="flex cursor-pointer items-center justify-between px-2.5 py-1.5 text-xs font-semibold text-slate-700 select-none">
+              <details key={group} open={filter.trim().length > 0 || undefined} className="rounded-lg border border-ph-border bg-ph-surface">
+                <summary className="flex cursor-pointer items-center justify-between px-2.5 py-1.5 text-xs font-semibold text-ph-fg select-none">
                   <span>{groupLabel(group)}</span>
-                  <span className="text-[10px] font-mono text-slate-500">
+                  <span className="text-xs font-mono text-ph-fg-muted">
                     {vars.filter((v) => overrides[v.name]).length > 0 && (
-                      <span className="mr-1.5 text-teal-600">{vars.filter((v) => overrides[v.name]).length} set</span>
+                      <span className="mr-1.5 text-ph-primary-soft-fg">{vars.filter((v) => overrides[v.name]).length} set</span>
                     )}
                     {vars.length}
                   </span>
                 </summary>
                 <div className="flex flex-col gap-2 p-2 pt-0">
                   {vars.map(v => (
-                    <div key={v.name} className="flex flex-col p-2.5 rounded-lg border border-slate-100 bg-slate-50 hover:border-teal-200 transition-colors group gap-2">
+                    <div key={v.name} className="flex flex-col p-2.5 rounded-lg border border-ph-border bg-ph-surface-2 hover:border-ph-border-strong transition-colors group gap-2">
                     <div className="flex flex-col overflow-hidden">
-                      <span className="text-[11px] font-mono text-slate-700 truncate" title={v.name}>{v.name.replace('--color-', '')}</span>
-                      <span className="text-[9px] text-slate-400 font-mono truncate">{v.defaultVal}</span>
+                      <span className="text-xs font-mono text-ph-fg truncate" title={v.name}>{v.name.replace('--color-', '')}</span>
+                      <span className="text-xs text-ph-fg-muted font-mono truncate">{v.defaultVal}</span>
                     </div>
                     <div className="flex items-center gap-2 justify-between">
                       <input
@@ -348,16 +349,16 @@ export function ThemeEditorPanel({
                         onChange={(e) => handleOverrideChange(v.name, e.target.value)}
                         placeholder={v.defaultVal}
                         aria-label={`Override ${v.name}`}
-                        className="flex-1 px-1.5 py-1 text-[10px] font-mono border border-slate-200 rounded focus:outline-none focus:border-teal-400 bg-white"
+                        className="flex-1 px-1.5 py-1 text-xs font-mono border border-ph-border-strong rounded focus:outline-none focus:border-ph-focus bg-ph-field text-ph-fg"
                       />
                       <div className="flex items-center gap-2 relative">
                         {v.isColor && (<>
                           <button 
                             onClick={() => setActiveColorSystemVar(activeColorSystemVar === v.name ? null : v.name)}
-                            className="w-5 h-5 rounded border border-slate-300 flex-shrink-0 shadow-inner cursor-pointer hover:border-teal-500 transition-colors z-10"
+                            className="w-5 h-5 rounded border border-ph-border-strong flex-shrink-0 cursor-pointer hover:border-ph-focus transition-colors z-10"
                             style={{ 
                               backgroundColor: overrides[v.name] || `var(${v.name})`,
-                              backgroundImage: (overrides[v.name] || v.defaultVal).includes('transparent') ? 'repeating-conic-gradient(#eee 0 4px, transparent 0 8px)' : 'none'
+                              backgroundImage: (overrides[v.name] || v.defaultVal).includes('transparent') ? 'repeating-conic-gradient(var(--ph-surface-3) 0 4px, transparent 0 8px)' : 'none'
                             }}
                             title="Click to open Color System"
                             type="button"
@@ -368,7 +369,7 @@ export function ThemeEditorPanel({
                             <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
                               {/* Invisible overlay to close when clicking outside */}
                               <div 
-                                className="absolute inset-0 bg-slate-900/20 backdrop-blur-[1px]" 
+                                className="absolute inset-0 bg-ph-backdrop" 
                                 onClick={() => setActiveColorSystemVar(null)}
                               />
                               <div className="relative z-10">
@@ -384,7 +385,7 @@ export function ThemeEditorPanel({
 
                         <button 
                           onClick={() => handleOverrideChange(v.name, '')}
-                          className={`text-[9px] font-medium px-1.5 py-1 rounded text-slate-400 hover:bg-rose-50 hover:text-rose-500 transition-all ${overrides[v.name] ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+                          className={`text-xs font-medium px-1.5 py-1 rounded text-ph-fg-muted hover:bg-ph-danger-soft hover:text-ph-danger-soft-fg transition-all ${overrides[v.name] ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
                         >
                           CLEAR
                         </button>
@@ -395,7 +396,7 @@ export function ThemeEditorPanel({
                 </div>
               </details>
             ))}
-            {groups.length === 0 && <p className="text-[10px] text-slate-500 px-1">No variables match "{filter}".</p>}
+            {groups.length === 0 && <p className="text-xs text-ph-fg-muted px-1">No variables match "{filter}".</p>}
           </div>
         </div>
       </div>

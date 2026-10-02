@@ -137,7 +137,7 @@ export function ProviderSettingsPanel({
           <Switch.Control>
             <Switch.Thumb />
           </Switch.Control>
-          <span className="text-sm font-medium text-slate-700">Enable {state.name}</span>
+          <span className="text-sm font-medium text-ph-fg">Enable {state.name}</span>
         </Switch.Content>
       </Switch>
 
@@ -149,7 +149,7 @@ export function ProviderSettingsPanel({
           isDisabled={!enabled}
           aria-label={`${state.name} server URL`}
         >
-          <Label className="text-xs font-medium text-slate-600">Server URL</Label>
+          <Label className="text-xs font-medium text-ph-fg">Server URL</Label>
           <Input
             className="w-full text-xs"
             spellCheck={false}
@@ -175,13 +175,13 @@ export function ProviderSettingsPanel({
         />
       ) : null}
 
-      <div className="flex items-center justify-between border-t border-slate-100 pt-1">
+      <div className="flex items-center justify-between border-t border-ph-border pt-1">
         <div className="flex min-w-0 items-center gap-2">
           <StatusDot
             tone={statusTone(state.status, state.warning)}
             pulse={state.status === 'probing'}
           />
-          <span className="truncate text-[11px] text-slate-500">{statusText(state)}</span>
+          <span className="truncate text-xs text-ph-fg-muted">{statusText(state)}</span>
         </div>
         <Button
           size="sm"
@@ -199,7 +199,7 @@ export function ProviderSettingsPanel({
       {(testState === 'error' || testState === 'warning') && testMessage ? (
         <p
           className={cn(
-            'truncate text-[11px]',
+            'truncate text-xs',
             testState === 'warning' ? 'text-conn-probing' : 'text-conn-disconnected',
           )}
         >
