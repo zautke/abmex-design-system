@@ -30,7 +30,7 @@ export function StatusDot({ tone, pulse = false, label, className }: StatusDotPr
       aria-label={label}
       aria-hidden={label ? undefined : true}
       className={cn(
-        'h-2 w-2 shrink-0 rounded-full',
+        'inline-block h-2 w-2 shrink-0 rounded-full',
         TONE_CLASS[tone],
         pulse && 'animate-pulse',
         className,

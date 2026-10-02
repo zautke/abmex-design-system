@@ -170,7 +170,7 @@
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  background-color: var(--color-splash-bg);
+  background-color: var(--ph-bg);
 }
 .splash-center {
   position: relative;
@@ -182,7 +182,7 @@
   width: 2rem;
   height: 2rem;
   border-radius: 9999px;
-  border: 2px solid var(--color-splash-ring);
+  border: 2px solid var(--ph-border-strong);
   border-top-color: var(--ph-primary);
 }
 @media (prefers-reduced-motion: no-preference) {
@@ -193,7 +193,7 @@
   font-family: var(--ph-font-mono);
   font-size: 0.75rem;
   line-height: 1.125rem;
-  color: var(--color-splash-text);
+  color: var(--ph-fg-muted);
 }
 
 /* ─── 32×32 icon button (header + input bar toolbar) ─── */
@@ -243,11 +243,13 @@
 }
 
 /* Code surface: bg + fg + border in one class so no call site can paint the
- * background and forget the foreground. */
+ * background and forget the foreground. Hand-written CSS reads `--ph-*` roles
+ * directly: the `--color-*` aliases above are `@theme inline`, so `var()` of one
+ * resolves once on :root (dark) and would not follow a nested `.light` scope. */
 @utility code-surface {
-  background-color: var(--color-md-code-block-bg);
-  color: var(--color-md-code-block-text);
-  border-color: var(--color-md-code-block-border);
+  background-color: var(--ph-code-bg);
+  color: var(--ph-fg);
+  border-color: var(--ph-border);
 }
 
 @utility scrollbar-none {
