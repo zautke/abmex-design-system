@@ -1,0 +1,657 @@
+{
+ "name": "Phosphor",
+ "version": 1,
+ "meta": {
+  "source": "Rendered pixels of the wxt-prompt screenshot (Oct 2026), matte; light theme derived; build/palette.py"
+ },
+ "color": {
+  "themes": [
+   {
+    "id": "dark",
+    "name": "Dark (Phosphor)"
+   },
+   {
+    "id": "light",
+    "name": "Light (Bone paper)"
+   }
+  ],
+  "tokens": [
+   {
+    "name": "ph-bg",
+    "value": {
+     "dark": "#111c18",
+     "light": "#f2f3ea"
+    },
+    "usage": "App background (deep phosphor-black / bone paper). Ground for `fg`, `fg-strong`, `fg-muted`."
+   },
+   {
+    "name": "ph-bg-sunken",
+    "value": {
+     "dark": "#0b1512",
+     "light": "#e9ebdf"
+    },
+    "usage": "Recessed wells below the app ground: code blocks, terminal output, inset sidebars."
+   },
+   {
+    "name": "ph-surface",
+    "value": {
+     "dark": "#1a2520",
+     "light": "#fafbf5"
+    },
+    "usage": "The muted surface: sidebar, inspector, Questions block, cards (shadcn `card`, HeroUI `surface`). Ground for every text token."
+   },
+   {
+    "name": "ph-surface-2",
+    "value": {
+     "dark": "#23372b",
+     "light": "#ebeee3"
+    },
+    "usage": "Raised fill: the prompt/input block, active tab, hovered rows, secondary buttons."
+   },
+   {
+    "name": "ph-surface-3",
+    "value": {
+     "dark": "#2b4134",
+     "light": "#dfe5d9"
+    },
+    "usage": "Pressed / selected neutral fill, segmented-control thumb."
+   },
+   {
+    "name": "ph-overlay",
+    "value": {
+     "dark": "#202e27",
+     "light": "#fcfdf9"
+    },
+    "usage": "Floating layers: popover, menu, tooltip, dialog. One step above `surface`."
+   },
+   {
+    "name": "ph-field",
+    "value": {
+     "dark": "#23372b",
+     "light": "#fcfdfa"
+    },
+    "usage": "Input, textarea and select background (the raised green of the prompt block)."
+   },
+   {
+    "name": "ph-border",
+    "value": {
+     "dark": "#2e3a34",
+     "light": "#d2dacf"
+    },
+    "usage": "Hairline: card edges, dividers, table rules. Decorative only (below 3:1 by design)."
+   },
+   {
+    "name": "ph-border-strong",
+    "value": {
+     "dark": "#718078",
+     "light": "#7f8e86"
+    },
+    "usage": "Control boundary: input, checkbox and select outlines; 3:1 on `field`, `surface`, `bg`."
+   },
+   {
+    "name": "ph-fg",
+    "value": {
+     "dark": "#c1c497",
+     "light": "#37371b"
+    },
+    "usage": "Body text: golden khaki (dark) / olive ink (light) on every ground, including the muted `surface`."
+   },
+   {
+    "name": "ph-fg-strong",
+    "value": {
+     "dark": "#dfe0b8",
+     "light": "#1d1d08"
+    },
+    "usage": "Headings, active labels, values on every ground."
+   },
+   {
+    "name": "ph-fg-sage",
+    "value": {
+     "dark": "#a8bfae",
+     "light": "#354e3f"
+    },
+    "usage": "Secondary text role: sage (dark) / forest ink (light). Inactive tabs, neutral values, table body in dense data."
+   },
+   {
+    "name": "ph-fg-muted",
+    "value": {
+     "dark": "#8ca194",
+     "light": "#646551"
+    },
+    "usage": "Secondary text, captions, placeholders: 4.5:1 on every ground up to `surface-2`."
+   },
+   {
+    "name": "ph-fg-disabled",
+    "value": {
+     "dark": "#4d6054",
+     "light": "#9aa198"
+    },
+    "usage": "Disabled labels only (WCAG-exempt)."
+   },
+   {
+    "name": "ph-primary",
+    "value": {
+     "dark": "#2ed5b7",
+     "light": "#037663"
+    },
+    "usage": "Mint / deep jade: the one saturated color; the brand signal. Primary buttons, active nav, toggles on, progress. As text it holds 4.5:1 on `bg`/`surface`."
+   },
+   {
+    "name": "ph-primary-fg",
+    "value": {
+     "dark": "#111c18",
+     "light": "#fafbf5"
+    },
+    "usage": "Text and icons on a `primary` or `primary-hover` fill."
+   },
+   {
+    "name": "ph-primary-hover",
+    "value": {
+     "dark": "#45e4c5",
+     "light": "#016757"
+    },
+    "usage": "Hover / pressed state of a `primary` fill."
+   },
+   {
+    "name": "ph-primary-soft",
+    "value": {
+     "dark": "#213e37",
+     "light": "#dbe9e5"
+    },
+    "usage": "Tinted background for primary badges, alerts and selected rows."
+   },
+   {
+    "name": "ph-primary-soft-fg",
+    "value": {
+     "dark": "#2ed5b7",
+     "light": "#057361"
+    },
+    "usage": "Primary text that reads on `primary-soft`, `bg`, `surface` and `surface-2` (4.5:1)."
+   },
+   {
+    "name": "ph-danger",
+    "value": {
+     "dark": "#df8379",
+     "light": "#a34942"
+    },
+    "usage": "Matte brick: destructive actions, invalid fields, error text. As text it holds 4.5:1 on `bg`/`surface`."
+   },
+   {
+    "name": "ph-danger-fg",
+    "value": {
+     "dark": "#111c18",
+     "light": "#fafbf5"
+    },
+    "usage": "Text and icons on a `danger` or `danger-hover` fill."
+   },
+   {
+    "name": "ph-danger-hover",
+    "value": {
+     "dark": "#ee9186",
+     "light": "#943c35"
+    },
+    "usage": "Hover / pressed state of a `danger` fill."
+   },
+   {
+    "name": "ph-danger-soft",
+    "value": {
+     "dark": "#3a3231",
+     "light": "#f1e2e0"
+    },
+    "usage": "Tinted background for danger badges, alerts and selected rows."
+   },
+   {
+    "name": "ph-danger-soft-fg",
+    "value": {
+     "dark": "#e0847a",
+     "light": "#a34942"
+    },
+    "usage": "Danger text that reads on `danger-soft`, `bg`, `surface` and `surface-2` (4.5:1)."
+   },
+   {
+    "name": "ph-success",
+    "value": {
+     "dark": "#63b07a",
+     "light": "#376f44"
+    },
+    "usage": "Code green: completed, connected, passing. As text it holds 4.5:1 on `bg`/`surface`."
+   },
+   {
+    "name": "ph-success-fg",
+    "value": {
+     "dark": "#111c18",
+     "light": "#fafbf5"
+    },
+    "usage": "Text and icons on a `success` or `success-hover` fill."
+   },
+   {
+    "name": "ph-success-hover",
+    "value": {
+     "dark": "#71be88",
+     "light": "#296238"
+    },
+    "usage": "Hover / pressed state of a `success` fill."
+   },
+   {
+    "name": "ph-success-soft",
+    "value": {
+     "dark": "#27382b",
+     "light": "#dde8df"
+    },
+    "usage": "Tinted background for success badges, alerts and selected rows."
+   },
+   {
+    "name": "ph-success-soft-fg",
+    "value": {
+     "dark": "#64b17b",
+     "light": "#376f44"
+    },
+    "usage": "Success text that reads on `success-soft`, `bg`, `surface` and `surface-2` (4.5:1)."
+   },
+   {
+    "name": "ph-warning",
+    "value": {
+     "dark": "#dfad73",
+     "light": "#d9a767"
+    },
+    "usage": "Matte ochre (oranger than the gold text): degraded, pending attention. Always dark text on the fill."
+   },
+   {
+    "name": "ph-warning-fg",
+    "value": {
+     "dark": "#111c18",
+     "light": "#1d1d08"
+    },
+    "usage": "Text and icons on a `warning` or `warning-hover` fill."
+   },
+   {
+    "name": "ph-warning-hover",
+    "value": {
+     "dark": "#eebb81",
+     "light": "#ca9959"
+    },
+    "usage": "Hover / pressed state of a `warning` fill."
+   },
+   {
+    "name": "ph-warning-soft",
+    "value": {
+     "dark": "#3e352c",
+     "light": "#f8efe4"
+    },
+    "usage": "Tinted background for warning badges, alerts and selected rows."
+   },
+   {
+    "name": "ph-warning-soft-fg",
+    "value": {
+     "dark": "#dfad73",
+     "light": "#8e601d"
+    },
+    "usage": "Warning text that reads on `warning-soft`, `bg`, `surface` and `surface-2` (4.5:1)."
+   },
+   {
+    "name": "ph-info",
+    "value": {
+     "dark": "#7bb4ce",
+     "light": "#2f6b86"
+    },
+    "usage": "Matte slate-cyan: neutral notices, help, links to docs. As text it holds 4.5:1 on `bg`/`surface`."
+   },
+   {
+    "name": "ph-info-fg",
+    "value": {
+     "dark": "#111c18",
+     "light": "#fafbf5"
+    },
+    "usage": "Text and icons on a `info` or `info-hover` fill."
+   },
+   {
+    "name": "ph-info-hover",
+    "value": {
+     "dark": "#89c2dd",
+     "light": "#205e78"
+    },
+    "usage": "Hover / pressed state of a `info` fill."
+   },
+   {
+    "name": "ph-info-soft",
+    "value": {
+     "dark": "#29383f",
+     "light": "#e0e6ea"
+    },
+    "usage": "Tinted background for info badges, alerts and selected rows."
+   },
+   {
+    "name": "ph-info-soft-fg",
+    "value": {
+     "dark": "#7bb4ce",
+     "light": "#2f6b86"
+    },
+    "usage": "Info text that reads on `info-soft`, `bg`, `surface` and `surface-2` (4.5:1)."
+   },
+   {
+    "name": "ph-emphasis",
+    "value": {
+     "dark": "#b58bc0",
+     "light": "#795284"
+    },
+    "usage": "Mauve: italic emphasis, highlights in prose, a fourth category hue. As text it holds 4.5:1 on `bg`/`surface`."
+   },
+   {
+    "name": "ph-emphasis-fg",
+    "value": {
+     "dark": "#111c18",
+     "light": "#fafbf5"
+    },
+    "usage": "Text and icons on a `emphasis` or `emphasis-hover` fill."
+   },
+   {
+    "name": "ph-emphasis-hover",
+    "value": {
+     "dark": "#c499cf",
+     "light": "#6c4576"
+    },
+    "usage": "Hover / pressed state of a `emphasis` fill."
+   },
+   {
+    "name": "ph-emphasis-soft",
+    "value": {
+     "dark": "#353236",
+     "light": "#e7e4e8"
+    },
+    "usage": "Tinted background for emphasis badges, alerts and selected rows."
+   },
+   {
+    "name": "ph-emphasis-soft-fg",
+    "value": {
+     "dark": "#b88ec3",
+     "light": "#795284"
+    },
+    "usage": "Emphasis text that reads on `emphasis-soft`, `bg`, `surface` and `surface-2` (4.5:1)."
+   },
+   {
+    "name": "ph-focus",
+    "value": {
+     "dark": "#2ed5b7",
+     "light": "#037663"
+    },
+    "usage": "Focus ring, 2px solid with 2px offset; 3:1 on every ground."
+   },
+   {
+    "name": "ph-link",
+    "value": {
+     "dark": "#2ed5b7",
+     "light": "#057361"
+    },
+    "usage": "Inline links on any ground."
+   },
+   {
+    "name": "ph-selection",
+    "value": {
+     "dark": "#213e37",
+     "light": "#dbe9e5"
+    },
+    "usage": "Text selection and highlighted search matches."
+   },
+   {
+    "name": "ph-code-bg",
+    "value": {
+     "dark": "#0b1512",
+     "light": "#e9ebdf"
+    },
+    "usage": "Code surface: blends toward app bg, bordered by `border`."
+   },
+   {
+    "name": "ph-scrollbar",
+    "value": {
+     "dark": "#718078",
+     "light": "#7f8e86"
+    },
+    "usage": "Scrollbar thumb."
+   },
+   {
+    "name": "ph-chart-1",
+    "value": {
+     "dark": "#2ed5b7",
+     "light": "#037663"
+    },
+    "usage": "Categorical series 1; 3:1 on `surface` in both themes."
+   },
+   {
+    "name": "ph-chart-2",
+    "value": {
+     "dark": "#b58bc0",
+     "light": "#795284"
+    },
+    "usage": "Categorical series 2; 3:1 on `surface` in both themes."
+   },
+   {
+    "name": "ph-chart-3",
+    "value": {
+     "dark": "#dfad73",
+     "light": "#a67537"
+    },
+    "usage": "Categorical series 3; 3:1 on `surface` in both themes."
+   },
+   {
+    "name": "ph-chart-4",
+    "value": {
+     "dark": "#6b9fc6",
+     "light": "#336288"
+    },
+    "usage": "Categorical series 4; 3:1 on `surface` in both themes."
+   },
+   {
+    "name": "ph-chart-5",
+    "value": {
+     "dark": "#ce816e",
+     "light": "#ab5a46"
+    },
+    "usage": "Categorical series 5; 3:1 on `surface` in both themes."
+   },
+   {
+    "name": "ph-backdrop",
+    "value": {
+     "dark": "rgba(3, 8, 5, 0.72)",
+     "light": "rgba(9, 27, 19, 0.32)"
+    },
+    "usage": "Modal scrim behind dialogs and sheets."
+   }
+  ]
+ },
+ "type": {
+  "fonts": [],
+  "families": {
+   "sans": "\"Rethink Sans\", ui-sans-serif, system-ui, sans-serif",
+   "display": "\"Rethink Sans\", ui-sans-serif, system-ui, sans-serif",
+   "mono": "\"Victor Mono\", ui-monospace, SFMono-Regular, Menlo, monospace"
+  },
+  "groups": [
+   {
+    "name": "Display",
+    "family": "display",
+    "styles": [
+     {
+      "name": "display-xl",
+      "fontSize": "40px",
+      "lineHeight": "44px",
+      "fontWeight": 600,
+      "letterSpacing": "-0.025em",
+      "usage": "Page and hero titles, one per view.",
+      "sample": "Conversation initiation"
+     },
+     {
+      "name": "display-lg",
+      "fontSize": "28px",
+      "lineHeight": "34px",
+      "fontWeight": 600,
+      "letterSpacing": "-0.02em",
+      "usage": "Section titles."
+     },
+     {
+      "name": "display-md",
+      "fontSize": "20px",
+      "lineHeight": "26px",
+      "fontWeight": 600,
+      "letterSpacing": "-0.015em",
+      "usage": "Panel and dialog titles."
+     }
+    ]
+   },
+   {
+    "name": "Text",
+    "family": "sans",
+    "styles": [
+     {
+      "name": "title",
+      "fontSize": "16px",
+      "lineHeight": "24px",
+      "fontWeight": 600,
+      "usage": "Card titles, table headers in prose layouts."
+     },
+     {
+      "name": "body",
+      "fontSize": "15px",
+      "lineHeight": "22px",
+      "fontWeight": 400,
+      "usage": "Default UI and prose text in `ph-fg`."
+     },
+     {
+      "name": "body-sm",
+      "fontSize": "13px",
+      "lineHeight": "20px",
+      "fontWeight": 400,
+      "usage": "Dense UI, helper text in `ph-fg-muted`."
+     },
+     {
+      "name": "label",
+      "fontSize": "12px",
+      "lineHeight": "16px",
+      "fontWeight": 500,
+      "letterSpacing": "0.01em",
+      "usage": "Form labels, badges, button text at sm size."
+     }
+    ]
+   },
+   {
+    "name": "Data",
+    "family": "mono",
+    "styles": [
+     {
+      "name": "mono",
+      "fontSize": "13px",
+      "lineHeight": "20px",
+      "fontWeight": 400,
+      "usage": "Code, terminal output, token counts, hex values, IDs.",
+      "sample": "158,029 tokens · 15% used"
+     },
+     {
+      "name": "mono-sm",
+      "fontSize": "12px",
+      "lineHeight": "18px",
+      "fontWeight": 400,
+      "usage": "Status lines, key hints (ctrl+p), table numerics."
+     },
+     {
+      "name": "mono-emphasis",
+      "fontSize": "13px",
+      "lineHeight": "20px",
+      "fontWeight": 400,
+      "fontStyle": "italic",
+      "usage": "Victor Mono cursive italic in `ph-emphasis-soft-fg` for emphasis inside data."
+     }
+    ]
+   }
+  ]
+ },
+ "spacing": {
+  "tokens": [
+   {
+    "name": "ph-space-1",
+    "value": "4px",
+    "usage": "Icon-to-label gap, badge padding-y."
+   },
+   {
+    "name": "ph-space-2",
+    "value": "8px",
+    "usage": "Control padding-y, tight stacks."
+   },
+   {
+    "name": "ph-space-3",
+    "value": "12px",
+    "usage": "Control padding-x, table cell padding."
+   },
+   {
+    "name": "ph-space-4",
+    "value": "16px",
+    "usage": "Card padding (dense), form row gap."
+   },
+   {
+    "name": "ph-space-6",
+    "value": "24px",
+    "usage": "Card padding, section gap inside panels."
+   },
+   {
+    "name": "ph-space-8",
+    "value": "32px",
+    "usage": "Panel gutters."
+   },
+   {
+    "name": "ph-space-12",
+    "value": "48px",
+    "usage": "Page section spacing."
+   }
+  ]
+ },
+ "radius": {
+  "tokens": [
+   {
+    "name": "ph-radius-sm",
+    "value": "2px",
+    "usage": "Badges, kbd, checkboxes (shadcn radius-sm ≈ 0.6×)."
+   },
+   {
+    "name": "ph-radius",
+    "value": "4px",
+    "usage": "Base: buttons, cards, menus (--ph-radius, shadcn radius-lg)."
+   },
+   {
+    "name": "ph-radius-field",
+    "value": "6px",
+    "usage": "Inputs and selects (HeroUI field-radius = 1.5×)."
+   },
+   {
+    "name": "ph-radius-full",
+    "value": "9999px",
+    "usage": "Status dots, avatars, switches."
+   }
+  ]
+ },
+ "shadow": {
+  "tokens": [
+   {
+    "name": "ph-shadow-surface",
+    "value": {
+     "dark": "none",
+     "light": "0 1px 2px 0 rgba(9, 27, 19, 0.06), 0 0 0 1px rgba(9, 27, 19, 0.03)"
+    },
+    "usage": "Cards: none in dark (hairline does the work), a faint lift on paper."
+   },
+   {
+    "name": "ph-shadow-field",
+    "value": {
+     "dark": "none",
+     "light": "0 1px 2px 0 rgba(9, 27, 19, 0.05)"
+    },
+    "usage": "Inputs."
+   },
+   {
+    "name": "ph-shadow-overlay",
+    "value": {
+     "dark": "0 0 0 1px rgba(168, 191, 174, 0.06), 0 16px 40px -12px rgba(0, 0, 0, 0.7)",
+     "light": "0 2px 8px 0 rgba(9, 27, 19, 0.08), 0 14px 32px -6px rgba(9, 27, 19, 0.14)"
+    },
+    "usage": "Popovers, menus, dialogs."
+   }
+  ]
+ }
+}

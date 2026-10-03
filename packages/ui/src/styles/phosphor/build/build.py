@@ -144,10 +144,14 @@ tw = HEADER.format(title='Tailwind v4 layer') + '''
 @import "./phosphor.tokens.css";
 
 /* Dark is the default, so `dark:` must fire when NO light scope encloses the
- * element (shadcn components rely on dark: utilities). Redefines any earlier
- * `dark` variant (e.g. HeroUI's), so import this file AFTER @heroui/styles. */
-@custom-variant dark (&:not(:where(.light, .light *, [data-theme="light"], [data-theme="light"] *)));
-@custom-variant light (&:where(.light, .light *, [data-theme="light"], [data-theme="light"] *));
+ * element. Nearest-scope rule (Codex PR#15 P2b): an explicit inner `.dark`
+ * inside `.light` re-enables `dark:` utilities, and an explicit inner `.light`
+ * inside `.dark` silences `light:` only for its own subtree — the variant set
+ * mirrors the token cascade, so utilities and `--ph-*` values never disagree.
+ * Redefines any earlier `dark` variant (e.g. HeroUI's), so import this file
+ * AFTER @heroui/styles. */
+@custom-variant dark (&:not(:where(.light, .light *, [data-theme="light"], [data-theme="light"] *)), &:where(.dark, .dark *, [data-theme="dark"], [data-theme="dark"] *));
+@custom-variant light (&:where(.light, .light *, [data-theme="light"], [data-theme="light"] *):not(:where(.dark, .dark *, [data-theme="dark"], [data-theme="dark"] *)));
 
 /* Phosphor-native utilities: bg-ph-surface, text-ph-fg-muted, border-ph-border,
  * ring-ph-focus, shadow-ph-overlay, font-display … */
