@@ -7,15 +7,16 @@
 
 @import "./phosphor.tokens.css";
 
-/* Dark is the default, so `dark:` must fire when NO light scope encloses the
- * element. Nearest-scope rule (Codex PR#15 P2b): an explicit inner `.dark`
- * inside `.light` re-enables `dark:` utilities, and an explicit inner `.light`
- * inside `.dark` silences `light:` only for its own subtree — the variant set
- * mirrors the token cascade, so utilities and `--ph-*` values never disagree.
- * Redefines any earlier `dark` variant (e.g. HeroUI's), so import this file
- * AFTER @heroui/styles. */
-@custom-variant dark (&:not(:where(.light, .light *, [data-theme="light"], [data-theme="light"] *)), &:where(.dark, .dark *, [data-theme="dark"], [data-theme="dark"] *));
-@custom-variant light (&:where(.light, .light *, [data-theme="light"], [data-theme="light"] *):not(:where(.dark, .dark *, [data-theme="dark"], [data-theme="dark"] *)));
+/* Dark is the default, so `dark:` fires with no scope at all. Nearest-scope
+ * rule (Codex PR#15 P2, both directions): an explicit inner scope wins over an
+ * outer one in either nesting order —
+ *   .light .dark x  → dark utilities fire, light silenced
+ *   .dark  .light y → light utilities fire, dark silenced
+ * so `dark:`/`light:` never disagree with the `--ph-*` token cascade, which
+ * resolves by the same nearest-scope CSS inheritance. Redefines any earlier
+ * `dark` variant (e.g. HeroUI's), so import this file AFTER @heroui/styles. */
+@custom-variant dark (&:not(:where(.light, .light *, [data-theme="light"], [data-theme="light"] *)), &:where(.dark, .dark *, [data-theme="dark"], [data-theme="dark"] *):not(:where(.dark .light, .dark .light *, [data-theme="dark"] [data-theme="light"], [data-theme="dark"] [data-theme="light"] *)));
+@custom-variant light (&:where(.light, .light *, [data-theme="light"], [data-theme="light"] *):not(:where(.light .dark, .light .dark *, [data-theme="light"] .dark, [data-theme="light"] .dark *)));
 
 /* Phosphor-native utilities: bg-ph-surface, text-ph-fg-muted, border-ph-border,
  * ring-ph-focus, shadow-ph-overlay, font-display … */
