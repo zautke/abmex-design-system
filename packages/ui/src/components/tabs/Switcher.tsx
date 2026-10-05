@@ -116,7 +116,7 @@ export function Switcher({
         ref={trigger}
         type="button"
         aria-label={shortcut ? `${ariaLabel} (${shortcut})` : ariaLabel}
-        aria-keyshortcuts={shortcut ? shortcut.replace(/ctrl/i, 'Control') : undefined}
+        aria-keyshortcuts={shortcut ? shortcut.replace(/\bctrl\b/i, 'Control') : undefined}
         aria-haspopup="dialog"
         aria-expanded={open}
         onClick={() => (open ? close() : show())}
