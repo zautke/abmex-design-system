@@ -1,24 +1,42 @@
 import {
+  Children,
+  cloneElement,
   createContext,
+  isValidElement,
   useContext,
   useEffect,
+  useId,
+  useLayoutEffect,
+  useReducer,
   useRef,
   useState,
   type ComponentPropsWithRef,
+  type CSSProperties,
+  type Key,
   type KeyboardEvent,
+  type ReactElement,
   type ReactNode,
+  type RefObject,
 } from 'react';
 import { ChevronLeft, ChevronRight, PanelLeftClose, PanelLeftOpen, X } from 'lucide-react';
 import { cn } from '../../utils/cn';
 
-// Phosphor tab system. React + --ph-* roles only — no component-library import in\n// this family, so a tabs consumer needs only react + lucide-react.
+// Phosphor tab system. React + --ph-* roles only — no component-library import in
+// this family, so a tabs consumer needs only react + lucide-react.
 
 export type TabsOrientation = 'horizontal' | 'vertical';
+/** 'standard' animates; 'reduced' fades only; 'none' is instant. 'standard' drops to 'reduced' when the OS asks. */
+export type TabsMotion = 'standard' | 'reduced' | 'none';
+export type TabsDensity = 'compact' | 'comfortable';
 
 interface TabsContextValue {
   value: string | undefined;
   select: (value: string) => void;
   orientation: TabsOrientation;
+  /** Per-root prefix for tab/panel ids. */
+  id: string;
+  motion: TabsMotion;
+  density: TabsDensity;
 }
 
 const TabsContext = createContext<TabsContextValue | null>(null);
@@ -32,12 +50,34 @@ function useTabs(part: string): TabsContextValue {
   return ctx;
 }
 
-const TabContext = createContext<{ value: string; selected: boolean; color?: string; dirty?: boolean } | null>(null);
+interface TabContextValue {
+  value: string;
+  selected: boolean;
+  color?: string;
+  dirty?: boolean;
+  /** Text registered by Tab.Label; names the Close button. */
+  label?: string;
+  setLabel: (label: string) => void;
+  trigger: RefObject<HTMLDivElement | null>;
+}
+
+const TabContext = createContext<TabContextValue | null>(null);
+
+/** True once the enclosing list has mounted, so only tabs added later animate in. */
+const ListContext = createContext<RefObject<boolean> | null>(null);
 
 export const focusRing =
   'outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ph-focus)]';
 export const motion = 'transition-colors duration-[var(--ph-duration)] ease-[var(--ph-ease)] motion-reduce:transition-none';
 const mono = 'font-[family-name:var(--ph-font-mono)]';
+
+const ENTER_MS = 180;
+const EXIT_MS = 135;
+
+const prefersReducedMotion = () =>
+  typeof window !== 'undefined' && !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+const resolveMotion = (m: TabsMotion): TabsMotion => (m === 'standard' && prefersReducedMotion() ? 'reduced' : m);
+const scrollBehavior = (m: TabsMotion): ScrollBehavior => (resolveMotion(m) === 'standard' ? 'smooth' : 'auto');
 
 /** Keep both ends of long names visible: "quarterly-rep…draft-v3.md". */
 export function middleTruncate(text: string, max = 24): string {
@@ -52,19 +92,35 @@ export interface TabsProps extends Omit<ComponentPropsWithRef<'div'>, 'defaultVa
   defaultValue?: string;
   onValueChange?: (value: string) => void;
   orientation?: TabsOrientation;
+  /** Tab enter/exit and scroll animation. Default 'standard'. */
+  motion?: TabsMotion;
+  /** 'compact' = 32px tabs, 12px text. Default 'comfortable' (36px). */
+  density?: TabsDensity;
 }
 
-function TabsRoot({ value, defaultValue, onValueChange, orientation = 'horizontal', className, ...rest }: TabsProps) {
+function TabsRoot({
+  value,
+  defaultValue,
+  onValueChange,
+  orientation = 'horizontal',
+  motion: motionPref = 'standard',
+  density = 'comfortable',
+  className,
+  ...rest
+}: TabsProps) {
   const [inner, setInner] = useState(defaultValue);
+  const id = useId();
   const current = value ?? inner;
   const select = (next: string) => {
     if (value === undefined) setInner(next);
     onValueChange?.(next);
   };
   return (
-    <TabsContext.Provider value={{ value: current, select, orientation }}>
+    <TabsContext.Provider value={{ value: current, select, orientation, id, motion: motionPref, density }}>
       <div
         data-orientation={orientation}
+        data-density={density}
+        data-motion={motionPref}
         className={cn('flex min-h-0', orientation === 'horizontal' ? 'flex-col' : 'flex-row', className)}
         {...rest}
       />
@@ -72,12 +128,20 @@ function TabsRoot({ value, defaultValue, onValueChange, orientation = 'horizonta
   );
 }
 
-/** Roving tabindex: arrows move focus along the tablist, Home/End jump. */
+/** Tabs reachable by keyboard: not disabled, not on their way out. */
+const liveTabs = (root: Element | null | undefined) =>
+  Array.from(root?.querySelectorAll<HTMLElement>('[role="tab"]:not([aria-disabled="true"])') ?? []).filter(
+    (t) => !t.closest('[inert]'),
+  );
+
+/** Roving tabindex: arrows move focus along the tablist, Home/End jump. Disabled tabs are skipped. */
 function onListKeyDown(e: KeyboardEvent<HTMLElement>, orientation: TabsOrientation) {
+  // A handler further in (e.g. an active keyboard drag) already owns this key.
+  if (e.defaultPrevented) return;
   const prev = orientation === 'horizontal' ? 'ArrowLeft' : 'ArrowUp';
   const next = orientation === 'horizontal' ? 'ArrowRight' : 'ArrowDown';
   if (![prev, next, 'Home', 'End'].includes(e.key)) return;
-  const tabs = Array.from(e.currentTarget.querySelectorAll<HTMLElement>('[role="tab"]'));
+  const tabs = liveTabs(e.currentTarget);
   const i = tabs.indexOf(document.activeElement as HTMLElement);
   if (i < 0) return;
   e.preventDefault();
@@ -86,58 +150,202 @@ function onListKeyDown(e: KeyboardEvent<HTMLElement>, orientation: TabsOrientati
   tabs[to]?.click();
 }
 
+/** Exactly one tab stop: the selected tab, or the first live tab when the selected one isn't rendered (e.g. filtered out). */
+function useRovingFallback(list: RefObject<HTMLElement | null>) {
+  useEffect(() => {
+    const tabs = Array.from(list.current?.querySelectorAll<HTMLElement>('[role="tab"]') ?? []);
+    const stop =
+      tabs.find((t) => t.getAttribute('aria-selected') === 'true' && !t.closest('[inert]')) ?? liveTabs(list.current)[0];
+    for (const t of tabs) t.tabIndex = t === stop ? 0 : -1;
+  });
+}
+
+function useListReady() {
+  const ready = useRef(false);
+  useEffect(() => {
+    ready.current = true;
+  }, []);
+  return ready;
+}
+
+/** Vertical wheel scrolls an overflowing horizontal strip; native horizontal gestures pass through. */
+function useWheelToHorizontal(ref: RefObject<HTMLElement | null>) {
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const onWheel = (e: WheelEvent) => {
+      const { scrollWidth, clientWidth, scrollLeft } = el;
+      if (scrollWidth <= clientWidth || Math.abs(e.deltaX) >= Math.abs(e.deltaY)) return;
+      // deltaMode: 0 pixel, 1 line, 2 page.
+      const unit = e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? clientWidth : 1;
+      const next = Math.max(0, Math.min(scrollWidth - clientWidth, scrollLeft + e.deltaY * unit));
+      if (next === scrollLeft) return;
+      el.scrollLeft = next;
+      e.preventDefault();
+    };
+    el.addEventListener('wheel', onWheel, { passive: false });
+    return () => el.removeEventListener('wheel', onWheel);
+  }, [ref]);
+}
+
+const keyOf = (n: ReactNode): Key | null => (isValidElement(n) ? n.key : null);
+
+/**
+ * Minimal presence: a keyed child that disappears stays rendered (with
+ * `data-exiting`, which Tab turns into `inert` + exit animation) for EXIT_MS.
+ * ponytail: render-time ref bookkeeping (idempotent under StrictMode); swap for a presence lib if lists need layout animation.
+ */
+function usePresence(children: ReactNode, enabled: boolean): ReactNode[] {
+  const next = Children.toArray(children);
+  const shown = useRef<ReactNode[]>(next);
+  const expired = useRef(new Set<Key>());
+  const timers = useRef(new Map<Key, ReturnType<typeof setTimeout>>());
+  const [, rerender] = useReducer((n: number) => n + 1, 0);
+  const live = new Set(next.map(keyOf));
+  const out = [...next];
+  if (enabled) {
+    shown.current.forEach((child, i) => {
+      const k = keyOf(child);
+      if (k === null || live.has(k) || expired.current.has(k)) return;
+      out.splice(Math.min(i, out.length), 0, cloneElement(child as ReactElement<Record<string, unknown>>, { 'data-exiting': '' }));
+    });
+  }
+  shown.current = out;
+  expired.current.clear();
+  const exiting = out.map(keyOf).filter((k): k is Key => k !== null && !live.has(k));
+  useEffect(() => {
+    for (const [k, t] of timers.current) {
+      if (!exiting.includes(k)) {
+        clearTimeout(t);
+        timers.current.delete(k);
+      }
+    }
+    for (const k of exiting) {
+      if (timers.current.has(k)) continue;
+      timers.current.set(
+        k,
+        setTimeout(() => {
+          timers.current.delete(k);
+          expired.current.add(k);
+          rerender();
+        }, EXIT_MS),
+      );
+    }
+  });
+  useEffect(() => {
+    const t = timers.current;
+    return () => t.forEach(clearTimeout);
+  }, []);
+  return out;
+}
+
+/** Close a tab; if focus was inside it, hand focus to the neighbouring tab. */
+function closeTab(trigger: HTMLElement | null, onClose: () => void) {
+  const tabs = liveTabs(trigger?.closest('[role="tablist"]'));
+  const refocus = !!trigger?.parentElement?.contains(document.activeElement);
+  const i = trigger ? tabs.indexOf(trigger) : -1;
+  onClose();
+  if (refocus && i >= 0) (tabs[i + 1] ?? tabs[i - 1])?.focus();
+}
+
 // ── Direction B: Sheets ───────────────────────────────────────────────────
 export interface TabsSheetListProps extends ComponentPropsWithRef<'div'> {
   /** Slot after the tabs, e.g. the New control. */
   after?: ReactNode;
   'aria-label'?: string;
+  /** Narrowest a sheet tab may get (CSS length). Default 7rem. */
+  tabMinWidth?: string;
+  /** Widest a sheet tab may get (CSS length); longer labels truncate. Default 15rem. */
+  tabMaxWidth?: string;
 }
 
-function SheetList({ after, className, children, ref, 'aria-label': ariaLabel = 'Documents', ...rest }: TabsSheetListProps) {
+function SheetList({
+  after,
+  tabMinWidth,
+  tabMaxWidth,
+  className,
+  style,
+  children,
+  ref,
+  'aria-label': ariaLabel = 'Documents',
+  ...rest
+}: TabsSheetListProps) {
+  const { motion: motionPref, density } = useTabs('SheetList');
   const scroller = useRef<HTMLDivElement>(null);
+  const list = useRef<HTMLDivElement>(null);
+  const ready = useListReady();
+  const items = usePresence(children, resolveMotion(motionPref) !== 'none');
   const [edges, setEdges] = useState({ start: false, end: false });
-  const measure = () => {
-    const el = scroller.current;
-    if (!el) return;
-    setEdges({ start: el.scrollLeft > 0, end: el.scrollLeft + el.clientWidth < el.scrollWidth - 1 });
-  };
+  useRovingFallback(list);
+  useWheelToHorizontal(scroller);
   useEffect(() => {
-    measure();
     const el = scroller.current;
     if (!el) return;
+    const measure = () => {
+      const start = el.scrollLeft > 1;
+      const end = el.scrollLeft + el.clientWidth < el.scrollWidth - 1;
+      setEdges((p) => (p.start === start && p.end === end ? p : { start, end }));
+    };
+    measure();
+    el.addEventListener('scroll', measure, { passive: true });
     const ro = new ResizeObserver(measure);
     ro.observe(el);
-    return () => ro.disconnect();
-  }, [children]);
-  const scrollBy = (dir: number) => scroller.current?.scrollBy({ left: dir * 176, behavior: 'smooth' });
-  const arrow = (dir: number, show: boolean, Icon: typeof ChevronLeft, label: string) =>
-    show && (
+    if (list.current) ro.observe(list.current);
+    return () => {
+      el.removeEventListener('scroll', measure);
+      ro.disconnect();
+    };
+  }, []);
+  const overflow = edges.start || edges.end;
+  const arrow = (dir: -1 | 1, enabled: boolean, Icon: typeof ChevronLeft, label: string) =>
+    overflow && (
       <button
         type="button"
+        data-slot="arrow"
         aria-label={label}
-        tabIndex={-1}
-        onClick={() => scrollBy(dir)}
-        className={cn('grid size-9 shrink-0 place-items-center text-ph-fg-sage hover:text-ph-fg', motion, focusRing)}
+        aria-disabled={!enabled || undefined}
+        onClick={() => enabled && scroller.current?.scrollBy({ left: dir * 200, behavior: scrollBehavior(motionPref) })}
+        className={cn(
+          'grid shrink-0 place-items-center text-ph-fg-sage',
+          density === 'compact' ? 'size-8' : 'size-9',
+          motion,
+          focusRing,
+          enabled ? 'hover:text-ph-fg' : 'cursor-default opacity-40',
+          'forced-colors:text-[ButtonText] forced-colors:aria-disabled:text-[GrayText]',
+        )}
       >
         <Icon className="size-4" aria-hidden />
       </button>
     );
   return (
-    <div ref={ref} className={cn('flex items-end bg-ph-surface pt-1.5 px-1.5', className)} {...rest}>
+    <div
+      ref={ref}
+      style={{ '--tab-min-width': tabMinWidth, '--tab-max-width': tabMaxWidth, ...style } as CSSProperties}
+      className={cn('flex items-end bg-ph-surface pt-1.5 px-1.5', className)}
+      {...rest}
+    >
       {arrow(-1, edges.start, ChevronLeft, 'Scroll tabs left')}
-      <div
-        ref={scroller}
-        role="tablist"
-        aria-label={ariaLabel}
-        aria-orientation="horizontal"
-        onScroll={measure}
-        onKeyDown={(e) => onListKeyDown(e, 'horizontal')}
-        className="flex min-w-0 flex-1 items-end gap-0.5 overflow-x-auto [scrollbar-width:none]"
-      >
-        {children}
+      <div ref={scroller} data-slot="scroller" className="min-w-0 flex-1 overflow-x-auto [scrollbar-width:none]">
+        <div
+          ref={list}
+          role="tablist"
+          data-slot="tablist"
+          data-orientation="horizontal"
+          aria-label={ariaLabel}
+          aria-orientation="horizontal"
+          onKeyDown={(e) => onListKeyDown(e, 'horizontal')}
+          className="flex w-max items-end gap-0.5"
+        >
+          <ListContext.Provider value={ready}>{items}</ListContext.Provider>
+        </div>
       </div>
       {arrow(1, edges.end, ChevronRight, 'Scroll tabs right')}
-      {after && <div className="flex h-9 shrink-0 items-center pl-1">{after}</div>}
+      {after && (
+        <div className={cn('flex shrink-0 items-center gap-1 pl-1', density === 'compact' ? 'h-8' : 'h-9')}>
+          <span aria-hidden data-slot="separator" className="h-5 border-l border-ph-border" />
+          {after}
+        </div>
+      )}
     </div>
   );
 }
@@ -166,6 +374,11 @@ function Rail({
   'aria-label': ariaLabel = 'Documents',
   ...rest
 }: TabsRailProps) {
+  const { motion: motionPref } = useTabs('Rail');
+  const list = useRef<HTMLDivElement>(null);
+  const ready = useListReady();
+  const items = usePresence(children, resolveMotion(motionPref) !== 'none');
+  useRovingFallback(list);
   const Toggle = collapsed ? PanelLeftOpen : PanelLeftClose;
   return (
     <nav
@@ -206,16 +419,24 @@ function Rail({
           />
         </div>
       )}
-      {!collapsed && after && <div className="px-2 pb-2">{after}</div>}
+      {!collapsed && after && (
+        <>
+          <div className="px-2 pb-2">{after}</div>
+          <div aria-hidden data-slot="separator" className="mx-2 mb-2 border-t border-ph-border" />
+        </>
+      )}
       <div
+        ref={list}
         role="tablist"
+        data-slot="tablist"
+        data-orientation="vertical"
         aria-label={ariaLabel}
         aria-orientation="vertical"
         hidden={collapsed}
         onKeyDown={(e) => onListKeyDown(e, 'vertical')}
         className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto px-2 pb-2"
       >
-        {children}
+        <ListContext.Provider value={ready}>{items}</ListContext.Provider>
       </div>
     </nav>
   );
@@ -228,13 +449,15 @@ export interface TabsRailGroupProps extends Omit<ComponentPropsWithRef<'div'>, '
 }
 
 function RailGroup({ label, meta, className, children, ...rest }: TabsRailGroupProps) {
+  const { motion: motionPref } = useTabs('RailGroup');
+  const items = usePresence(children, resolveMotion(motionPref) !== 'none');
   return (
     <div role="presentation" className={cn('flex flex-col gap-0.5', className)} {...rest}>
       <div className="flex items-center justify-between px-2 py-1 text-xs font-semibold uppercase tracking-wide text-ph-fg-muted">
         <span>{label}</span>
         {meta !== undefined && <span className={mono}>{meta}</span>}
       </div>
-      {children}
+      {items}
     </div>
   );
 }
@@ -242,58 +465,150 @@ function RailGroup({ label, meta, className, children, ...rest }: TabsRailGroupP
 // ── Tab + parts ───────────────────────────────────────────────────────────
 export interface TabsTabProps extends ComponentPropsWithRef<'div'> {
   value: string;
-  /** Kind colour (plugin tabColor); tints the Chip. */
+  /** Kind colour (plugin tabColor): tints the active fill, stripes, Chip and any `data-slot="icon"` child. */
   color?: string;
   /** Unsaved changes: Close shows a dot until hovered. */
   dirty?: boolean;
+  /** Not selectable, skipped by arrow keys, Close hidden. */
+  disabled?: boolean;
 }
 
-function TabRoot({ value, color, dirty, className, children, onClick, onKeyDown, ...rest }: TabsTabProps) {
-  const { value: active, select, orientation } = useTabs('Tab');
+const triggerFocusRing =
+  'has-[[data-slot=tab-trigger]:focus-visible]:outline-2 has-[[data-slot=tab-trigger]:focus-visible]:outline-offset-2 has-[[data-slot=tab-trigger]:focus-visible]:outline-[var(--ph-focus)]';
+
+/**
+ * Outer wrapper (data-slot="tab": gets ref/style/rest, e.g. Sortable's drag
+ * listeners) holding the role="tab" trigger and, as its sibling, the Close button.
+ */
+function TabRoot({ value, color, dirty, disabled, className, style, children, onClick, ref, ...rest }: TabsTabProps) {
+  const { value: active, select, orientation, id, motion: motionPref, density } = useTabs('Tab');
+  const ready = useContext(ListContext);
+  const [label, setLabel] = useState<string>();
+  const node = useRef<HTMLDivElement | null>(null);
+  const trigger = useRef<HTMLDivElement>(null);
   const selected = active === value;
   const horizontal = orientation === 'horizontal';
+  const compact = density === 'compact';
+  const exiting = (rest as Record<string, unknown>)['data-exiting'] !== undefined;
+
+  const parts = Children.toArray(children);
+  const close = parts.find((c): c is ReactElement<TabsTabCloseProps> => isValidElement(c) && c.type === TabClose);
+  const body = parts.filter((c) => c !== close);
+
+  const setNode = (el: HTMLDivElement | null) => {
+    node.current = el;
+    if (typeof ref === 'function') ref(el);
+    else if (ref) ref.current = el;
+  };
+
+  // Enter: only tabs added after the list mounted.
+  useLayoutEffect(() => {
+    const el = node.current;
+    const m = resolveMotion(motionPref);
+    if (!el || typeof el.animate !== 'function' || m === 'none' || !ready?.current) return;
+    const from = horizontal ? 'translateY(4px) scale(0.92)' : 'translateX(-4px) scale(0.92)';
+    el.animate(m === 'standard' ? [{ opacity: 0, transform: from }, { opacity: 1, transform: 'none' }] : [{ opacity: 0 }, { opacity: 1 }], {
+      duration: ENTER_MS,
+      easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)',
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- mount only
+  }, []);
+
+  // Exit: usePresence keeps the tab mounted for EXIT_MS.
+  useLayoutEffect(() => {
+    const el = node.current;
+    const m = resolveMotion(motionPref);
+    if (!exiting || !el || typeof el.animate !== 'function' || m === 'none') return;
+    el.animate(m === 'standard' ? [{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'scale(0.92)' }] : [{ opacity: 1 }, { opacity: 0 }], {
+      duration: EXIT_MS,
+      easing: 'cubic-bezier(0.4, 0, 1, 1)',
+      fill: 'forwards',
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- exit only
+  }, [exiting]);
+
+  // Keep the selected tab visible in an overflowing strip/rail (selection changes, not first mount).
+  useEffect(() => {
+    if (selected && !exiting && ready?.current)
+      node.current?.scrollIntoView?.({ block: 'nearest', inline: 'nearest', behavior: scrollBehavior(motionPref) });
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- selection changes only
+  }, [selected]);
+
   return (
-    <TabContext.Provider value={{ value, selected, color, dirty }}>
+    <TabContext.Provider value={{ value, selected, color, dirty, label, setLabel, trigger }}>
       <div
-        role="tab"
-        id={`tab-${value}`}
-        aria-selected={selected}
-        aria-controls={`panel-${value}`}
-        tabIndex={selected ? 0 : -1}
+        ref={setNode}
+        data-slot="tab"
         data-selected={selected || undefined}
+        data-dirty={dirty || undefined}
+        data-disabled={disabled || undefined}
+        data-orientation={orientation}
+        inert={exiting || undefined}
         onClick={(e) => {
-          select(value);
+          if (!disabled && !exiting) select(value);
           onClick?.(e);
         }}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            if (e.target === e.currentTarget) {
-              e.preventDefault();
-              select(value);
-            }
-          }
-          onKeyDown?.(e);
-        }}
+        style={color ? ({ '--tab-color': color, ...style } as CSSProperties) : style}
         className={cn(
-          'group relative flex shrink-0 cursor-pointer select-none items-center gap-2 text-sm',
+          'group relative flex shrink-0 select-none gap-2',
+          compact ? 'text-xs' : 'text-sm',
           motion,
-          focusRing,
+          triggerFocusRing,
           horizontal
-            ? 'h-9 w-[176px] rounded-t-[var(--ph-radius)] px-2.5'
-            : 'min-h-9 w-full flex-wrap rounded-[var(--ph-radius)] px-2 py-1.5',
+            ? cn(
+                'min-w-[var(--tab-min-width,7rem)] max-w-[var(--tab-max-width,15rem)] items-center rounded-t-[var(--ph-radius)]',
+                compact ? 'h-8 px-2' : 'h-9 px-2.5',
+              )
+            : cn('w-full items-start rounded-[var(--ph-radius)]', compact ? 'min-h-8 px-2 py-1' : 'min-h-9 px-2 py-1.5'),
+          disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer',
           selected
-            ? 'bg-ph-surface-2 text-ph-fg-strong'
-            : 'text-ph-fg-sage hover:bg-ph-surface-2/60 hover:text-ph-fg',
-          // Active indicator: mint bar on the top edge (sheets) / left edge (rail).
+            ? cn('text-ph-fg-strong', color ? 'bg-[color-mix(in_oklab,var(--tab-color)_7%,var(--ph-surface-2))]' : 'bg-ph-surface-2')
+            : cn('text-ph-fg-sage', !disabled && 'hover:bg-ph-surface-2/60 hover:text-ph-fg'),
+          // Active indicator: top edge (sheets) / left edge (rail), kind colour or primary.
           selected &&
             (horizontal
-              ? 'before:absolute before:inset-x-0 before:top-0 before:h-0.5 before:rounded-t-[var(--ph-radius)] before:bg-ph-primary'
-              : 'before:absolute before:inset-y-1 before:left-0 before:w-0.5 before:bg-ph-primary'),
+              ? 'before:absolute before:inset-x-0 before:top-0 before:h-0.5 before:rounded-t-[var(--ph-radius)]'
+              : 'before:absolute before:inset-y-1 before:left-0 before:w-0.5'),
+          selected && (color ? 'before:bg-[var(--tab-color)]' : 'before:bg-ph-primary'),
+          // Inactive sheet with a kind colour: muted bottom stripe.
+          !selected &&
+            color &&
+            horizontal &&
+            'after:absolute after:inset-x-1.5 after:bottom-0 after:h-0.5 after:bg-[color-mix(in_oklab,var(--tab-color)_35%,transparent)]',
+          color && '[&_[data-slot=icon]]:text-[var(--tab-color)]',
+          // Windows high contrast drops backgrounds: outline the selected tab, keep stripes as system colours.
+          'forced-colors:before:[forced-color-adjust:none] forced-colors:after:[forced-color-adjust:none]',
+          selected &&
+            'forced-colors:outline forced-colors:outline-2 forced-colors:-outline-offset-2 forced-colors:outline-[Highlight] forced-colors:before:bg-[Highlight]',
+          !selected && color && 'forced-colors:after:bg-[GrayText]',
           className,
         )}
         {...rest}
       >
-        {children}
+        <div
+          ref={trigger}
+          role="tab"
+          data-slot="tab-trigger"
+          id={`${id}-tab-${value}`}
+          aria-selected={selected}
+          aria-controls={`${id}-panel-${value}`}
+          aria-disabled={disabled || undefined}
+          tabIndex={selected ? 0 : -1}
+          onKeyDown={(e) => {
+            if (e.defaultPrevented || e.target !== e.currentTarget || disabled) return;
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              select(value);
+            } else if (e.key === 'Delete' && close) {
+              e.preventDefault();
+              closeTab(trigger.current, close.props.onClose);
+            }
+          }}
+          className={cn('flex min-w-0 flex-1 items-center gap-2 self-stretch outline-none', !horizontal && 'flex-wrap')}
+        >
+          {body}
+        </div>
+        {!disabled && close}
       </div>
     </TabContext.Provider>
   );
@@ -314,26 +629,43 @@ export interface TabsTabLabelProps extends Omit<ComponentPropsWithRef<'span'>, '
 }
 
 function TabLabel({ children, onRename, max, className, ...rest }: TabsTabLabelProps) {
+  const { setLabel, trigger } = useTab('Label');
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(children);
-  const commit = () => {
-    setEditing(false);
+  // Stops the blur that follows Enter/Escape from committing again.
+  const done = useRef(false);
+  useEffect(() => {
+    setLabel(children);
+  }, [children, setLabel]);
+  const end = (save: boolean, refocus: boolean) => {
+    if (done.current) return;
+    done.current = true;
     const name = draft.trim();
-    if (name && name !== children) onRename?.(name);
+    if (save && name && name !== children) onRename?.(name);
+    setEditing(false);
+    if (refocus) trigger.current?.focus();
   };
   if (editing) {
     return (
       <input
         autoFocus
+        data-slot="label"
         value={draft}
-        aria-label="Rename document"
+        aria-label="Rename tab"
         onChange={(e) => setDraft(e.target.value)}
-        onBlur={commit}
+        onBlur={() => end(true, false)}
         onClick={(e) => e.stopPropagation()}
+        // Selecting text must never start a drag.
+        onPointerDown={(e) => e.stopPropagation()}
+        onMouseDown={(e) => e.stopPropagation()}
         onKeyDown={(e) => {
           e.stopPropagation();
-          if (e.key === 'Enter') commit();
-          if (e.key === 'Escape') setEditing(false);
+          if (e.key === 'Enter') end(true, true);
+          if (e.key === 'Escape') {
+            e.preventDefault();
+            setDraft(children);
+            end(false, true);
+          }
         }}
         onFocus={(e) => e.currentTarget.select()}
         className="h-6 min-w-0 flex-1 rounded-[var(--ph-radius)] border border-ph-primary bg-ph-field px-1 text-sm text-ph-fg outline-none"
@@ -342,10 +674,12 @@ function TabLabel({ children, onRename, max, className, ...rest }: TabsTabLabelP
   }
   return (
     <span
+      data-slot="label"
       title={children}
       onDoubleClick={
         onRename &&
         (() => {
+          done.current = false;
           setDraft(children);
           setEditing(true);
         })
@@ -364,6 +698,7 @@ function TabChip({ className, style, ...rest }: TabsTabChipProps) {
   const { color } = useTab('Chip');
   return (
     <span
+      data-slot="chip"
       className={cn(
         'shrink-0 rounded-[var(--ph-radius)] border px-1 text-[10px] leading-4 uppercase',
         mono,
@@ -380,34 +715,51 @@ export interface TabsTabMetaProps extends ComponentPropsWithRef<'span'> {}
 
 /** Second line in the rail: "Markdown · 2m ago". */
 function TabMeta({ className, ...rest }: TabsTabMetaProps) {
-  return <span className={cn('basis-full truncate text-xs text-ph-fg-muted', mono, className)} {...rest} />;
+  return <span data-slot="meta" className={cn('basis-full truncate text-xs text-ph-fg-muted', mono, className)} {...rest} />;
 }
 
 export interface TabsTabCloseProps extends Omit<ComponentPropsWithRef<'button'>, 'onClick'> {
   onClose: () => void;
+  /** Name used in "Close {label} tab". Defaults to the Tab.Label text. */
+  label?: string;
+  /** When the button shows. 'hover' (default): on hover, focus-within, or when selected. */
+  visibility?: 'hover' | 'always' | 'selected';
 }
 
-function TabClose({ onClose, className, ...rest }: TabsTabCloseProps) {
-  const { dirty } = useTab('Close');
+const closeVisibility = {
+  hover: 'opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 group-data-[selected]:opacity-100',
+  selected: 'opacity-0 focus-visible:opacity-100 group-data-[selected]:opacity-100',
+  always: '',
+} as const;
+
+function TabClose({ onClose, label, visibility = 'hover', className, ...rest }: TabsTabCloseProps) {
+  const { dirty, label: tabLabel, trigger } = useTab('Close');
+  const name = label ?? tabLabel ?? 'this';
   return (
     <button
       type="button"
-      aria-label={dirty ? 'Close document (unsaved changes)' : 'Close document'}
-      tabIndex={-1}
+      data-slot="close"
+      aria-label={dirty ? `Close ${name} tab (unsaved changes)` : `Close ${name} tab`}
       onClick={(e) => {
         e.stopPropagation();
-        onClose();
+        closeTab(trigger.current, onClose);
+      }}
+      onPointerDown={(e) => e.stopPropagation()}
+      onKeyDown={(e) => {
+        // Native button activation; keep the key from the tab's own handlers (e.g. a keyboard drag sensor).
+        if (e.key === 'Enter' || e.key === ' ') e.stopPropagation();
       }}
       className={cn(
         'relative grid size-5 shrink-0 place-items-center rounded-[var(--ph-radius)] text-ph-fg-muted hover:bg-ph-surface-3 hover:text-ph-fg',
         motion,
         focusRing,
-        !dirty && 'opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 group-data-[selected]:opacity-100',
+        !dirty && closeVisibility[visibility],
+        'forced-colors:text-[ButtonText]',
         className,
       )}
       {...rest}
     >
-      {dirty && <span aria-hidden className="size-2 rounded-full bg-ph-primary group-hover:hidden" />}
+      {dirty && <span aria-hidden className="size-2 rounded-full bg-ph-primary group-hover:hidden forced-colors:bg-[ButtonText]" />}
       <X aria-hidden className={cn('size-3.5', dirty && 'hidden group-hover:block')} />
     </button>
   );
@@ -421,14 +773,15 @@ export interface TabsPanelProps extends ComponentPropsWithRef<'div'> {
 }
 
 function Panel({ value, keepMounted = true, className, children, ...rest }: TabsPanelProps) {
-  const { value: active } = useTabs('Panel');
+  const { value: active, id } = useTabs('Panel');
   const selected = active === value;
   if (!selected && !keepMounted) return null;
   return (
     <div
       role="tabpanel"
-      id={`panel-${value}`}
-      aria-labelledby={`tab-${value}`}
+      data-slot="panel"
+      id={`${id}-panel-${value}`}
+      aria-labelledby={`${id}-tab-${value}`}
       hidden={!selected}
       tabIndex={0}
       className={cn('min-h-0 min-w-0 flex-1 bg-ph-surface-2', focusRing, className)}

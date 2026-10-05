@@ -15,6 +15,8 @@ export const Tabs = Object.assign(TabsRoot, {
 export { middleTruncate } from './Tabs';
 export type {
   TabsOrientation,
+  TabsMotion,
+  TabsDensity,
   TabsProps,
   TabsSheetListProps,
   TabsRailProps,
