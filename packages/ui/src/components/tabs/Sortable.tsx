@@ -1,7 +1,7 @@
 // Opt-in drag reorder for the tabs family. Import from
 // '@abmex/ui/components/tabs/Sortable'; requires the optional @dnd-kit peers.
 // The root '@abmex/ui' entry never imports this file.
-import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
+import { createContext, useContext, useEffect, useId, useRef, useState, type ReactNode } from 'react';
 import {
   DndContext,
   DragOverlay,
@@ -25,7 +25,7 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { prefersReducedMotion } from '../../utils/motion';
-import { Rail, SheetList, Tab, type TabsRailProps, type TabsSheetListProps, type TabsTabProps } from './Tabs';
+import { Rail, SheetList, Tab, TabGhostContext, type TabsRailProps, type TabsSheetListProps, type TabsTabProps } from './Tabs';
 
 interface SortableProps {
   /** Tab values in display order. */
@@ -97,9 +97,12 @@ function SortableArea({
   };
 
   const ghost = activeId && registry.get(activeId);
+  const dndId = useId();
   return (
     <TabRegistry.Provider value={registry}>
       <DndContext
+        // Stable id: dnd-kit's global counter otherwise differs between SSR and hydration.
+        id={dndId}
         sensors={sensors}
         collisionDetection={closestCenter}
         accessibility={{ announcements, screenReaderInstructions: instructions }}
@@ -121,7 +124,9 @@ function SortableArea({
               inert
               className="pointer-events-none scale-[1.03] opacity-95 shadow-[var(--ph-shadow-overlay)] rounded-[var(--ph-radius)]"
             >
-              {renderOverlay ? renderOverlay(activeId) : ghost && <Tab {...ghost} id={undefined} />}
+              <TabGhostContext.Provider value>
+                {renderOverlay ? renderOverlay(activeId) : ghost && <Tab {...ghost} id={undefined} />}
+              </TabGhostContext.Provider>
             </div>
           )}
         </DragOverlay>
@@ -177,6 +182,8 @@ export function SortableTab({ style, ...props }: SortableTabProps) {
       // document listener still moves the tab).
       onKeyDownCapture={(e) => {
         props.onKeyDownCapture?.(e);
+        // Typing in the rename field (Enter/Space) must never pick the tab up.
+        if ((e.target as HTMLElement).closest('input, textarea, [contenteditable="true"]')) return;
         dragKeyDown?.(e);
         if (isDragging && /^(Arrow|Home$|End$)/.test(e.key)) e.preventDefault();
       }}

@@ -65,6 +65,8 @@ const TabContext = createContext<TabContextValue | null>(null);
 
 /** True once the enclosing list has mounted, so only tabs added later animate in. */
 const ListContext = createContext<RefObject<boolean> | null>(null);
+/** True inside a drag ghost: the clone renders no tab semantics, ids or tab stop. */
+export const TabGhostContext = createContext(false);
 
 export const focusRing =
   'outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ph-focus)]';
@@ -481,6 +483,7 @@ const triggerFocusRing =
  * listeners) holding the role="tab" trigger and, as its sibling, the Close button.
  */
 function TabRoot({ value, color, dirty, disabled, className, style, children, onClick, ref, ...rest }: TabsTabProps) {
+  const ghost = useContext(TabGhostContext);
   const { value: active, select, orientation, id, motion: motionPref, density } = useTabs('Tab');
   const ready = useContext(ListContext);
   const [label, setLabel] = useState<string>();
@@ -587,13 +590,13 @@ function TabRoot({ value, color, dirty, disabled, className, style, children, on
       >
         <div
           ref={trigger}
-          role="tab"
+          role={ghost ? undefined : 'tab'}
           data-slot="tab-trigger"
-          id={`${id}-tab-${value}`}
-          aria-selected={selected}
-          aria-controls={`${id}-panel-${value}`}
+          id={ghost ? undefined : `${id}-tab-${value}`}
+          aria-selected={ghost ? undefined : selected}
+          aria-controls={ghost ? undefined : `${id}-panel-${value}`}
           aria-disabled={disabled || undefined}
-          tabIndex={selected ? 0 : -1}
+          tabIndex={ghost ? -1 : selected ? 0 : -1}
           onKeyDown={(e) => {
             if (e.defaultPrevented || e.target !== e.currentTarget || disabled) return;
             if (e.key === 'Enter' || e.key === ' ') {
