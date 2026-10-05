@@ -14,6 +14,7 @@ import {
   formatOklch,
   isFamilyDefault,
   parseColorToLch,
+  roleVar,
 } from '../../utils/themePalette';
 import { parseSemanticVariables, type SemanticVariable } from '../../internal/parseSemanticVariables';
 
@@ -290,7 +291,7 @@ export function ThemeEditorPanel({
             {COLOR_FAMILIES.map((family) => {
               const color = colors[family] ?? DEFAULT_LCH[family];
               const isSet = !isFamilyDefault(family, color);
-              const roles = Object.keys(FAMILY_ROLE_DEFAULTS[family]);
+              const roles = Object.keys(FAMILY_ROLE_DEFAULTS[family]).map(roleVar);
               return (
                 <ColorRow
                   key={family}
@@ -384,7 +385,7 @@ export function ThemeEditorPanel({
 
 /** Which family (if any) drives a Phosphor role. */
 const ROLE_FAMILY: Record<string, ColorFamily> = Object.fromEntries(
-  COLOR_FAMILIES.flatMap((f) => Object.keys(FAMILY_ROLE_DEFAULTS[f]).map((role) => [role, f] as const)),
+  COLOR_FAMILIES.flatMap((f) => Object.keys(FAMILY_ROLE_DEFAULTS[f]).map((role) => [roleVar(role), f] as const)),
 );
 
 interface ColorRowProps {

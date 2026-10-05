@@ -1,5 +1,5 @@
 // Theme palette engine: turns a theme (per-family OKLCH anchors + explicit
-// overrides) into one stylesheet that re-declares the affected `--ph-*` roles
+// overrides) into one stylesheet that re-declares the affected theme roles
 // for BOTH Phosphor twins. Pure — no DOM — so the hook, the popup, and tests
 // all compute the same CSS.
 //
@@ -21,50 +21,61 @@ import {
 
 export type Twin = 'dark' | 'light';
 
-/** Generated `--ph-*` defaults (from `phosphor.tokens.css`) for every role a
+/**
+ * The ONE seam where a role name becomes a CSS custom property. Every table
+ * below is keyed by prefix-free role names (`primary`, `fg-muted`, …), the
+ * shared vocabulary every theme will use. Phosphor still ships them as
+ * `--ph-<role>`; the `@abmex/themes` extraction drops that prefix (kb:
+ * "Decisions — Design System Consolidation (user, 2026-10-05)" #2). When it
+ * lands, change ROLE_VAR_PREFIX to '--' and nothing else.
+ */
+export const ROLE_VAR_PREFIX = '--ph-';
+export const roleVar = (role: string): string => `${ROLE_VAR_PREFIX}${role}`;
+
+/** Generated defaults (from `phosphor.tokens.css`) for every role a
  * family drives. `-fg` (text ON a solid fill) is deliberately absent: it is a
  * contrast partner of the fill, not part of the family's hue. */
 export const FAMILY_ROLE_DEFAULTS: Record<ColorFamily, Record<string, Record<Twin, ColorLCH>>> = {
   slate: {
-    '--ph-fg-muted': { dark: { l: 0.6888, c: 0.0302, h: 158.35 }, light: { l: 0.5, c: 0.0306, h: 109.81 } },
-    '--ph-border': { dark: { l: 0.3354, c: 0.0191, h: 163.55 }, light: { l: 0.8791, c: 0.0172, h: 137.03 } },
-    '--ph-border-strong': { dark: { l: 0.5851, c: 0.0214, h: 162.49 }, light: { l: 0.6322, c: 0.021, h: 162.58 } },
+    'fg-muted': { dark: { l: 0.6888, c: 0.0302, h: 158.35 }, light: { l: 0.5, c: 0.0306, h: 109.81 } },
+    'border': { dark: { l: 0.3354, c: 0.0191, h: 163.55 }, light: { l: 0.8791, c: 0.0172, h: 137.03 } },
+    'border-strong': { dark: { l: 0.5851, c: 0.0214, h: 162.49 }, light: { l: 0.6322, c: 0.021, h: 162.58 } },
   },
   teal: {
-    '--ph-primary': { dark: { l: 0.7848, c: 0.137, h: 176.88 }, light: { l: 0.5059, c: 0.0937, h: 176.17 } },
-    '--ph-primary-hover': { dark: { l: 0.8298, c: 0.1374, h: 176.69 }, light: { l: 0.4595, c: 0.0849, h: 177.06 } },
-    '--ph-primary-soft': { dark: { l: 0.3385, c: 0.0374, h: 176.68 }, light: { l: 0.9224, c: 0.0158, h: 177.06 } },
-    '--ph-primary-soft-fg': { dark: { l: 0.7848, c: 0.137, h: 176.88 }, light: { l: 0.4971, c: 0.0913, h: 176.61 } },
-    '--ph-focus': { dark: { l: 0.7848, c: 0.137, h: 176.88 }, light: { l: 0.5059, c: 0.0937, h: 176.17 } },
+    'primary': { dark: { l: 0.7848, c: 0.137, h: 176.88 }, light: { l: 0.5059, c: 0.0937, h: 176.17 } },
+    'primary-hover': { dark: { l: 0.8298, c: 0.1374, h: 176.69 }, light: { l: 0.4595, c: 0.0849, h: 177.06 } },
+    'primary-soft': { dark: { l: 0.3385, c: 0.0374, h: 176.68 }, light: { l: 0.9224, c: 0.0158, h: 177.06 } },
+    'primary-soft-fg': { dark: { l: 0.7848, c: 0.137, h: 176.88 }, light: { l: 0.4971, c: 0.0913, h: 176.61 } },
+    'focus': { dark: { l: 0.7848, c: 0.137, h: 176.88 }, light: { l: 0.5059, c: 0.0937, h: 176.17 } },
   },
   rose: {
-    '--ph-danger': { dark: { l: 0.7062, c: 0.1152, h: 26.95 }, light: { l: 0.5199, c: 0.1208, h: 26.56 } },
-    '--ph-danger-hover': { dark: { l: 0.7506, c: 0.1147, h: 27.35 }, light: { l: 0.4748, c: 0.1204, h: 27.14 } },
-    '--ph-danger-soft': { dark: { l: 0.3253, c: 0.0117, h: 26.25 }, light: { l: 0.9242, c: 0.0167, h: 26.65 } },
-    '--ph-danger-soft-fg': { dark: { l: 0.7093, c: 0.115, h: 26.94 }, light: { l: 0.5199, c: 0.1208, h: 26.56 } },
+    'danger': { dark: { l: 0.7062, c: 0.1152, h: 26.95 }, light: { l: 0.5199, c: 0.1208, h: 26.56 } },
+    'danger-hover': { dark: { l: 0.7506, c: 0.1147, h: 27.35 }, light: { l: 0.4748, c: 0.1204, h: 27.14 } },
+    'danger-soft': { dark: { l: 0.3253, c: 0.0117, h: 26.25 }, light: { l: 0.9242, c: 0.0167, h: 26.65 } },
+    'danger-soft-fg': { dark: { l: 0.7093, c: 0.115, h: 26.94 }, light: { l: 0.5199, c: 0.1208, h: 26.56 } },
   },
   emerald: {
-    '--ph-success': { dark: { l: 0.6929, c: 0.1108, h: 152.21 }, light: { l: 0.4913, c: 0.0908, h: 149.56 } },
-    '--ph-success-hover': { dark: { l: 0.737, c: 0.1099, h: 152.5 }, light: { l: 0.4462, c: 0.091, h: 149.88 } },
-    '--ph-success-soft': { dark: { l: 0.3214, c: 0.032, h: 151.54 }, light: { l: 0.9202, c: 0.0168, h: 151.09 } },
-    '--ph-success-soft-fg': { dark: { l: 0.696, c: 0.1107, h: 152.23 }, light: { l: 0.4913, c: 0.0908, h: 149.56 } },
+    'success': { dark: { l: 0.6929, c: 0.1108, h: 152.21 }, light: { l: 0.4913, c: 0.0908, h: 149.56 } },
+    'success-hover': { dark: { l: 0.737, c: 0.1099, h: 152.5 }, light: { l: 0.4462, c: 0.091, h: 149.88 } },
+    'success-soft': { dark: { l: 0.3214, c: 0.032, h: 151.54 }, light: { l: 0.9202, c: 0.0168, h: 151.09 } },
+    'success-soft-fg': { dark: { l: 0.696, c: 0.1107, h: 152.23 }, light: { l: 0.4913, c: 0.0908, h: 149.56 } },
   },
   amber: {
-    '--ph-warning': { dark: { l: 0.7807, c: 0.095, h: 69.84 }, light: { l: 0.761, c: 0.1005, h: 72.19 } },
-    '--ph-warning-hover': { dark: { l: 0.825, c: 0.0949, h: 69.49 }, light: { l: 0.7159, c: 0.1005, h: 72.42 } },
-    '--ph-warning-soft': { dark: { l: 0.3357, c: 0.0199, h: 67.06 }, light: { l: 0.9562, c: 0.0176, h: 73.08 } },
-    '--ph-warning-soft-fg': { dark: { l: 0.7807, c: 0.095, h: 69.84 }, light: { l: 0.5264, c: 0.0998, h: 71.84 } },
+    'warning': { dark: { l: 0.7807, c: 0.095, h: 69.84 }, light: { l: 0.761, c: 0.1005, h: 72.19 } },
+    'warning-hover': { dark: { l: 0.825, c: 0.0949, h: 69.49 }, light: { l: 0.7159, c: 0.1005, h: 72.42 } },
+    'warning-soft': { dark: { l: 0.3357, c: 0.0199, h: 67.06 }, light: { l: 0.9562, c: 0.0176, h: 73.08 } },
+    'warning-soft-fg': { dark: { l: 0.7807, c: 0.095, h: 69.84 }, light: { l: 0.5264, c: 0.0998, h: 71.84 } },
   },
 };
 
 /** The role a family's anchor IS (dark twin): picking the anchor sets this
  * role to exactly the picked color. */
 export const FAMILY_ANCHOR_ROLE: Record<ColorFamily, string> = {
-  slate: '--ph-fg-muted',
-  teal: '--ph-primary',
-  rose: '--ph-danger',
-  emerald: '--ph-success',
-  amber: '--ph-warning',
+  slate: 'fg-muted',
+  teal: 'primary',
+  rose: 'danger',
+  emerald: 'success',
+  amber: 'warning',
 };
 
 const EPS = 1e-4;
@@ -115,14 +126,14 @@ export function deriveRole(anchor: ColorLCH, anchorDefault: ColorLCH, roleDefaul
   return { l: mapped.l, c: Number.isFinite(mapped.c) ? mapped.c : 0, h: Number.isFinite(mapped.h) ? mapped.h : raw.h };
 }
 
-/** Text-on-fill partners (`--ph-primary-fg`, …): the generated ink of each
+/** Text-on-fill partners (`primary-fg`, …): the generated ink of each
  * twin. After a fill moves, whichever ink reads better on it is used, so a
  * user who darkens primary in the dark twin still gets legible button text. */
 export const FAMILY_FILL_INK: Partial<Record<ColorFamily, { fill: string; ink: string; inks: ColorLCH[] }>> = {
-  teal: { fill: '--ph-primary', ink: '--ph-primary-fg', inks: [{ l: 0.2143, c: 0.0177, h: 170.07 }, { l: 0.9857, c: 0.008, h: 114.22 }] },
-  rose: { fill: '--ph-danger', ink: '--ph-danger-fg', inks: [{ l: 0.2143, c: 0.0177, h: 170.07 }, { l: 0.9857, c: 0.008, h: 114.22 }] },
-  emerald: { fill: '--ph-success', ink: '--ph-success-fg', inks: [{ l: 0.2143, c: 0.0177, h: 170.07 }, { l: 0.9857, c: 0.008, h: 114.22 }] },
-  amber: { fill: '--ph-warning', ink: '--ph-warning-fg', inks: [{ l: 0.2249, c: 0.0355, h: 108.95 }, { l: 0.9857, c: 0.008, h: 114.22 }] },
+  teal: { fill: 'primary', ink: 'primary-fg', inks: [{ l: 0.2143, c: 0.0177, h: 170.07 }, { l: 0.9857, c: 0.008, h: 114.22 }] },
+  rose: { fill: 'danger', ink: 'danger-fg', inks: [{ l: 0.2143, c: 0.0177, h: 170.07 }, { l: 0.9857, c: 0.008, h: 114.22 }] },
+  emerald: { fill: 'success', ink: 'success-fg', inks: [{ l: 0.2143, c: 0.0177, h: 170.07 }, { l: 0.9857, c: 0.008, h: 114.22 }] },
+  amber: { fill: 'warning', ink: 'warning-fg', inks: [{ l: 0.2249, c: 0.0355, h: 108.95 }, { l: 0.9857, c: 0.008, h: 114.22 }] },
 };
 
 const toCulori = (c: ColorLCH) => ({ mode: 'oklch', l: c.l, c: c.c, h: c.h });
@@ -142,13 +153,13 @@ export function familyRoleVars(colors: Record<ColorFamily, ColorLCH>): Record<Tw
       for (const [role, defaults] of Object.entries(FAMILY_ROLE_DEFAULTS[family])) {
         const exact = twin === 'dark' && role === FAMILY_ANCHOR_ROLE[family];
         derived[role] = exact ? anchor : deriveRole(anchor, anchorDefault, defaults[twin], { twin, role });
-        out[twin][role] = formatOklch(derived[role]!);
+        out[twin][roleVar(role)] = formatOklch(derived[role]!);
       }
       const pair = FAMILY_FILL_INK[family];
       const fill = pair && derived[pair.fill];
       if (pair && fill) {
         const best = pair.inks.reduce((a, b) => (contrastRatio(b, fill) > contrastRatio(a, fill) ? b : a));
-        out[twin][pair.ink] = formatOklch(best);
+        out[twin][roleVar(pair.ink)] = formatOklch(best);
       }
     }
   }

@@ -14,6 +14,8 @@ The theme editor is one tier with one picker, authored in OKLCH, and every contr
 
 - `themeStylesheet(theme)`, `familyRoleVars`, `deriveRole`, `normalizeFamilyColors`, `formatOklch`, `parseColorToLch`, `FAMILY_ROLE_DEFAULTS`, `FAMILY_ANCHOR_ROLE`. A family move is transferred onto each role per twin (lightness offset, chroma ratio, hue offset, gamut-mapped to sRGB); the dark-twin anchor role becomes the pick exactly. The stylesheet re-declares roles on Phosphor's own twin selectors, so a pick never leaks into a nested `.light` scope the way an inline style on `<html>` did.
 
+- `ROLE_VAR_PREFIX` / `roleVar(role)`: the palette tables are keyed by prefix-free role names (`primary`, `fg-muted`, …); `roleVar` is the only place a role becomes a custom property. Phosphor still ships `--ph-<role>`; the `@abmex/themes` extraction drops the prefix and changes only this constant.
+
 ### Fixed
 
 - Token pickers open on the token's live value (family edits included), not its stylesheet default.

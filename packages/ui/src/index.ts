@@ -113,6 +113,8 @@ export type { ColorFamily, ColorHS, ColorLCH, Theme } from './types/theme';
 export {
   FAMILY_ANCHOR_ROLE,
   FAMILY_FILL_INK,
+  ROLE_VAR_PREFIX,
+  roleVar,
   contrastRatio,
   FAMILY_ROLE_DEFAULTS,
   deriveRole,
