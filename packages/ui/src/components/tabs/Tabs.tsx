@@ -2,6 +2,7 @@ import {
   Children,
   cloneElement,
   createContext,
+  useCallback,
   isValidElement,
   useContext,
   useEffect,
@@ -280,24 +281,31 @@ function SheetList({
   const [edges, setEdges] = useState({ start: false, end: false });
   useRovingFallback(list);
   useWheelToHorizontal(scroller);
-  useEffect(() => {
-    const el = scroller.current;
+  // Overflow edges. A callback ref (React 19 cleanup form) binds the listeners to
+  // whichever node is actually mounted, and a per-render layout pass re-measures
+  // when tabs change; a mount-only effect could miss both.
+  const measure = useRef<() => void>(() => {});
+  const setScroller = useCallback((el: HTMLDivElement | null) => {
+    scroller.current = el;
     if (!el) return;
-    const measure = () => {
+    const run = () => {
       const start = el.scrollLeft > 1;
       const end = el.scrollLeft + el.clientWidth < el.scrollWidth - 1;
       setEdges((p) => (p.start === start && p.end === end ? p : { start, end }));
     };
-    measure();
-    el.addEventListener('scroll', measure, { passive: true });
-    const ro = new ResizeObserver(measure);
+    measure.current = run;
+    run();
+    el.addEventListener('scroll', run, { passive: true });
+    const ro = new ResizeObserver(run);
     ro.observe(el);
-    if (list.current) ro.observe(list.current);
+    if (el.firstElementChild) ro.observe(el.firstElementChild);
     return () => {
-      el.removeEventListener('scroll', measure);
+      el.removeEventListener('scroll', run);
       ro.disconnect();
+      measure.current = () => {};
     };
   }, []);
+  useLayoutEffect(() => measure.current());
   const overflow = edges.start || edges.end;
   const arrow = (dir: -1 | 1, enabled: boolean, Icon: typeof ChevronLeft, label: string) =>
     overflow && (
@@ -327,7 +335,7 @@ function SheetList({
       {...rest}
     >
       {arrow(-1, edges.start, ChevronLeft, 'Scroll tabs left')}
-      <div ref={scroller} data-slot="scroller" className="min-w-0 flex-1 overflow-x-auto [scrollbar-width:none]">
+      <div ref={setScroller} data-slot="scroller" className="min-w-0 flex-1 overflow-x-auto [scrollbar-width:none]">
         <div
           ref={list}
           role="tablist"
