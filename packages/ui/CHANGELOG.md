@@ -19,6 +19,7 @@ The theme editor is one tier with one picker, authored in OKLCH, and every contr
 ### Fixed
 
 - Token pickers open on the token's live value (family edits included), not its stylesheet default.
+- Generated fill text (`--ph-primary-fg`, `-danger-fg`, `-success-fg`, `-warning-fg`) always clears WCAG 4.5:1. The tinted twin inks are used when one of them passes; for mid-luminance fills such as `#777` that neither tinted ink can serve, pure black or white is used (`fillInk`).
 
 ## 0.4.0
 

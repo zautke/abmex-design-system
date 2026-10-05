@@ -141,6 +141,21 @@ export function contrastRatio(a: ColorLCH, b: ColorLCH): number {
   return culori.wcagContrast(toCulori(a), toCulori(b));
 }
 
+/** WCAG AA for normal text. */
+export const FILL_INK_MIN_CONTRAST = 4.5;
+const BLACK: ColorLCH = { l: 0, c: 0, h: 0 };
+const WHITE: ColorLCH = { l: 1, c: 0, h: 0 };
+
+/** The tinted ink that reads best on `fill`; if neither tinted ink reaches
+ * 4.5:1 (mid-luminance fills such as #777), pure black or white, whichever is
+ * higher. One of those two always clears it: the worst case is the luminance
+ * where both tie, sqrt(1.05 * 0.05) - 0.05 ≈ 0.179, giving ≈ 4.58:1. */
+export function fillInk(fill: ColorLCH, inks: ColorLCH[]): ColorLCH {
+  const better = (a: ColorLCH, b: ColorLCH) => (contrastRatio(b, fill) > contrastRatio(a, fill) ? b : a);
+  const tinted = inks.reduce(better);
+  return contrastRatio(tinted, fill) >= FILL_INK_MIN_CONTRAST ? tinted : better(BLACK, WHITE);
+}
+
 /** Every role var a family edit writes, per twin. Untouched families write nothing. */
 export function familyRoleVars(colors: Record<ColorFamily, ColorLCH>): Record<Twin, Record<string, string>> {
   const out: Record<Twin, Record<string, string>> = { dark: {}, light: {} };
@@ -158,8 +173,7 @@ export function familyRoleVars(colors: Record<ColorFamily, ColorLCH>): Record<Tw
       const pair = FAMILY_FILL_INK[family];
       const fill = pair && derived[pair.fill];
       if (pair && fill) {
-        const best = pair.inks.reduce((a, b) => (contrastRatio(b, fill) > contrastRatio(a, fill) ? b : a));
-        out[twin][roleVar(pair.ink)] = formatOklch(best);
+        out[twin][roleVar(pair.ink)] = formatOklch(fillInk(fill, pair.inks));
       }
     }
   }
