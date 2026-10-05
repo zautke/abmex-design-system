@@ -1,5 +1,23 @@
 # @abmex/ui
 
+## 0.5.0
+
+The theme editor is one tier with one picker, authored in OKLCH, and every control is bound.
+
+### Changed (breaking)
+
+- `Theme.colors` is `Record<ColorFamily, ColorLCH>` (`{ l, c, h }`, OKLCH) instead of hue/saturation. Each family is an anchor equal to the dark-twin value of the Phosphor role it drives (`DEFAULT_LCH`): slate → `--ph-fg-muted` (+ `--ph-border`, `--ph-border-strong`), teal → `--ph-primary` (+ `-hover`, `-soft`, `-soft-fg`, `--ph-focus`), rose → `--ph-danger*`, emerald → `--ph-success*`, amber → `--ph-warning*`. `ColorHS` / `DEFAULT_HS` remain only as deprecated migration inputs.
+- `ThemeEditorPanel`: the hue/saturation slider cards are gone. Families and tokens share one row (text field, swatch → the full `ColorSystem` picker with HEX / RGB / HSL / OKLCH, CLEAR). Prop `handleRawChange(family, 'h'|'s', n)` is replaced by `handleFamilyChange(family, ColorLCH)`; new optional `onResetAll` performs Reset All as one write.
+- `ColorSystem` holds and emits OKLCH (`oklch(L% C H)`), and ignores the echo of its own last emission, so L/C/H moves no longer quantise to 8-bit sRGB or snap back.
+
+### Added
+
+- `themeStylesheet(theme)`, `familyRoleVars`, `deriveRole`, `normalizeFamilyColors`, `formatOklch`, `parseColorToLch`, `FAMILY_ROLE_DEFAULTS`, `FAMILY_ANCHOR_ROLE`. A family move is transferred onto each role per twin (lightness offset, chroma ratio, hue offset, gamut-mapped to sRGB); the dark-twin anchor role becomes the pick exactly. The stylesheet re-declares roles on Phosphor's own twin selectors, so a pick never leaks into a nested `.light` scope the way an inline style on `<html>` did.
+
+### Fixed
+
+- Token pickers open on the token's live value (family edits included), not its stylesheet default.
+
 ## 0.4.0
 
 The kit's skin is now **Phosphor**: a matte instrument-panel theme, dark by default with a bone-paper light twin, from the Phosphor design system (claude.ai artifact, 2026-10-01).

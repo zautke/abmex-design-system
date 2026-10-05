@@ -82,6 +82,7 @@ export type {
 export {
   COLOR_FAMILIES,
   DEFAULT_HS,
+  DEFAULT_LCH,
   DEFAULT_THEME,
   SHADES,
 } from './types/theme';
@@ -108,7 +109,22 @@ export type {
   ProviderState,
 } from './types/provider';
 
-export type { ColorFamily, ColorHS, Theme } from './types/theme';
+export type { ColorFamily, ColorHS, ColorLCH, Theme } from './types/theme';
+export {
+  FAMILY_ANCHOR_ROLE,
+  FAMILY_FILL_INK,
+  contrastRatio,
+  FAMILY_ROLE_DEFAULTS,
+  deriveRole,
+  familyRoleVars,
+  formatOklch,
+  isFamilyDefault,
+  normalizeFamilyColors,
+  parseColorToLch,
+  sameColor,
+  themeStylesheet,
+} from './utils/themePalette';
+export type { Twin } from './utils/themePalette';
 
 export type {
   JsonValue,

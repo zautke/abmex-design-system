@@ -1,4 +1,4 @@
-import { useEffect, useId, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import * as culori from 'culori';
 import { HexColorPicker } from 'react-colorful';
 import {
@@ -9,6 +9,22 @@ import {
 export interface ColorSystemProps {
   color: string; // The initial color (hex, rgb, oklch, etc)
   onChange: (color: string) => void; // Called when the color changes
+}
+
+type OklchColor = { mode?: 'oklch'; l: number; c: number; h?: number; alpha?: number };
+
+const clamp = (n: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, Number.isFinite(n) ? n : lo));
+
+function toOklch(value: string): OklchColor {
+  return culori.oklch(value) || culori.oklch('#000000')!;
+}
+
+/** `oklch(L% C H)` — rounded far below perceptual thresholds, stable for equality. */
+function formatOklchCss(c: OklchColor): string {
+  const l = Number((c.l * 100).toFixed(2));
+  const ch = Number((c.c || 0).toFixed(4));
+  const h = Number((((c.h ?? 0) % 360 + 360) % 360).toFixed(2));
+  return `oklch(${l}% ${ch} ${h})`;
 }
 
 const CHANNEL_LABELS: Record<string, string> = {
@@ -22,24 +38,33 @@ const CHANNEL_LABELS: Record<string, string> = {
 };
 
 export function ColorSystem({ color: initialColor, onChange }: ColorSystemProps) {
-  // We'll manage the internal state in OKLCH, converting back and forth
-  // Initialize from the incoming string, fallback to black if unparseable
-  const [internalColor, setInternalColor] = useState(() => culori.oklch(initialColor) || culori.oklch('#000000')!);
-  const [hexInput, setHexInput] = useState(culori.formatHex(initialColor) || '#000000');
+  // State is held in OKLCH — the space the theme is authored in — and every
+  // change is emitted as an `oklch(...)` string, so L/C/H moves survive the
+  // round-trip exactly (emitting hex quantised them to 8-bit sRGB and the
+  // prop echo then snapped the sliders back).
+  const [internalColor, setInternalColor] = useState(() => toOklch(initialColor));
+  const [hexInput, setHexInput] = useState(() => culori.formatHex(toOklch(initialColor)) || '#000000');
+  // Every string this instance has emitted since the last external change.
+  // A parent that persists asynchronously feeds them back late and in order
+  // (h=54, h=108, … while the user is already at h=324); re-applying any of
+  // those echoes would snap the controls back to a stale value and the next
+  // move would be computed from it. Echoes are ignored; a value this instance
+  // never produced is an external change and is applied.
+  const emitted = useRef<Set<string>>(new Set());
   // Per-instance prefix so multiple ColorSystem mounts on the same page do
   // not collide on input id / name (Browser-1 a11y fix). useId is already
   // collision-free; we reuse it as the namespace for control `name`s too.
   const instanceId = useId();
   const hexInputId = `${instanceId}-hex`;
 
-  // Convert OKLCH to other spaces for the UI
-  // Note: culori.rgb returns values from 0-1, so we'll scale for the UI
+  // Derived views. culori.rgb returns 0–1 channels; the UI scales them.
   const rgb = culori.rgb(internalColor) || culori.rgb('#000000')!;
   const hsl = culori.hsl(internalColor) || culori.hsl('#000000')!;
   const hex = culori.formatHex(internalColor) || '#000000';
 
-  // Update when external color prop changes (if needed)
   useEffect(() => {
+    if (emitted.current.has(initialColor)) return;
+    emitted.current.clear();
     const c = culori.oklch(initialColor);
     if (c) {
       setInternalColor(c);
@@ -47,43 +72,36 @@ export function ColorSystem({ color: initialColor, onChange }: ColorSystemProps)
     }
   }, [initialColor]);
 
+  const commit = (next: OklchColor, hexText?: string) => {
+    const safe = { ...next, l: clamp(next.l, 0, 1), c: Math.max(0, next.c || 0), h: Number.isFinite(next.h) ? next.h : 0 };
+    setInternalColor(safe);
+    setHexInput(hexText ?? (culori.formatHex(safe) || '#000000'));
+    const out = formatOklchCss(safe);
+    emitted.current.add(out);
+    onChange(out);
+  };
+
   const handleHexChange = (newHex: string) => {
     setHexInput(newHex);
     const parsed = culori.oklch(newHex);
-    if (parsed) {
-      setInternalColor(parsed);
-      onChange(culori.formatHex(parsed) || '#000000');
-    }
+    if (parsed) commit(parsed, newHex);
   };
 
   const handleColorPickerChange = (newHex: string) => {
-    setHexInput(newHex);
     const parsed = culori.oklch(newHex);
-    if (parsed) {
-      setInternalColor(parsed);
-      onChange(culori.formatHex(parsed) || '#000000');
-    }
+    if (parsed) commit(parsed, newHex);
   };
 
   const handleChannelChange = (space: 'oklch' | 'rgb' | 'hsl', channel: string, value: number) => {
-    let newColor: any;
-
+    let newColor: OklchColor | undefined;
     if (space === 'oklch') {
       newColor = { ...internalColor, [channel]: value };
     } else if (space === 'rgb') {
       newColor = culori.oklch({ ...rgb, mode: 'rgb', [channel]: value });
-    } else if (space === 'hsl') {
+    } else {
       newColor = culori.oklch({ ...hsl, mode: 'hsl', [channel]: value });
     }
-
-    if (newColor) {
-      setInternalColor(newColor);
-      const newHex = culori.formatHex(newColor);
-      if (newHex) {
-        setHexInput(newHex);
-        onChange(newHex);
-      }
-    }
+    if (newColor) commit(newColor);
   };
 
   return (
