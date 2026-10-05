@@ -23,12 +23,20 @@ export interface TabsSwitcherProps extends Omit<ComponentPropsWithRef<'div'>, 'o
   value?: string;
   /** Defaults to selecting in the enclosing Tabs. */
   onSelect?: (value: string) => void;
-  /** "Ctrl+K" style; matches Ctrl or Meta. `null` disables the shortcut. */
+  /**
+   * "Ctrl+K" style hint shown in the label and `aria-keyshortcuts`. The kit binds
+   * no global keys: the consumer owns the shortcut (use `matchesShortcut` and the
+   * controlled `open` / `onOpenChange`). `null` hides the hint.
+   */
   shortcut?: string | null;
+  /** Controlled open state; omit for uncontrolled. */
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
   'aria-label'?: string;
 }
 
-function matchesShortcut(e: KeyboardEvent, shortcut: string) {
+/** True when a keydown matches a "Ctrl+K"-style shortcut (Ctrl or Meta). */
+export function matchesShortcut(e: Pick<KeyboardEvent, 'key' | 'ctrlKey' | 'metaKey' | 'shiftKey'>, shortcut: string) {
   const parts = shortcut.toLowerCase().split('+');
   const key = parts.pop();
   const mod = parts.includes('ctrl') || parts.includes('mod') || parts.includes('meta');
@@ -41,6 +49,8 @@ export function Switcher({
   value,
   onSelect,
   shortcut = 'Ctrl+K',
+  open: openProp,
+  onOpenChange,
   className,
   'aria-label': ariaLabel = 'Switch document',
   ...rest
@@ -48,7 +58,12 @@ export function Switcher({
   const tabs = useTabsOptional();
   const current = value ?? tabs?.value;
   const select = onSelect ?? tabs?.select;
-  const [open, setOpen] = useState(false);
+  const [openState, setOpenState] = useState(false);
+  const open = openProp ?? openState;
+  const setOpen = (next: boolean) => {
+    if (openProp === undefined) setOpenState(next);
+    onOpenChange?.(next);
+  };
   const [query, setQuery] = useState('');
   const [cursor, setCursor] = useState(0);
   const root = useRef<HTMLDivElement>(null);
@@ -77,18 +92,11 @@ export function Switcher({
     close();
   };
 
+  // Opened from outside (controlled): start the cursor on the current document.
   useEffect(() => {
-    if (!shortcut) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (matchesShortcut(e, shortcut)) {
-        e.preventDefault();
-        if (open) close();
-        else show();
-      }
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  });
+    if (open) setCursor(Math.max(0, flat.findIndex((i) => i.value === current)));
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- on open only
+  }, [open]);
 
   useEffect(() => {
     if (!open) return;
@@ -108,6 +116,7 @@ export function Switcher({
         ref={trigger}
         type="button"
         aria-label={shortcut ? `${ariaLabel} (${shortcut})` : ariaLabel}
+        aria-keyshortcuts={shortcut ? shortcut.replace(/ctrl/i, 'Control') : undefined}
         aria-haspopup="dialog"
         aria-expanded={open}
         onClick={() => (open ? close() : show())}

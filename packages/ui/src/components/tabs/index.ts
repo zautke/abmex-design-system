@@ -29,4 +29,5 @@ export type {
   TabsPanelProps,
   TabsOrientationToggleProps,
 } from './Tabs';
+export { matchesShortcut } from './Switcher';
 export type { TabsSwitcherProps, SwitcherGroup, SwitcherItem } from './Switcher';

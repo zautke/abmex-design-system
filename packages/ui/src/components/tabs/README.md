@@ -10,7 +10,7 @@ Phosphor document tabs. Compound component; React + `--ph-*` roles only (no comp
 | `Tabs.Tab` | `value`, `color` (kind colour: tinted active fill, top/left stripe, muted bottom stripe when inactive, tints `data-slot="icon"` children), `dirty`, `disabled`. Outer `data-slot="tab"` wrapper holds the `role="tab"` trigger and `.Close` as siblings. Parts: `.Label` (middle truncation, `onRename` = double-click rename; Enter commits, Escape cancels, focus returns to the tab), `.Chip`, `.Meta` (mono second line), `.Close` (`onClose`, `label`, `visibility: 'hover' \| 'always' \| 'selected'`; named "Close {label} tab"; unsaved dot until hover). Tabs animate in/out (180/135ms). |
 | `Tabs.Panel` | `value`, `keepMounted` (default true). |
 | `Tabs.OrientationToggle` | 2-segment radiogroup; consumer owns the state. |
-| `Tabs.Switcher` | Direction C. Caret icon button → filterable grouped jump list (`groups`), "N open", ↑↓ / Enter / Esc, `shortcut` default `Ctrl+K` (`null` disables). Uses the enclosing `Tabs` unless `value`/`onSelect` are given. |
+| `Tabs.Switcher` | Direction C. Caret icon button → filterable grouped jump list (`groups`), "N open", ↑↓ / Enter / Esc. Binds **no** global keys: `shortcut` (default `Ctrl+K`, `null` hides) is a label/`aria-keyshortcuts` hint; the consumer binds it with the exported `matchesShortcut(e, shortcut)` and the controlled `open` / `onOpenChange`. Uses the enclosing `Tabs` unless `value`/`onSelect` are given. |
 
 Keyboard: roving tabindex (falls back to the first rendered tab when the selected one is filtered out); ←/→ (sheets) or ↑/↓ (rail), Home/End, Enter/Space; Delete closes a tab that has `.Close`; disabled tabs are skipped.
 

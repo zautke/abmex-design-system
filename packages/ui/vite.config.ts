@@ -9,7 +9,12 @@ export default defineConfig({
   build: {
     lib: {
       // Sortable tabs are a separate entry so the root never imports the optional @dnd-kit peers.
-      entry: [resolve(__dirname, 'src/index.ts'), resolve(__dirname, 'src/components/tabs/Sortable.tsx')],
+      entry: [
+        resolve(__dirname, 'src/index.ts'),
+        // Lean tabs subpath: consumers that only need tabs skip the chat/HeroUI families.
+        resolve(__dirname, 'src/components/tabs/index.ts'),
+        resolve(__dirname, 'src/components/tabs/Sortable.tsx'),
+      ],
       formats: ['es'],
       fileName: (_format, name) => `${name}.js`,
     },
