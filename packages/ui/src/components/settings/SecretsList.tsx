@@ -57,7 +57,7 @@ export function SecretsList({ names, onAdd, onRemove, className }: SecretsListPr
                   </Button>
                 }
               >
-                <span className="truncate font-mono text-xs text-ph-fg">{name}</span>
+                <span className="truncate font-mono text-2xs text-ph-fg">{name}</span>
               </SettingsRow>
             </li>
           ))}
@@ -72,7 +72,7 @@ export function SecretsList({ names, onAdd, onRemove, className }: SecretsListPr
           aria-label="New secret name"
           className="w-full"
         >
-          <Input placeholder="NAME" spellCheck={false} className="w-full font-mono text-xs" />
+          <Input placeholder="NAME" spellCheck={false} className="w-full font-mono text-2xs" />
         </TextField>
 
         <TextField
@@ -87,7 +87,7 @@ export function SecretsList({ names, onAdd, onRemove, className }: SecretsListPr
               placeholder="value"
               spellCheck={false}
               autoComplete="off"
-              className="w-full font-mono text-xs"
+              className="w-full font-mono text-2xs"
             />
             <InputGroup.Suffix className="pr-0">
               <Button

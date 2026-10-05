@@ -19,10 +19,10 @@ export function JsonInspectorRow({ label, sublabel, data, className }: JsonInspe
     <li className="flex w-full min-w-0 flex-col">
       <div className={cn('rounded-md border border-ph-border bg-ph-surface px-2 py-1', className)}>
         <div className="mb-1 flex items-center gap-2 text-xs uppercase tracking-[0.14em] text-ph-fg-muted">
-          <span className="font-mono">{label}</span>
+          <span className="font-mono text-2xs">{label}</span>
           {sublabel && <span>· {sublabel}</span>}
         </div>
-        <pre className="max-w-full overflow-x-auto whitespace-pre-wrap break-words font-mono text-xs text-ph-fg">
+        <pre className="max-w-full overflow-x-auto whitespace-pre-wrap break-words font-mono text-2xs text-ph-fg">
           {JSON.stringify(data, null, 2)}
         </pre>
       </div>

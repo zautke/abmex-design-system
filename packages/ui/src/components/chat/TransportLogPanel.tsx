@@ -142,14 +142,14 @@ export function TransportLogPanel({
                 <span className="tabular-nums">
                   {new Date(entry.ts).toISOString().slice(11, 23)}
                 </span>
-                {entry.direction && <span className="font-mono uppercase">{entry.direction}</span>}
-                {entry.channel && <span className="font-mono">{entry.channel}</span>}
+                {entry.direction && <span className="font-mono text-2xs uppercase">{entry.direction}</span>}
+                {entry.channel && <span className="font-mono text-2xs">{entry.channel}</span>}
                 {entry.label && <span className="text-ph-fg-muted">· {entry.label}</span>}
                 {entry.sizeBytes !== undefined && (
                   <span className="ml-auto tabular-nums text-ph-fg-disabled">{entry.sizeBytes}b</span>
                 )}
               </div>
-              <pre className="overflow-x-auto whitespace-pre-wrap break-words font-mono text-xs text-ph-fg">
+              <pre className="overflow-x-auto whitespace-pre-wrap break-words font-mono text-2xs text-ph-fg">
                 {JSON.stringify(entry.payload, null, 2)}
               </pre>
             </li>

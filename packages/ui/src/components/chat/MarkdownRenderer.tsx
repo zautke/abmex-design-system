@@ -57,7 +57,7 @@ export function MarkdownRenderer({
               return (
                 <code
                   className={cn(
-                    'rounded bg-md-code-inline-bg px-1.5 py-0.5 font-mono text-[0.85em] text-md-code-inline-text',
+                    'rounded bg-md-code-inline-bg px-1.5 py-0.5 font-mono text-[0.78em] text-md-code-inline-text',
                     codeClassName,
                   )}
                   {...rest}

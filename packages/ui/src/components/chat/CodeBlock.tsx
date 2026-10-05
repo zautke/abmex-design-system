@@ -19,14 +19,14 @@ export function CodeBlock({ language, value, className }: CodeBlockProps) {
       )}
     >
       <div className="flex items-center justify-between border-b border-ph-border bg-ph-surface px-4 py-1.5 text-xs">
-        <span className="font-mono text-ph-fg-muted">{language || 'text'}</span>
+        <span className="font-mono text-2xs text-ph-fg-muted">{language || 'text'}</span>
         <CopyButton
           value={value}
           label="Copy"
           className="opacity-0 transition-opacity focus:opacity-100 group-hover:opacity-100"
         />
       </div>
-      <div className="min-w-0 max-w-full overflow-x-auto p-4 text-[13px] leading-relaxed">
+      <div className="min-w-0 max-w-full overflow-x-auto p-4 text-xs leading-relaxed">
         <SyntaxHighlighter
           language={language || 'text'}
           style={phosphorPrism}

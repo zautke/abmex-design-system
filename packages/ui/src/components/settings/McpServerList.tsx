@@ -62,7 +62,7 @@ export function McpServerRow({ server }: McpServerRowProps) {
           pulse={settling}
           label={`${server.name}: ${server.status}`}
         />
-        <span className="truncate font-mono text-xs text-ph-fg">{server.name}</span>
+        <span className="truncate font-mono text-2xs text-ph-fg">{server.name}</span>
         <span className="flex-shrink-0 text-xs tracking-wide text-ph-fg-muted uppercase">
           {server.status}
         </span>

@@ -70,7 +70,7 @@ export function SecretKeyInput({
           spellCheck={false}
           autoComplete="off"
           onBlur={onBlur}
-          className="w-full font-mono text-xs"
+          className="w-full font-mono text-2xs"
         />
         <InputGroup.Suffix className="pr-0">
           <Button

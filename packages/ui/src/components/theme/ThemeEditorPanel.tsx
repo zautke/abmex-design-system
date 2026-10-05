@@ -336,7 +336,7 @@ export function ThemeEditorPanel({
             onChange={(e) => setFilter(e.target.value)}
             placeholder="Filter variables…"
             aria-label="Filter variables"
-            className="w-full px-2 py-1.5 text-xs font-mono border border-ph-border-strong rounded-lg bg-ph-field text-ph-fg focus:outline-none focus:border-ph-focus"
+            className="w-full px-2 py-1.5 text-3xs font-mono border border-ph-border-strong rounded-lg bg-ph-field text-ph-fg focus:outline-none focus:border-ph-focus"
           />
 
           <div className="flex flex-col gap-2" aria-label="Semantic variable groups">
@@ -344,7 +344,7 @@ export function ThemeEditorPanel({
               <details key={group} open={filter.trim().length > 0 || undefined} className="rounded-lg border border-ph-border bg-ph-surface">
                 <summary className="flex cursor-pointer items-center justify-between px-2.5 py-1.5 text-xs font-semibold text-ph-fg select-none">
                   <span>{groupLabel(group)}</span>
-                  <span className="text-xs font-mono text-ph-fg-muted">
+                  <span className="text-3xs font-mono text-ph-fg-muted">
                     {vars.filter((v) => overrides[v.name]).length > 0 && (
                       <span className="mr-1.5 text-ph-primary-soft-fg">{vars.filter((v) => overrides[v.name]).length} set</span>
                     )}
@@ -422,16 +422,16 @@ function ColorRow({ name, label, subtitle, drives, value, placeholder, pickerCol
   return (
     <div className="flex flex-col p-2.5 rounded-lg border border-ph-border bg-ph-surface-2 hover:border-ph-border-strong transition-colors gap-2" data-color-row={name}>
       <div className="flex flex-col overflow-hidden">
-        <span className="text-xs font-mono text-ph-fg truncate" title={name}>{label}</span>
+        <span className="text-3xs font-mono text-ph-fg truncate" title={name}>{label}</span>
         {drives ? (
           <details className="group/drives">
-            <summary className="flex cursor-pointer list-none items-center gap-1 text-xs font-mono text-ph-fg-muted hover:text-ph-fg focus-visible:outline-2 focus-visible:outline-ph-focus [&::-webkit-details-marker]:hidden">
+            <summary className="flex cursor-pointer list-none items-center gap-1 text-3xs font-mono text-ph-fg-muted hover:text-ph-fg focus-visible:outline-2 focus-visible:outline-ph-focus [&::-webkit-details-marker]:hidden">
               {subtitle}
               <ChevronDown size={12} aria-hidden="true" className="transition-transform group-open/drives:rotate-180" />
             </summary>
             <ul className="mt-1.5 flex flex-col gap-1" aria-label={`Roles driven by ${name}`}>
               {drives.map((v) => (
-                <li key={v} className="flex items-center gap-1.5 text-xs font-mono text-ph-fg-muted">
+                <li key={v} className="flex items-center gap-1.5 text-3xs font-mono text-ph-fg-muted">
                   <span aria-hidden="true" className="h-3 w-3 flex-shrink-0 rounded-sm border border-ph-border-strong" style={{ background: `var(${v})` }} />
                   <span className="break-all">{v}</span>
                 </li>
@@ -439,7 +439,7 @@ function ColorRow({ name, label, subtitle, drives, value, placeholder, pickerCol
             </ul>
           </details>
         ) : (
-          <span className="text-xs text-ph-fg-muted font-mono truncate" title={subtitle}>{subtitle}</span>
+          <span className="text-3xs text-ph-fg-muted font-mono truncate" title={subtitle}>{subtitle}</span>
         )}
       </div>
       <div className="flex items-center gap-2 justify-between">
@@ -455,7 +455,7 @@ function ColorRow({ name, label, subtitle, drives, value, placeholder, pickerCol
           placeholder={placeholder}
           aria-label={`Override ${name}`}
           aria-invalid={draft !== null || undefined}
-          className="flex-1 min-w-0 px-1.5 py-1 text-xs font-mono border border-ph-border-strong rounded focus:outline-none focus:border-ph-focus bg-ph-field text-ph-fg aria-[invalid]:border-ph-danger"
+          className="flex-1 min-w-0 px-1.5 py-1 text-3xs font-mono border border-ph-border-strong rounded focus:outline-none focus:border-ph-focus bg-ph-field text-ph-fg aria-[invalid]:border-ph-danger"
         />
         <div className="flex items-center gap-2 relative">
           {isColor && (

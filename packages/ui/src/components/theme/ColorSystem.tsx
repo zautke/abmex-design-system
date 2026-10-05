@@ -150,7 +150,7 @@ export function ColorSystem({ color: initialColor, onChange }: ColorSystemProps)
               onChange={(e) => handleHexChange(e.target.value)}
               aria-label="Hex color value"
               spellCheck={false}
-              className="flex-1 px-1.5 py-1 text-xs font-mono border border-ph-border-strong rounded focus:outline-none focus:border-ph-focus bg-ph-field text-ph-fg"
+              className="flex-1 px-1.5 py-1 text-3xs font-mono border border-ph-border-strong rounded focus:outline-none focus:border-ph-focus bg-ph-field text-ph-fg"
             />
           </div>
 
@@ -249,7 +249,7 @@ function ChannelSlider({
         aria-valuetext={valuetext}
         className="flex-1 h-1 bg-ph-surface-3 rounded-lg appearance-none cursor-pointer accent-ph-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ph-focus [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-2.5 [&::-webkit-slider-thumb]:h-2.5 [&::-webkit-slider-thumb]:bg-ph-primary [&::-webkit-slider-thumb]:rounded-full"
       />
-      <span className="text-xs text-ph-fg-muted w-7 text-right font-mono tabular-nums leading-none">{displayValue}</span>
+      <span className="text-3xs text-ph-fg-muted w-7 text-right font-mono tabular-nums leading-none">{displayValue}</span>
     </div>
   );
 }

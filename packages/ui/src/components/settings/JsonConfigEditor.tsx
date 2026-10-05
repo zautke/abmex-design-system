@@ -69,7 +69,7 @@ export function JsonConfigEditor({
         onKeyDown={onKeyDown}
         disabled={!isLoaded}
         fullWidth
-        className="resize-y font-mono text-xs"
+        className="resize-y font-mono text-2xs"
       />
 
       {error ? <p className="mt-1 text-xs text-conn-disconnected">{error}</p> : null}

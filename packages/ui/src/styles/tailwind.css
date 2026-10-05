@@ -29,6 +29,13 @@
 @source '../utils';
 
 @theme {
+  /* Two steps below Tailwind's smallest (xs 12px), for Victor Mono, which
+   * reads about one step larger than the sans at equal size (user directive
+   * 2026-10-05): mono is one step down everywhere, two in the theme editor. */
+  --text-2xs: 0.6875rem;
+  --text-2xs--line-height: 1rem;
+  --text-3xs: 0.625rem;
+  --text-3xs--line-height: 0.875rem;
   /* Motion — design tokens, reusable by any component.
      `animate-pop-in`: fade in while scaling up from --scale-pop, overshoot to
      --scale-pop-over and spring back to 1 (ease-in on the way up, ease-out on
@@ -191,8 +198,8 @@
 .splash-text {
   margin-top: 1rem;
   font-family: var(--ph-font-mono);
-  font-size: 0.75rem;
-  line-height: 1.125rem;
+  font-size: 0.6875rem;
+  line-height: 1rem;
   color: var(--ph-fg-muted);
 }
 

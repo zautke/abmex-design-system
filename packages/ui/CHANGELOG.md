@@ -16,6 +16,10 @@ The theme editor is one tier with one picker, authored in OKLCH, and every contr
 
 - `ROLE_VAR_PREFIX` / `roleVar(role)`: the palette tables are keyed by prefix-free role names (`primary`, `fg-muted`, …); `roleVar` is the only place a role becomes a custom property. Phosphor still ships `--ph-<role>`; the `@abmex/themes` extraction drops the prefix and changes only this constant.
 
+### Changed
+
+- Victor Mono is one step smaller everywhere and two steps smaller in the theme editor (user directive 2026-10-05). New size steps below Tailwind's `xs` (12px): `text-2xs` 11px/16px and `text-3xs` 10px/14px (`@theme`). Mono `text-xs` → `text-2xs`, theme editor and ColorSystem mono → `text-3xs`, code blocks 13px → 12px, inline code 0.85em → 0.78em, splash text 12px → 11px.
+
 ### Fixed
 
 - Token pickers open on the token's live value (family edits included), not its stylesheet default.
