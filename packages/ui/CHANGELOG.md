@@ -1,5 +1,10 @@
 # @abmex/ui
 
+## 0.5.0
+
+### Added
+
+- `tabs` family (`Tabs` compound, no HeroUI / React Aria import): `Tabs` root (controlled/uncontrolled `value`, `orientation`), `Tabs.SheetList` (direction B: 176px folder tabs, overflow arrows, `after` slot), `Tabs.Rail` + `Tabs.RailGroup` (direction D: 280px vertical list, filter field, collapse), `Tabs.Tab` with `.Label` (middle truncation, double-click rename), `.Chip` (kind colour), `.Meta`, `.Close` (unsaved dot → ✕ on hover), `Tabs.Panel`, `Tabs.OrientationToggle` (2-segment radiogroup), `Tabs.Switcher` (direction C: caret button, filterable grouped jump list, Ctrl+K). ARIA tablist/tab/tabpanel with roving tabindex; `--ph-*` roles only.
 ## 0.4.0
 
 The kit's skin is now **Phosphor**: a matte instrument-panel theme, dark by default with a bone-paper light twin, from the Phosphor design system (claude.ai artifact, 2026-10-01).
