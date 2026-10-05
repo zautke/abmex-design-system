@@ -44,13 +44,15 @@ export function ColorSystem({ color: initialColor, onChange }: ColorSystemProps)
   // prop echo then snapped the sliders back).
   const [internalColor, setInternalColor] = useState(() => toOklch(initialColor));
   const [hexInput, setHexInput] = useState(() => culori.formatHex(toOklch(initialColor)) || '#000000');
-  // Every string this instance has emitted since the last external change.
-  // A parent that persists asynchronously feeds them back late and in order
-  // (h=54, h=108, … while the user is already at h=324); re-applying any of
-  // those echoes would snap the controls back to a stale value and the next
-  // move would be computed from it. Echoes are ignored; a value this instance
-  // never produced is an external change and is applied.
+  // Outstanding echoes: strings this instance emitted that the parent has not
+  // yet caught up with. A parent that persists asynchronously feeds them back
+  // late and in order (h=54, h=108, … while the user is already at h=324);
+  // re-applying one would snap the controls to a stale value. When the parent
+  // reaches the LATEST emission it has caught up and the set is cleared, so a
+  // later external value that happens to equal an old emission (Reset All to
+  // a color picked earlier) is applied, not mistaken for an echo.
   const emitted = useRef<Set<string>>(new Set());
+  const lastEmitted = useRef<string | null>(null);
   // Per-instance prefix so multiple ColorSystem mounts on the same page do
   // not collide on input id / name (Browser-1 a11y fix). useId is already
   // collision-free; we reuse it as the namespace for control `name`s too.
@@ -63,8 +65,13 @@ export function ColorSystem({ color: initialColor, onChange }: ColorSystemProps)
   const hex = culori.formatHex(internalColor) || '#000000';
 
   useEffect(() => {
-    if (emitted.current.has(initialColor)) return;
+    if (initialColor === lastEmitted.current) {
+      emitted.current.clear(); // caught up
+      return;
+    }
+    if (emitted.current.has(initialColor)) return; // stale in-flight echo
     emitted.current.clear();
+    lastEmitted.current = null;
     const c = culori.oklch(initialColor);
     if (c) {
       setInternalColor(c);
@@ -78,6 +85,7 @@ export function ColorSystem({ color: initialColor, onChange }: ColorSystemProps)
     setHexInput(hexText ?? (culori.formatHex(safe) || '#000000'));
     const out = formatOklchCss(safe);
     emitted.current.add(out);
+    lastEmitted.current = out;
     onChange(out);
   };
 
