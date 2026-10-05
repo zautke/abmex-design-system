@@ -113,6 +113,33 @@ export function parseColorToLch(value: string): ColorLCH | null {
  *    that must stay near their surface.
  * The result is gamut-mapped into sRGB by chroma reduction.
  */
+/** Map into sRGB by chroma reduction, so the value we emit is the value every
+ * browser renders: an out-of-gamut color is otherwise clipped (Chrome) or
+ * gamut-mapped (CSS Color 4) at paint time, and a contrast decision made on the
+ * unmapped value no longer holds. A color that needed mapping keeps a 1e-4
+ * chroma margin so the 4-decimal rounding of formatOklch cannot push it back
+ * out. In-gamut colors are returned unchanged. */
+export function toSrgbGamut(c: ColorLCH): ColorLCH {
+  const raw = { mode: 'oklch' as const, l: clamp01(c.l), c: Math.max(0, c.c), h: c.h };
+  if (culori.displayable(raw)) return { l: raw.l, c: raw.c, h: c.h };
+  const mapped = culori.clampChroma(raw, 'oklch') ?? raw;
+  const chroma = Number.isFinite(mapped.c) ? Math.max(0, mapped.c - 1e-4) : 0;
+  return { l: mapped.l, c: chroma, h: Number.isFinite(mapped.h) ? mapped.h : c.h };
+}
+
+/** The user's own pick, mapped the way Chrome paints an out-of-gamut color:
+ * per-channel sRGB clipping. The swatch, the HEX field and the emitted anchor
+ * role then show the same color (chroma reduction gave a visibly duller role
+ * than the swatch next to it). formatOklch's rounding can leave a ~1e-4
+ * channel residue outside [0, 1]; contrastRatio clips the same way, so the
+ * fill-ink decision is made on exactly what is painted. */
+export function clipToSrgb(c: ColorLCH): ColorLCH {
+  const raw = { mode: 'oklch' as const, l: clamp01(c.l), c: Math.max(0, c.c), h: c.h };
+  if (culori.displayable(raw)) return { l: raw.l, c: raw.c, h: c.h };
+  const clipped = culori.oklch(culori.clampRgb(raw)) ?? raw;
+  return { l: clipped.l, c: Number.isFinite(clipped.c) ? clipped.c : 0, h: Number.isFinite(clipped.h) ? clipped.h! : c.h };
+}
+
 export function deriveRole(anchor: ColorLCH, anchorDefault: ColorLCH, roleDefault: ColorLCH, opts: { twin?: Twin; role?: string } = {}): ColorLCH {
   const weight = opts.role?.endsWith('-soft') ? 0.25 : 1;
   const sign = opts.twin === 'light' ? -1 : 1;
@@ -121,9 +148,7 @@ export function deriveRole(anchor: ColorLCH, anchorDefault: ColorLCH, roleDefaul
   const dh = anchor.h - anchorDefault.h;
   // A wash pushed to pure black/white stops being a tint; keep it in range.
   const l = opts.role?.endsWith('-soft') ? Math.min(0.97, Math.max(0.12, roleDefault.l + dl)) : clamp01(roleDefault.l + dl);
-  const raw = { mode: 'oklch', l, c: Math.max(0, roleDefault.c * ratio), h: wrapHue(roleDefault.h + dh) };
-  const mapped = culori.clampChroma(raw, 'oklch') ?? raw;
-  return { l: mapped.l, c: Number.isFinite(mapped.c) ? mapped.c : 0, h: Number.isFinite(mapped.h) ? mapped.h : raw.h };
+  return toSrgbGamut({ l, c: Math.max(0, roleDefault.c * ratio), h: wrapHue(roleDefault.h + dh) });
 }
 
 /** Text-on-fill partners (`primary-fg`, …): the generated ink of each
@@ -137,8 +162,10 @@ export const FAMILY_FILL_INK: Partial<Record<ColorFamily, { fill: string; ink: s
 };
 
 const toCulori = (c: ColorLCH) => ({ mode: 'oklch', l: c.l, c: c.c, h: c.h });
+/** WCAG contrast of the two colors AS PAINTED: each is clipped to sRGB per
+ * channel first, which is what the browser does with an out-of-gamut value. */
 export function contrastRatio(a: ColorLCH, b: ColorLCH): number {
-  return culori.wcagContrast(toCulori(a), toCulori(b));
+  return culori.wcagContrast(culori.clampRgb(toCulori(a)), culori.clampRgb(toCulori(b)));
 }
 
 /** WCAG AA for normal text. */
@@ -165,8 +192,11 @@ export function fillInk(fill: ColorLCH, inks: ColorLCH[]): ColorLCH {
 export function familyRoleVars(colors: Record<ColorFamily, ColorLCH>): Record<Twin, Record<string, string>> {
   const out: Record<Twin, Record<string, string>> = { dark: {}, light: {} };
   for (const family of COLOR_FAMILIES) {
-    const anchor = colors[family];
-    if (!anchor || isFamilyDefault(family, anchor)) continue;
+    const picked = colors[family];
+    if (!picked || isFamilyDefault(family, picked)) continue;
+    // Derive from the pick as painted, so every role follows the color the
+    // user sees in the swatch, not an out-of-gamut value no screen shows.
+    const anchor = clipToSrgb(picked);
     const anchorDefault = DEFAULT_LCH[family];
     for (const twin of ['dark', 'light'] as const) {
       const derived: Record<string, ColorLCH> = {};

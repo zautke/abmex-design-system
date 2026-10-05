@@ -10,6 +10,7 @@ import {
   type Theme,
 } from '../../types/theme';
 import {
+  FAMILY_FILL_INK,
   FAMILY_ROLE_DEFAULTS,
   formatOklch,
   isFamilyDefault,
@@ -291,13 +292,15 @@ export function ThemeEditorPanel({
             {COLOR_FAMILIES.map((family) => {
               const color = colors[family] ?? DEFAULT_LCH[family];
               const isSet = !isFamilyDefault(family, color);
-              const roles = Object.keys(FAMILY_ROLE_DEFAULTS[family]).map(roleVar);
+              const fillInk = FAMILY_FILL_INK[family]?.ink;
+              const roles = [...Object.keys(FAMILY_ROLE_DEFAULTS[family]), ...(fillInk ? [fillInk] : [])].map(roleVar);
               return (
                 <ColorRow
                   key={family}
                   name={family}
                   label={family}
-                  subtitle={`drives ${roles.join(', ')}`}
+                  subtitle={`drives ${roles.length} roles`}
+                  drives={roles}
                   value={isSet ? formatOklch(color) : ''}
                   placeholder={formatOklch(DEFAULT_LCH[family])}
                   pickerColor={formatOklch(color)}
@@ -392,6 +395,8 @@ interface ColorRowProps {
   name: string;
   label: string;
   subtitle: string;
+  /** Roles this color drives; shown as a disclosure listing each one with its live value. */
+  drives?: string[];
   /** Committed value ('' = not set). */
   value: string;
   placeholder: string;
@@ -411,14 +416,31 @@ interface ColorRowProps {
 /** One editable color: text field, swatch → full ColorSystem picker (HEX /
  * RGB / HSL / OKLCH), CLEAR. Palette families and tokens share it, so there is
  * exactly one way to pick a color in the editor. */
-function ColorRow({ name, label, subtitle, value, placeholder, pickerColor, swatch, isColor, isSet, validate, onChange, onClear, open, onOpenChange }: ColorRowProps) {
+function ColorRow({ name, label, subtitle, drives, value, placeholder, pickerColor, swatch, isColor, isSet, validate, onChange, onClear, open, onOpenChange }: ColorRowProps) {
   const [draft, setDraft] = useState<string | null>(null);
   const shown = draft ?? value;
   return (
     <div className="flex flex-col p-2.5 rounded-lg border border-ph-border bg-ph-surface-2 hover:border-ph-border-strong transition-colors gap-2" data-color-row={name}>
       <div className="flex flex-col overflow-hidden">
         <span className="text-xs font-mono text-ph-fg truncate" title={name}>{label}</span>
-        <span className="text-xs text-ph-fg-muted font-mono truncate" title={subtitle}>{subtitle}</span>
+        {drives ? (
+          <details className="group/drives">
+            <summary className="flex cursor-pointer list-none items-center gap-1 text-xs font-mono text-ph-fg-muted hover:text-ph-fg focus-visible:outline-2 focus-visible:outline-ph-focus [&::-webkit-details-marker]:hidden">
+              {subtitle}
+              <ChevronDown size={12} aria-hidden="true" className="transition-transform group-open/drives:rotate-180" />
+            </summary>
+            <ul className="mt-1.5 flex flex-col gap-1" aria-label={`Roles driven by ${name}`}>
+              {drives.map((v) => (
+                <li key={v} className="flex items-center gap-1.5 text-xs font-mono text-ph-fg-muted">
+                  <span aria-hidden="true" className="h-3 w-3 flex-shrink-0 rounded-sm border border-ph-border-strong" style={{ background: `var(${v})` }} />
+                  <span className="break-all">{v}</span>
+                </li>
+              ))}
+            </ul>
+          </details>
+        ) : (
+          <span className="text-xs text-ph-fg-muted font-mono truncate" title={subtitle}>{subtitle}</span>
+        )}
       </div>
       <div className="flex items-center gap-2 justify-between">
         <input
