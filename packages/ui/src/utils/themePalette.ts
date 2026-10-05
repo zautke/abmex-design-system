@@ -151,9 +151,14 @@ const WHITE: ColorLCH = { l: 1, c: 0, h: 0 };
  * higher. One of those two always clears it: the worst case is the luminance
  * where both tie, sqrt(1.05 * 0.05) - 0.05 ≈ 0.179, giving ≈ 4.58:1. */
 export function fillInk(fill: ColorLCH, inks: ColorLCH[]): ColorLCH {
-  const better = (a: ColorLCH, b: ColorLCH) => (contrastRatio(b, fill) > contrastRatio(a, fill) ? b : a);
+  // Decide on the values as EMITTED (formatOklch rounds), not the raw inputs:
+  // a fill a hair above the threshold can round to one a hair below it.
+  const emitted = (c: ColorLCH) => parseColorToLch(formatOklch(c)) ?? c;
+  const f = emitted(fill);
+  const ratio = (ink: ColorLCH) => contrastRatio(emitted(ink), f);
+  const better = (a: ColorLCH, b: ColorLCH) => (ratio(b) > ratio(a) ? b : a);
   const tinted = inks.reduce(better);
-  return contrastRatio(tinted, fill) >= FILL_INK_MIN_CONTRAST ? tinted : better(BLACK, WHITE);
+  return ratio(tinted) >= FILL_INK_MIN_CONTRAST ? tinted : better(BLACK, WHITE);
 }
 
 /** Every role var a family edit writes, per twin. Untouched families write nothing. */
