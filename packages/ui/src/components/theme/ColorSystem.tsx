@@ -51,6 +51,13 @@ export function ColorSystem({ color: initialColor, onChange }: ColorSystemProps)
   // reaches the LATEST emission it has caught up and the set is cleared, so a
   // later external value that happens to equal an old emission (Reset All to
   // a color picked earlier) is applied, not mistaken for an echo.
+  // Contract: the parent renders its acknowledged values in order and reaches
+  // the latest emission before it changes the color on its own. A value is
+  // identified only by its string, so a parent that coalesces a burst AND an
+  // external change into one update can skip the latest emission and land on
+  // an older one; that update would be read as a stale echo. Merlyn's
+  // useThemeColors meets the contract by rendering every edit synchronously
+  // from an optimistic snapshot and writing to the DB in the background.
   const emitted = useRef<Set<string>>(new Set());
   const lastEmitted = useRef<string | null>(null);
   // Per-instance prefix so multiple ColorSystem mounts on the same page do
