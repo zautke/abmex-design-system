@@ -102,8 +102,8 @@ export function JsonConfigEditor({
             input, which stays in the tab order. */}
         <label
           className={cn(
-            'cursor-pointer rounded border border-ph-border-strong bg-ph-field px-2 py-1 text-xs text-ph-fg',
-            'hover:bg-ph-surface-2 focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-ph-focus',
+            'cursor-pointer rounded border border-border-strong bg-field px-2 py-1 text-xs text-fg',
+            'hover:bg-surface-2 focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-focus',
           )}
         >
           Import
@@ -121,7 +121,7 @@ export function JsonConfigEditor({
         </label>
 
         <div className="ml-auto flex items-center gap-1.5">
-          <span className="text-xs tracking-wide text-ph-fg-muted uppercase">indent</span>
+          <span className="text-xs tracking-wide text-fg-muted uppercase">indent</span>
           <SegmentedControl
             options={INDENT_OPTIONS}
             value={indentSpaces}

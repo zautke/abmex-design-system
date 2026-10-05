@@ -86,10 +86,10 @@ def block(th):
              [('Utility', ['focus','link','selection','code-bg','scrollbar']), ('Charts', [f'chart-{i}' for i in range(1,6)])]
     for g, keys in groups:
         lines.append(f'  /* {g} */')
-        for k in keys: lines.append(f'  --ph-{k}: {oklch_str(res[k])}; /* {res[k]} */')
+        for k in keys: lines.append(f'  --{k}: {oklch_str(res[k])}; /* {res[k]} */')
     lines.append('  /* Effects */')
-    for k,v in ALPHA[th].items(): lines.append(f'  --ph-{k}: {v};')
-    for k,v in SHADOW[th].items(): lines.append(f'  --ph-{k}: {v};')
+    for k,v in ALPHA[th].items(): lines.append(f'  --{k}: {v};')
+    for k,v in SHADOW[th].items(): lines.append(f'  --{k}: {v};')
     return '\n'.join(lines)
 
 HEADER = '''/* ============================================================================
@@ -99,7 +99,7 @@ HEADER = '''/* =================================================================
  * Requires: Tailwind CSS >= 4.2 (verified on 4.2.x and 4.3.x) where noted.
  * ========================================================================== */
 '''
-tokens_css = HEADER.format(title='tokens (Layer 1: the --ph-* interface)') + '''
+tokens_css = HEADER.format(title='tokens (Layer 1: the role interface)') + '''
 /* Theme scoping
  *   default (no class)            → dark
  *   .dark  | [data-theme="dark"]  → dark   (works on any element, nests)
@@ -122,19 +122,21 @@ tokens_css = HEADER.format(title='tokens (Layer 1: the --ph-* interface)') + '''
 
 /* Non-color tokens (theme-independent) */
 :root {
-  --ph-radius: 0.25rem;          /* crisp instrument corners; every radius derives from this */
-  --ph-border-width: 1px;
-  --ph-ring-width: 2px;
-  --ph-ring-offset: 2px;
-  --ph-font-sans: "Rethink Sans", ui-sans-serif, system-ui, sans-serif;
-  --ph-font-display: "Rethink Sans", ui-sans-serif, system-ui, sans-serif;
-  --ph-font-mono: "Victor Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
-  --ph-display-weight: 600;
-  --ph-display-tracking: -0.02em;
-  --ph-duration: 140ms;
-  --ph-ease: cubic-bezier(0.2, 0, 0, 1);
+  --radius: 0.25rem;          /* crisp instrument corners; every radius derives from this */
+  --border-width: 1px;
+  --ring-width: 2px;
+  --ring-offset: 2px;
+  --font-sans: "Rethink Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Rethink Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Victor Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --display-weight: 600;
+  --display-tracking: -0.02em;
+  --duration: 140ms;
+  --ease: cubic-bezier(0.2, 0, 0, 1);
 }
 '''
+ROLES_MARKER = '/* theme-editor: roles — parseSemanticVariables lists every declaration between\n * this marker and the end marker as the theme\'s role group. */\n'
+tokens_css = tokens_css.replace('/* Theme scoping', ROLES_MARKER + '\n/* Theme scoping', 1) + '/* theme-editor: roles-end */\n'
 open(f'{OUT}/phosphor.tokens.css','w',encoding='utf-8',newline=chr(10)).write(tokens_css)
 
 # ---------------------------------------------------------------- tailwind layer
@@ -148,52 +150,52 @@ tw = HEADER.format(title='Tailwind v4 layer') + '''
  * outer one in either nesting order —
  *   .light .dark x  → dark utilities fire, light silenced
  *   .dark  .light y → light utilities fire, dark silenced
- * so `dark:`/`light:` never disagree with the `--ph-*` token cascade, which
+ * so `dark:`/`light:` never disagree with the `--*` token cascade, which
  * resolves by the same nearest-scope CSS inheritance. Redefines any earlier
  * `dark` variant (e.g. HeroUI's), so import this file AFTER @heroui/styles. */
 @custom-variant dark (&:not(:where(.light, .light *, [data-theme="light"], [data-theme="light"] *)), &:where(.dark, .dark *, [data-theme="dark"], [data-theme="dark"] *):not(:where(.dark .light, .dark .light *, [data-theme="dark"] [data-theme="light"], [data-theme="dark"] [data-theme="light"] *)));
 @custom-variant light (&:where(.light, .light *, [data-theme="light"], [data-theme="light"] *):not(:where(.light .dark, .light .dark *, [data-theme="light"] .dark, [data-theme="light"] .dark *)));
 
-/* Phosphor-native utilities: bg-ph-surface, text-ph-fg-muted, border-ph-border,
- * ring-ph-focus, shadow-ph-overlay, font-display … */
+/* Phosphor-native utilities: bg-surface, text-fg-muted, border-border,
+ * ring-focus, shadow-overlay, rounded-base, font-display … */
 @theme inline {
-''' + '\n'.join(f'  --color-ph-{k}: var(--ph-{k});' for k in colors) + '''
+''' + '\n'.join(f'  --color-{k}: var(--{k});' for k in colors) + '''
 
-  --font-sans: var(--ph-font-sans);
-  --font-display: var(--ph-font-display);
-  --font-mono: var(--ph-font-mono);
+  /* --font-sans / --font-mono: Tailwind's own keys; the theme's unlayered
+   * :root values win over Tailwind's layered defaults, so no alias is needed. */
+  --font-display: var(--font-display);
 
-  --shadow-ph-surface: var(--ph-shadow-surface);
-  --shadow-ph-field: var(--ph-shadow-field);
-  --shadow-ph-overlay: var(--ph-shadow-overlay);
+  --shadow-surface: var(--shadow-surface);
+  --shadow-field: var(--shadow-field);
+  --shadow-overlay: var(--shadow-overlay);
 
-  --radius-ph: var(--ph-radius);
-  --ease-ph: var(--ph-ease);
+  --radius-base: var(--radius);
+  --ease-base: var(--ease);
 }
 
 @layer base {
   /* Tailwind v4 defaults borders to currentColor; Phosphor's hairline instead. */
-  :where(*, ::before, ::after, ::backdrop, ::file-selector-button) { border-color: var(--ph-border); }
+  :where(*, ::before, ::after, ::backdrop, ::file-selector-button) { border-color: var(--border); }
   html {
-    background-color: var(--ph-bg);
-    color: var(--ph-fg);
-    font-family: var(--ph-font-sans);
-    scrollbar-color: var(--ph-scrollbar) transparent;
+    background-color: var(--bg);
+    color: var(--fg);
+    font-family: var(--font-sans);
+    scrollbar-color: var(--scrollbar) transparent;
     -webkit-font-smoothing: antialiased;
   }
   :where(h1, h2, h3, h4) {
-    font-family: var(--ph-font-display);
-    font-weight: var(--ph-display-weight);
-    letter-spacing: var(--ph-display-tracking);
-    color: var(--ph-fg-strong);
+    font-family: var(--font-display);
+    font-weight: var(--display-weight);
+    letter-spacing: var(--display-tracking);
+    color: var(--fg-strong);
   }
-  :where(code, kbd, samp, pre) { font-family: var(--ph-font-mono); }
-  :where(em, i) { color: var(--ph-emphasis-soft-fg); }
-  :where(a:not([class])) { color: var(--ph-link); text-underline-offset: 0.2em; }
-  ::selection { background-color: var(--ph-selection); color: var(--ph-fg-strong); }
+  :where(code, kbd, samp, pre) { font-family: var(--font-mono); }
+  :where(em, i) { color: var(--emphasis-soft-fg); }
+  :where(a:not([class])) { color: var(--link); text-underline-offset: 0.2em; }
+  ::selection { background-color: var(--selection); color: var(--fg-strong); }
   :where(:focus-visible) {
-    outline: var(--ph-ring-width) solid var(--ph-focus);
-    outline-offset: var(--ph-ring-offset);
+    outline: var(--ring-width) solid var(--focus);
+    outline-offset: var(--ring-offset);
   }
 }
 '''
@@ -208,7 +210,7 @@ def adapter(name, desc, mapping, theme_inline=None, extra_root=''):
         s += '\n@theme inline {\n' + '\n'.join(f'  {l}' for l in theme_inline) + '\n}\n'
     return s
 
-v = lambda k: f'var(--ph-{k})'
+v = lambda k: f'var(--{k})'
 shadcn_map = [
  ('radius', v('radius')),
  ('background', v('bg')), ('foreground', v('fg')),
@@ -234,6 +236,9 @@ def render_map(m):
     out=[]
     for k,val in m:
         if val is None: out.append(f'  {k}'); continue
+        # Same name as a theme role: the theme already defines it (unlayered),
+        # and `--x: var(--x)` would be a cycle.
+        if val == f'var(--{k})': continue
         out.append(f'  --{k}: {val};')
     return '\n'.join(out)
 sh_keys = [k for k,val in shadcn_map if val is not None and k!='radius']
@@ -260,7 +265,7 @@ shadcn_css = HEADER.format(title='shadcn/ui adapter (CLI v4, Radix or Base UI)')
 open(f'{OUT}/adapters/shadcn.css','w',encoding='utf-8',newline=chr(10)).write(shadcn_css)
 
 hero_map = [
- ('radius', v('radius')), ('field-radius', 'calc(var(--ph-radius) * 1.5)'),
+ ('radius', v('radius')), ('field-radius', 'calc(var(--radius) * 1.5)'),
  ('border-width', v('border-width')), ('field-border-width', v('border-width')),
  ('ring-offset-width', v('ring-offset')),
  ('background', v('bg')), ('foreground', v('fg')),
@@ -288,7 +293,7 @@ hero_map = [
 ] + [(f'{a}-hover', v(f'{p}-hover')) for a,p in (('accent','primary'),('success','success'),('warning','warning'),('danger','danger'))] + \
  [x for a,p in (('accent','primary'),('success','success'),('warning','warning'),('danger','danger'))
     for x in ((f'{a}-soft', v(f'{p}-soft')), (f'{a}-soft-foreground', v(f'{p}-soft-fg')),
-              (f'{a}-soft-hover', f'color-mix(in oklab, var(--ph-{p}-soft) 80%, var(--ph-{p}) 20%)'))] + [
+              (f'{a}-soft-hover', f'color-mix(in oklab, var(--{p}-soft) 80%, var(--{p}) 20%)'))] + [
  ('default-soft', v('surface-2')), ('default-soft-foreground', v('fg-strong')), ('default-soft-hover', v('surface-3')),
  ('field-hover', v('field')), ('field-focus', v('field')),
  ('field-border-hover', v('fg-muted')), ('field-border-focus', v('focus')),
@@ -306,14 +311,14 @@ hero_css = HEADER.format(title='HeroUI v3 adapter (@heroui/react >= 3.0.5)') + '
  *
  * Semantics note: HeroUI `accent` = the brand fill (Phosphor `primary`);
  * HeroUI `muted` = muted TEXT (Phosphor `fg-muted`).
- * Phosphor-only intents (info, emphasis) are available as bg-ph-info etc.
+ * Phosphor-only intents (info, emphasis) are available as bg-info etc.
  */
 ''' + f'{SEL} {{\n' + render_map(hero_map) + '\n}\n'
 open(f'{OUT}/adapters/heroui.css','w',encoding='utf-8',newline=chr(10)).write(hero_css)
 
 tmpl = HEADER.format(title='adapter template (the interface contract)') + '''
 /* Any component system can consume Phosphor by mapping ITS variable names to the
- * --ph-* interface below. Rules:
+ * --* interface below. Rules:
  *  1. Declare the mapping on exactly these selectors (so nested .light/.dark
  *     scopes re-resolve):  :root, .dark, [data-theme="dark"], .light, [data-theme="light"]
  *  2. Map by ROLE, never by name: libraries reuse names (accent, muted) for
@@ -324,22 +329,22 @@ tmpl = HEADER.format(title='adapter template (the interface contract)') + '''
  *  5. Import order: library CSS → phosphor.tailwind.css → your adapter.
  *
  * THE INTERFACE (all defined in phosphor.tokens.css, both themes)
- *  Grounds    --ph-bg --ph-bg-sunken --ph-surface --ph-surface-2 --ph-surface-3
- *             --ph-overlay --ph-field --ph-code-bg
- *  Lines      --ph-border (hairline, decorative) --ph-border-strong (3:1 controls)
- *  Text       --ph-fg --ph-fg-strong --ph-fg-sage --ph-fg-muted --ph-fg-disabled --ph-link
- *  Intents    --ph-{primary|danger|success|warning|info|emphasis}
+ *  Grounds    --bg --bg-sunken --surface --surface-2 --surface-3
+ *             --overlay --field --code-bg
+ *  Lines      --border (hairline, decorative) --border-strong (3:1 controls)
+ *  Text       --fg --fg-strong --fg-sage --fg-muted --fg-disabled --link
+ *  Intents    --{primary|danger|success|warning|info|emphasis}
  *             + -fg  -hover  -soft  -soft-fg
- *  Utility    --ph-focus --ph-selection --ph-scrollbar --ph-backdrop
- *  Data viz   --ph-chart-1 … --ph-chart-5
- *  Effects    --ph-shadow-surface --ph-shadow-field --ph-shadow-overlay
- *  Shape/type --ph-radius --ph-border-width --ph-ring-width --ph-ring-offset
- *             --ph-font-sans --ph-font-display --ph-font-mono
- *             --ph-display-weight --ph-display-tracking --ph-duration --ph-ease
+ *  Utility    --focus --selection --scrollbar --backdrop
+ *  Data viz   --chart-1 … --chart-5
+ *  Effects    --shadow-surface --shadow-field --shadow-overlay
+ *  Shape/type --radius --border-width --ring-width --ring-offset
+ *             --font-sans --font-display --font-mono
+ *             --display-weight --display-tracking --duration --ease
  */
-''' + f'{SEL} {{\n' + '''  /* --library-background: var(--ph-bg); */
-  /* --library-primary: var(--ph-primary); */
-  /* --library-primary-text: var(--ph-primary-fg); */
+''' + f'{SEL} {{\n' + '''  /* --library-background: var(--bg); */
+  /* --library-primary: var(--primary); */
+  /* --library-primary-text: var(--primary-fg); */
 }
 '''
 open(f'{OUT}/adapters/_template.css','w',encoding='utf-8',newline=chr(10)).write(tmpl)
@@ -347,7 +352,7 @@ open(f'{OUT}/adapters/_template.css','w',encoding='utf-8',newline=chr(10)).write
 # ---------------------------------------------------------------- tokens.json for the design system
 ctoks = []
 for k in colors:
-    ctoks.append({'name': f'ph-{k}', 'value': {'dark': R['dark'][0].get(k) or ALPHA['dark'][k], 'light': R['light'][0].get(k) or ALPHA['light'][k]}, 'usage': USAGE[k]})
+    ctoks.append({'name': f'{k}', 'value': {'dark': R['dark'][0].get(k) or ALPHA['dark'][k], 'light': R['light'][0].get(k) or ALPHA['light'][k]}, 'usage': USAGE[k]})
 tokens = {
  'name': 'Phosphor', 'version': 1,
  'meta': {'source': 'Rendered pixels of the wxt-prompt screenshot (Oct 2026), matte; light theme derived; build/palette.py'},
@@ -364,22 +369,22 @@ tokens = {
        {'name':'display-md','fontSize':'20px','lineHeight':'26px','fontWeight':600,'letterSpacing':'-0.015em','usage':'Panel and dialog titles.'}]},
      {'name':'Text','family':'sans','styles':[
        {'name':'title','fontSize':'16px','lineHeight':'24px','fontWeight':600,'usage':'Card titles, table headers in prose layouts.'},
-       {'name':'body','fontSize':'15px','lineHeight':'22px','fontWeight':400,'usage':'Default UI and prose text in `ph-fg`.'},
-       {'name':'body-sm','fontSize':'13px','lineHeight':'20px','fontWeight':400,'usage':'Dense UI, helper text in `ph-fg-muted`.'},
+       {'name':'body','fontSize':'15px','lineHeight':'22px','fontWeight':400,'usage':'Default UI and prose text in `fg`.'},
+       {'name':'body-sm','fontSize':'13px','lineHeight':'20px','fontWeight':400,'usage':'Dense UI, helper text in `fg-muted`.'},
        {'name':'label','fontSize':'12px','lineHeight':'16px','fontWeight':500,'letterSpacing':'0.01em','usage':'Form labels, badges, button text at sm size.'}]},
      {'name':'Data','family':'mono','styles':[
        {'name':'mono','fontSize':'13px','lineHeight':'20px','fontWeight':400,'usage':'Code, terminal output, token counts, hex values, IDs.','sample':'158,029 tokens · 15% used'},
        {'name':'mono-sm','fontSize':'12px','lineHeight':'18px','fontWeight':400,'usage':'Status lines, key hints (ctrl+p), table numerics.'},
-       {'name':'mono-emphasis','fontSize':'13px','lineHeight':'20px','fontWeight':400,'fontStyle':'italic','usage':'Victor Mono cursive italic in `ph-emphasis-soft-fg` for emphasis inside data.'}]}]},
- 'spacing': {'tokens': [{'name': f'ph-space-{n}', 'value': f'{n*4}px', 'usage': u} for n,u in
+       {'name':'mono-emphasis','fontSize':'13px','lineHeight':'20px','fontWeight':400,'fontStyle':'italic','usage':'Victor Mono cursive italic in `emphasis-soft-fg` for emphasis inside data.'}]}]},
+ 'spacing': {'tokens': [{'name': f'space-{n}', 'value': f'{n*4}px', 'usage': u} for n,u in
    ((1,'Icon-to-label gap, badge padding-y.'),(2,'Control padding-y, tight stacks.'),(3,'Control padding-x, table cell padding.'),
     (4,'Card padding (dense), form row gap.'),(6,'Card padding, section gap inside panels.'),(8,'Panel gutters.'),(12,'Page section spacing.'))]},
  'radius': {'tokens': [
-   {'name':'ph-radius-sm','value':'2px','usage':'Badges, kbd, checkboxes (shadcn radius-sm ≈ 0.6×).'},
-   {'name':'ph-radius','value':'4px','usage':'Base: buttons, cards, menus (--ph-radius, shadcn radius-lg).'},
-   {'name':'ph-radius-field','value':'6px','usage':'Inputs and selects (HeroUI field-radius = 1.5×).'},
-   {'name':'ph-radius-full','value':'9999px','usage':'Status dots, avatars, switches.'}]},
- 'shadow': {'tokens': [{'name': f'ph-{k}', 'value': {'dark': SHADOW['dark'][k], 'light': SHADOW['light'][k]},
+   {'name':'radius-sm','value':'2px','usage':'Badges, kbd, checkboxes (shadcn radius-sm ≈ 0.6×).'},
+   {'name':'radius','value':'4px','usage':'Base: buttons, cards, menus (--radius, shadcn radius-lg).'},
+   {'name':'radius-field','value':'6px','usage':'Inputs and selects (HeroUI field-radius = 1.5×).'},
+   {'name':'radius-full','value':'9999px','usage':'Status dots, avatars, switches.'}]},
+ 'shadow': {'tokens': [{'name': f'{k}', 'value': {'dark': SHADOW['dark'][k], 'light': SHADOW['light'][k]},
    'usage': {'shadow-surface':'Cards: none in dark (hairline does the work), a faint lift on paper.',
              'shadow-field':'Inputs.','shadow-overlay':'Popovers, menus, dialogs.'}[k]} for k in SHADOW['dark']]},
 }

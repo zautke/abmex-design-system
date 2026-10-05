@@ -10,7 +10,7 @@ export interface StopButtonProps {
 
 /**
  * Brick stop affordance, shown in place of {@link SendButton} while streaming.
- * `variant="danger"` resolves to `--danger`, bridged to `--ph-danger` by the
+ * `variant="danger"` resolves to `--danger`, bridged to `--danger` by the
  * Phosphor HeroUI adapter.
  */
 export function StopButton({ onStop, disabled = false, className }: StopButtonProps) {

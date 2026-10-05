@@ -4,31 +4,31 @@
   "title": "Design System: @abmex/ui",
   "extensions": {
     "colorMeta": {
-      "ph-bg": {
+      "bg": {
         "role": "neutral",
         "displayName": "Ink Ground",
         "canonical": "#111c18",
         "tonalRamp": ["#0a120f", "#111c18", "#1a2520", "#23372b", "#2e3a34", "#4d6054", "#8ca194", "#c1c497"]
       },
-      "ph-primary": {
+      "primary": {
         "role": "primary",
         "displayName": "Mint Signal",
         "canonical": "#2ed5b7",
         "tonalRamp": ["#0d2a24", "#144a3f", "#1d6b5a", "#258d76", "#2ab09a", "#2ed5b7", "#45e4c5", "#8ff0d9"]
       },
-      "ph-fg": {
+      "fg": {
         "role": "neutral",
         "displayName": "Khaki",
         "canonical": "#c1c497",
         "tonalRamp": ["#1d1d08", "#37371b", "#5c5c32", "#83834c", "#a3a470", "#c1c497", "#dfe0b8", "#eff0d8"]
       },
-      "ph-danger": {
+      "danger": {
         "role": "danger",
         "displayName": "Brick",
         "canonical": "#df8379",
         "tonalRamp": ["#2e1512", "#512622", "#743a33", "#994f46", "#bd6658", "#df8379", "#e9a196", "#f2c1ba"]
       },
-      "ph-emphasis": {
+      "emphasis": {
         "role": "secondary",
         "displayName": "Mauve",
         "canonical": "#b58bc0",
@@ -38,10 +38,10 @@
     "typographyMeta": {
       "body": { "displayName": "Body", "purpose": "Chrome, chat content, labels, inputs — Rethink Sans Variable (ships in phosphor/fonts, OFL)." },
       "display": { "displayName": "Display", "purpose": "Empty-state titles and modal headings — Rethink Sans at display weight." },
-      "code": { "displayName": "Code", "purpose": "Anything copyable — hex, JSON, model names, timestamps. Victor Mono Variable via --ph-font-mono (font-mono utility; kit's font-code aliases it)." }
+      "code": { "displayName": "Code", "purpose": "Anything copyable — hex, JSON, model names, timestamps. Victor Mono Variable via --font-mono (font-mono utility; kit's font-code aliases it)." }
     },
     "shadows": [
-      { "name": "overlay", "value": "var(--ph-overlay-shadow)", "purpose": "HeroUI popover/modal lift on --ph-overlay ground. The only shadow in the system; no resting chrome shadows." }
+      { "name": "overlay", "value": "var(--overlay-shadow)", "purpose": "HeroUI popover/modal lift on --overlay ground. The only shadow in the system; no resting chrome shadows." }
     ],
     "motion": [
       { "name": "pop-in", "value": "scale 0.85 → 1.08 → 1 over 360ms", "purpose": "Enter transition for transient surfaces. motion-safe: only." },
@@ -58,7 +58,7 @@
       "refersTo": "bubble-user",
       "description": "Surface-2 fill, khaki text, squared bottom-right tail — the voice of the user.",
       "html": "<div class=\"ds-bubble ds-bubble-user\">Can you summarize this page's key claims?</div>",
-      "css": ".ds-bubble-user { max-width: 85%; overflow-wrap: anywhere; overflow: hidden; border-radius: 8px 8px 4px 8px; padding: 8px 12px; font-size: 14px; line-height: 1.6; font-family: 'Rethink Sans Variable', 'Segoe UI', sans-serif; background: var(--ph-surface-2, #23372b); color: var(--ph-fg, #c1c497); }"
+      "css": ".ds-bubble-user { max-width: 85%; overflow-wrap: anywhere; overflow: hidden; border-radius: 8px 8px 4px 8px; padding: 8px 12px; font-size: 14px; line-height: 1.6; font-family: 'Rethink Sans Variable', 'Segoe UI', sans-serif; background: var(--surface-2, #23372b); color: var(--fg, #c1c497); }"
     },
     {
       "name": "Assistant Chat Bubble",
@@ -66,7 +66,7 @@
       "refersTo": "bubble-assistant",
       "description": "Surface fill, hairline border, squared bottom-left tail.",
       "html": "<div class=\"ds-bubble ds-bubble-assistant\">Three claims stand out — first, that the generator owns the palette…</div>",
-      "css": ".ds-bubble-assistant { max-width: 85%; overflow-wrap: anywhere; overflow: hidden; border-radius: 8px 8px 8px 4px; padding: 8px 12px; font-size: 14px; line-height: 1.6; font-family: 'Rethink Sans Variable', 'Segoe UI', sans-serif; background: var(--ph-surface, #1a2520); color: var(--ph-fg, #c1c497); border: 1px solid var(--ph-border, #2e3a34); }"
+      "css": ".ds-bubble-assistant { max-width: 85%; overflow-wrap: anywhere; overflow: hidden; border-radius: 8px 8px 8px 4px; padding: 8px 12px; font-size: 14px; line-height: 1.6; font-family: 'Rethink Sans Variable', 'Segoe UI', sans-serif; background: var(--surface, #1a2520); color: var(--fg, #c1c497); border: 1px solid var(--border, #2e3a34); }"
     },
     {
       "name": "Send Button",
@@ -74,7 +74,7 @@
       "refersTo": "button-send",
       "description": "Mint fill, ink icon — the one saturated commit signal.",
       "html": "<button class=\"ds-send-btn\" aria-label=\"Send\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"m22 2-7 20-4-9-9-4Z\"/><path d=\"M22 2 11 13\"/></svg></button>",
-      "css": ".ds-send-btn { width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; border-radius: 8px; border: none; background: var(--ph-primary, #2ed5b7); color: var(--ph-primary-fg, #111c18); cursor: pointer; transition: background-color 120ms ease; } .ds-send-btn:hover { background: var(--ph-primary-hover, #45e4c5); } .ds-send-btn:focus-visible { outline: 2px solid var(--ph-focus, #2ed5b7); outline-offset: 1px; } .ds-send-btn:disabled { opacity: 0.4; cursor: not-allowed; }"
+      "css": ".ds-send-btn { width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; border-radius: 8px; border: none; background: var(--primary, #2ed5b7); color: var(--primary-fg, #111c18); cursor: pointer; transition: background-color 120ms ease; } .ds-send-btn:hover { background: var(--primary-hover, #45e4c5); } .ds-send-btn:focus-visible { outline: 2px solid var(--focus, #2ed5b7); outline-offset: 1px; } .ds-send-btn:disabled { opacity: 0.4; cursor: not-allowed; }"
     },
     {
       "name": "Stop Button",
@@ -82,7 +82,7 @@
       "refersTo": "button-stop",
       "description": "Brick fill shown while streaming.",
       "html": "<button class=\"ds-stop-btn\" aria-label=\"Stop\"><svg width=\"12\" height=\"12\" viewBox=\"0 0 24 24\" fill=\"currentColor\"><rect x=\"5\" y=\"5\" width=\"14\" height=\"14\" rx=\"2\"/></svg></button>",
-      "css": ".ds-stop-btn { width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; border-radius: 8px; border: none; background: var(--ph-danger, #df8379); color: var(--ph-danger-fg, #111c18); cursor: pointer; transition: background-color 120ms ease; } .ds-stop-btn:hover { background: var(--ph-danger-hover, #ee9186); } .ds-stop-btn:focus-visible { outline: 2px solid var(--ph-focus, #2ed5b7); outline-offset: 1px; }"
+      "css": ".ds-stop-btn { width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; border-radius: 8px; border: none; background: var(--danger, #df8379); color: var(--danger-fg, #111c18); cursor: pointer; transition: background-color 120ms ease; } .ds-stop-btn:hover { background: var(--danger-hover, #ee9186); } .ds-stop-btn:focus-visible { outline: 2px solid var(--focus, #2ed5b7); outline-offset: 1px; }"
     },
     {
       "name": "Icon Button (32×32)",
@@ -90,7 +90,7 @@
       "refersTo": "button-icon",
       "description": "Sage icon at rest; hover lifts to surface-2 with a mint icon; active fills mint.",
       "html": "<button class=\"ds-icon-btn\" aria-label=\"Action\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"12\" cy=\"12\" r=\"3\"/><path d=\"M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z\"/></svg></button>",
-      "css": ".ds-icon-btn { width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; border-radius: 8px; border: 1px solid transparent; background: transparent; color: var(--ph-fg-sage, #a8bfae); cursor: pointer; flex-shrink: 0; transition: background-color 120ms ease, color 120ms ease, border-color 120ms ease; } .ds-icon-btn:hover { background: var(--ph-surface-2, #23372b); color: var(--ph-primary, #2ed5b7); } .ds-icon-btn:focus-visible { outline: 2px solid var(--ph-focus, #2ed5b7); outline-offset: 1px; } .ds-icon-btn:active { background: var(--ph-primary, #2ed5b7); color: var(--ph-primary-fg, #111c18); }"
+      "css": ".ds-icon-btn { width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; border-radius: 8px; border: 1px solid transparent; background: transparent; color: var(--fg-sage, #a8bfae); cursor: pointer; flex-shrink: 0; transition: background-color 120ms ease, color 120ms ease, border-color 120ms ease; } .ds-icon-btn:hover { background: var(--surface-2, #23372b); color: var(--primary, #2ed5b7); } .ds-icon-btn:focus-visible { outline: 2px solid var(--focus, #2ed5b7); outline-offset: 1px; } .ds-icon-btn:active { background: var(--primary, #2ed5b7); color: var(--primary-fg, #111c18); }"
     },
     {
       "name": "Composer Input",
@@ -98,7 +98,7 @@
       "refersTo": "input-composer",
       "description": "Surface-2 field with hairline border; focus shifts the border to mint — the border shift is the entire focus signal.",
       "html": "<div class=\"ds-composer\"><textarea class=\"ds-composer-field\" rows=\"2\" placeholder=\"Ask anything… (⏎ to send, ⇧+⏎ for newline)\" aria-label=\"Chat input\"></textarea></div>",
-      "css": ".ds-composer { border-top: 1px solid var(--ph-border, #2e3a34); background: var(--ph-bg, #111c18); padding: 8px 12px; } .ds-composer-field { display: block; width: 100%; min-height: 52px; resize: none; border-radius: 8px; border: 1px solid var(--ph-border, #2e3a34); background: var(--ph-field, #23372b); color: var(--ph-fg, #c1c497); padding: 8px 12px; font-size: 14px; font-family: 'Rethink Sans Variable', 'Segoe UI', sans-serif; } .ds-composer-field::placeholder { color: var(--ph-fg-muted, #8ca194); } .ds-composer-field:focus { outline: none; border-color: var(--ph-focus, #2ed5b7); }"
+      "css": ".ds-composer { border-top: 1px solid var(--border, #2e3a34); background: var(--bg, #111c18); padding: 8px 12px; } .ds-composer-field { display: block; width: 100%; min-height: 52px; resize: none; border-radius: 8px; border: 1px solid var(--border, #2e3a34); background: var(--field, #23372b); color: var(--fg, #c1c497); padding: 8px 12px; font-size: 14px; font-family: 'Rethink Sans Variable', 'Segoe UI', sans-serif; } .ds-composer-field::placeholder { color: var(--fg-muted, #8ca194); } .ds-composer-field:focus { outline: none; border-color: var(--focus, #2ed5b7); }"
     },
     {
       "name": "Status Dot",
@@ -106,7 +106,7 @@
       "refersTo": "status-dot-connected",
       "description": "8px round signal; success green means connected.",
       "html": "<span class=\"ds-status-row\"><span class=\"ds-status-dot\" role=\"img\" aria-label=\"Connected\"></span><span class=\"ds-status-label\">Connected</span></span>",
-      "css": ".ds-status-row { display: inline-flex; align-items: center; gap: 6px; } .ds-status-dot { height: 8px; width: 8px; border-radius: 9999px; background: var(--ph-success, #63b07a); flex-shrink: 0; } .ds-status-label { font-size: 12px; color: var(--ph-fg-muted, #8ca194); font-family: 'Rethink Sans Variable', 'Segoe UI', sans-serif; }"
+      "css": ".ds-status-row { display: inline-flex; align-items: center; gap: 6px; } .ds-status-dot { height: 8px; width: 8px; border-radius: 9999px; background: var(--success, #63b07a); flex-shrink: 0; } .ds-status-label { font-size: 12px; color: var(--fg-muted, #8ca194); font-family: 'Rethink Sans Variable', 'Segoe UI', sans-serif; }"
     },
     {
       "name": "Code Surface",
@@ -114,15 +114,15 @@
       "refersTo": "code-surface",
       "description": "Sunken ground + hairline border, Victor Mono, mint links — background, foreground, and border travel together.",
       "html": "<pre class=\"ds-code-surface\"><code>pnpm add @abmex/ui</code></pre>",
-      "css": ".ds-code-surface { background: var(--ph-bg-sunken, #0b1512); color: var(--ph-fg, #c1c497); border: 1px solid var(--ph-border, #2e3a34); border-radius: 8px; padding: 12px; font-size: 13px; line-height: 1.4; font-family: 'Victor Mono Variable', ui-monospace, Menlo, Consolas, monospace; margin: 0; overflow-x: auto; }"
+      "css": ".ds-code-surface { background: var(--bg-sunken, #0b1512); color: var(--fg, #c1c497); border: 1px solid var(--border, #2e3a34); border-radius: 8px; padding: 12px; font-size: 13px; line-height: 1.4; font-family: 'Victor Mono Variable', ui-monospace, Menlo, Consolas, monospace; margin: 0; overflow-x: auto; }"
     }
   ],
   "narrative": {
     "northStar": "Phosphor",
-    "overview": "A matte instrument panel: phosphor-black ground, golden-khaki text, one mint signal. Dark by default with a bone-paper light twin. The palette is generated from OKLCH in phosphor/build/palette.py with every contrast pair WCAG-gated at build time; generated CSS is never hand-edited. Component tokens alias --ph-* roles via @theme inline so nested .light scopes re-resolve.",
+    "overview": "A matte instrument panel: phosphor-black ground, golden-khaki text, one mint signal. Dark by default with a bone-paper light twin. The palette is generated from OKLCH in phosphor/build/palette.py with every contrast pair WCAG-gated at build time; generated CSS is never hand-edited. Component tokens alias --* roles via @theme inline so nested .light scopes re-resolve.",
     "keyCharacteristics": [
       "Matte, not glossy: chroma capped ~0.11 except the mint primary; no glows or halo shadows.",
-      "Hairline structure: 1px --ph-border separates regions; elevation is tonal, not shadow.",
+      "Hairline structure: 1px --border separates regions; elevation is tonal, not shadow.",
       "Golden-khaki body text on ink-green grounds; mint is the one hot signal.",
       "Mauve reserved for italic commentary; status roles are closed (success/warning/info/danger).",
       "Dark-first with an opt-in light twin via .light / [data-theme=\"light\"]."
@@ -132,10 +132,10 @@
       { "name": "The Generator Rule", "body": "Palette values live in phosphor/build/palette.py. Generated files are never hand-edited.", "section": "colors" },
       { "name": "The Twin Rule", "body": "Every role has a dark and light value. A component that hardcodes a hex breaks the light twin.", "section": "colors" },
       { "name": "The 11px Floor Rule", "body": "No functional text below 11px. Micro-copy that can't fit gets restructured, not shrunk.", "section": "typography" },
-      { "name": "The Hairline Rule", "body": "Structure is 1px --ph-border. Reach for a hairline, never a glow.", "section": "elevation" }
+      { "name": "The Hairline Rule", "body": "Structure is 1px --border. Reach for a hairline, never a glow.", "section": "elevation" }
     ],
     "dos": [
-      "Do express every color as a --ph-* role; component tokens alias roles via @theme inline.",
+      "Do express every color as a --* role; component tokens alias roles via @theme inline.",
       "Do edit phosphor/build/palette.py and regenerate for palette changes; never hand-edit generated CSS.",
       "Do keep mint for commit/focus/active semantics and sage for status/links.",
       "Do wrap animation in motion-safe:.",

@@ -11,7 +11,7 @@ export interface SendButtonProps {
 
 /**
  * Mint send affordance. `variant="primary"` resolves to `--accent`, which the
- * Phosphor HeroUI adapter points at `--ph-primary`. No per-component color
+ * Phosphor HeroUI adapter points at `--primary`. No per-component color
  * override needed.
  */
 export function SendButton({ onSend, disabled = false, className }: SendButtonProps) {

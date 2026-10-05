@@ -20,7 +20,7 @@ const TONE_CLASS: Record<StatusTone, string> = {
   success: 'bg-conn-connected',
   warning: 'bg-conn-probing',
   danger: 'bg-conn-disconnected',
-  neutral: 'bg-ph-fg-muted',
+  neutral: 'bg-fg-muted',
 };
 
 export function StatusDot({ tone, pulse = false, label, className }: StatusDotProps) {

@@ -1,13 +1,13 @@
 /* @abmex/ui — Phosphor skin.
  *
  * Phosphor is the kit's design system: a matte instrument-panel theme, dark by
- * default with a bone-paper light twin. Its framework-agnostic `--ph-*`
+ * default with a bone-paper light twin. Its framework-agnostic `--*`
  * interface lives in ./phosphor/ (generated from ./phosphor/build/palette.py —
  * never hand-edit those values). This file only wires it into the kit.
  *
  * Consumers import '@heroui/styles' FIRST, then this file: the Phosphor layer
  * replaces HeroUI's `dark` variant and the adapter re-points HeroUI's semantic
- * surface at `--ph-*`. Reverse the order and HeroUI's stock blue wins.
+ * surface at `--*`. Reverse the order and HeroUI's stock blue wins.
  *
  * Theme scope: no class → dark; `.light` / `[data-theme="light"]` → light, on
  * any element, nesting allowed.
@@ -67,106 +67,106 @@
 /* Component tokens. The names are the kit's stable per-surface API
  * (`bg-chat-bubble-user-bg`, `border-drawer-border`, …); every value is a
  * Phosphor role, `inline` so a nested `.light` scope re-resolves it. Nudge one
- * surface by overriding its `--ph-*` role, or reskin everything via `--ph-*`. */
+ * surface by overriding its `--*` role, or reskin everything via `--*`. */
 @theme inline {
-  --font-code: var(--ph-font-mono);
+  --font-code: var(--font-mono);
 
-  --color-app-bg: var(--ph-bg);
+  --color-app-bg: var(--bg);
 
-  --color-header-bg: var(--ph-surface);
-  --color-header-border: var(--ph-border);
+  --color-header-bg: var(--surface);
+  --color-header-border: var(--border);
 
-  --color-splash-bg: var(--ph-bg);
-  --color-splash-text: var(--ph-fg-muted);
-  --color-splash-ring: var(--ph-border-strong);
+  --color-splash-bg: var(--bg);
+  --color-splash-text: var(--fg-muted);
+  --color-splash-ring: var(--border-strong);
 
-  --color-chat-empty-text: var(--ph-fg-muted);
-  --color-chat-bubble-user-bg: var(--ph-surface-2);
-  --color-chat-bubble-user-text: var(--ph-fg);
-  --color-chat-bubble-ai-bg: var(--ph-surface);
-  --color-chat-bubble-ai-text: var(--ph-fg);
-  --color-chat-bubble-ai-border: var(--ph-border);
-  --color-chat-error-text: var(--ph-danger-soft-fg);
-  --color-chat-clearbtn-text: var(--ph-fg-muted);
-  --color-chat-clearbtn-text-hover: var(--ph-danger-soft-fg);
+  --color-chat-empty-text: var(--fg-muted);
+  --color-chat-bubble-user-bg: var(--surface-2);
+  --color-chat-bubble-user-text: var(--fg);
+  --color-chat-bubble-ai-bg: var(--surface);
+  --color-chat-bubble-ai-text: var(--fg);
+  --color-chat-bubble-ai-border: var(--border);
+  --color-chat-error-text: var(--danger-soft-fg);
+  --color-chat-clearbtn-text: var(--fg-muted);
+  --color-chat-clearbtn-text-hover: var(--danger-soft-fg);
 
-  --color-conn-probing: var(--ph-warning);
-  --color-conn-connected: var(--ph-success);
-  --color-conn-disconnected: var(--ph-danger);
-  --color-conn-label: var(--ph-fg-muted);
+  --color-conn-probing: var(--warning);
+  --color-conn-connected: var(--success);
+  --color-conn-disconnected: var(--danger);
+  --color-conn-label: var(--fg-muted);
 
-  --color-drawer-backdrop: var(--ph-backdrop);
-  --color-drawer-bg: var(--ph-surface);
-  --color-drawer-border: var(--ph-border);
-  --color-drawer-header-bg: var(--ph-surface);
-  --color-drawer-header-border: var(--ph-border);
-  --color-drawer-newbtn-bg: var(--ph-primary-soft);
-  --color-drawer-newbtn-text: var(--ph-primary-soft-fg);
-  --color-drawer-newbtn-bg-hover: var(--ph-surface-3);
-  --color-drawer-search-bg: var(--ph-surface);
-  --color-drawer-search-border: var(--ph-border);
-  --color-drawer-empty-text: var(--ph-fg-muted);
-  --color-drawer-item-bg-active: var(--ph-primary-soft);
-  --color-drawer-item-text-active: var(--ph-fg-strong);
-  --color-drawer-item-text: var(--ph-fg);
-  --color-drawer-item-bg-hover: var(--ph-surface-2);
-  --color-drawer-item-text-hover: var(--ph-fg-strong);
-  --color-drawer-item-icon: var(--ph-fg-muted);
-  --color-drawer-item-icon-active: var(--ph-primary-soft-fg);
-  --color-drawer-edit-bg: var(--ph-field);
-  --color-drawer-edit-border: var(--ph-focus);
+  --color-drawer-backdrop: var(--backdrop);
+  --color-drawer-bg: var(--surface);
+  --color-drawer-border: var(--border);
+  --color-drawer-header-bg: var(--surface);
+  --color-drawer-header-border: var(--border);
+  --color-drawer-newbtn-bg: var(--primary-soft);
+  --color-drawer-newbtn-text: var(--primary-soft-fg);
+  --color-drawer-newbtn-bg-hover: var(--surface-3);
+  --color-drawer-search-bg: var(--surface);
+  --color-drawer-search-border: var(--border);
+  --color-drawer-empty-text: var(--fg-muted);
+  --color-drawer-item-bg-active: var(--primary-soft);
+  --color-drawer-item-text-active: var(--fg-strong);
+  --color-drawer-item-text: var(--fg);
+  --color-drawer-item-bg-hover: var(--surface-2);
+  --color-drawer-item-text-hover: var(--fg-strong);
+  --color-drawer-item-icon: var(--fg-muted);
+  --color-drawer-item-icon-active: var(--primary-soft-fg);
+  --color-drawer-edit-bg: var(--field);
+  --color-drawer-edit-border: var(--focus);
 
-  --color-inputbar-bg: var(--ph-bg);
-  --color-inputbar-border: var(--ph-border);
-  --color-inputbar-input-bg: var(--ph-field);
-  --color-inputbar-input-border: var(--ph-field);
-  --color-inputbar-input-text: var(--ph-fg);
-  --color-inputbar-input-placeholder: var(--ph-fg-muted);
-  --color-inputbar-input-border-focus: var(--ph-focus);
+  --color-inputbar-bg: var(--bg);
+  --color-inputbar-border: var(--border);
+  --color-inputbar-input-bg: var(--field);
+  --color-inputbar-input-border: var(--field);
+  --color-inputbar-input-text: var(--fg);
+  --color-inputbar-input-placeholder: var(--fg-muted);
+  --color-inputbar-input-border-focus: var(--focus);
 
-  --color-md-code-inline-bg: var(--ph-surface-2);
-  --color-md-code-inline-text: var(--ph-success-soft-fg);
-  --color-md-link: var(--ph-link);
-  --color-md-th-border: var(--ph-border);
-  --color-md-td-border: var(--ph-border);
+  --color-md-code-inline-bg: var(--surface-2);
+  --color-md-code-inline-text: var(--success-soft-fg);
+  --color-md-link: var(--link);
+  --color-md-th-border: var(--border);
+  --color-md-td-border: var(--border);
   /* code-block bg/fg/border travel together: use the `code-surface` utility. */
-  --color-md-code-block-bg: var(--ph-code-bg);
-  --color-md-code-block-text: var(--ph-fg);
-  --color-md-code-block-link: var(--ph-link);
-  --color-md-code-block-border: var(--ph-border);
-  --color-md-code-header-bg: var(--ph-surface);
-  --color-md-code-header-text: var(--ph-fg-muted);
-  --color-md-code-header-border: var(--ph-border);
-  --color-md-code-copy-bg-hover: var(--ph-surface-2);
-  --color-md-code-copy-text-hover: var(--ph-fg-strong);
-  --color-md-code-copied-icon: var(--ph-success);
+  --color-md-code-block-bg: var(--code-bg);
+  --color-md-code-block-text: var(--fg);
+  --color-md-code-block-link: var(--link);
+  --color-md-code-block-border: var(--border);
+  --color-md-code-header-bg: var(--surface);
+  --color-md-code-header-text: var(--fg-muted);
+  --color-md-code-header-border: var(--border);
+  --color-md-code-copy-bg-hover: var(--surface-2);
+  --color-md-code-copy-text-hover: var(--fg-strong);
+  --color-md-code-copied-icon: var(--success);
 
-  --color-modelpicker-empty-bg: var(--ph-surface-2);
-  --color-modelpicker-empty-border: var(--ph-border);
-  --color-modelpicker-empty-text: var(--ph-fg-muted);
+  --color-modelpicker-empty-bg: var(--surface-2);
+  --color-modelpicker-empty-border: var(--border);
+  --color-modelpicker-empty-text: var(--fg-muted);
 
-  --color-themeedit-bg: var(--ph-overlay);
-  --color-themeedit-border: var(--ph-border);
-  --color-themeedit-title-text: var(--ph-fg-strong);
-  --color-themeedit-title-border: var(--ph-border);
-  --color-themeedit-family-label: var(--ph-fg-muted);
-  --color-themeedit-slider-label: var(--ph-fg-muted);
-  --color-themeedit-slider-track: var(--ph-surface-3);
-  --color-themeedit-slider-thumb: var(--ph-primary);
-  --color-themeedit-reset-text: var(--ph-fg-muted);
-  --color-themeedit-reset-text-hover: var(--ph-fg-strong);
-  --color-themeedit-reset-border: var(--ph-border);
+  --color-themeedit-bg: var(--overlay);
+  --color-themeedit-border: var(--border);
+  --color-themeedit-title-text: var(--fg-strong);
+  --color-themeedit-title-border: var(--border);
+  --color-themeedit-family-label: var(--fg-muted);
+  --color-themeedit-slider-label: var(--fg-muted);
+  --color-themeedit-slider-track: var(--surface-3);
+  --color-themeedit-slider-thumb: var(--primary);
+  --color-themeedit-reset-text: var(--fg-muted);
+  --color-themeedit-reset-text-hover: var(--fg-strong);
+  --color-themeedit-reset-border: var(--border);
 
-  --color-error-text: var(--ph-fg-strong);
+  --color-error-text: var(--fg-strong);
 }
 
 /* Out-of-context system notices (SystemNoticeRow). */
 :root {
-  --oocm-text: var(--ph-fg-muted);
+  --oocm-text: var(--fg-muted);
 }
 
 /* ─── SplashLoader: one quiet ring, mint arc, mono label ─── */
-@keyframes ph-spin {
+@keyframes splash-spin {
   to { transform: rotate(360deg); }
 }
 .splash-loader {
@@ -177,7 +177,7 @@
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  background-color: var(--ph-bg);
+  background-color: var(--bg);
 }
 .splash-center {
   position: relative;
@@ -189,18 +189,18 @@
   width: 2rem;
   height: 2rem;
   border-radius: 9999px;
-  border: 2px solid var(--ph-border-strong);
-  border-top-color: var(--ph-primary);
+  border: 2px solid var(--border-strong);
+  border-top-color: var(--primary);
 }
 @media (prefers-reduced-motion: no-preference) {
-  .splash-ring { animation: ph-spin 0.9s linear infinite; }
+  .splash-ring { animation: splash-spin 0.9s linear infinite; }
 }
 .splash-text {
   margin-top: 1rem;
-  font-family: var(--ph-font-mono);
+  font-family: var(--font-mono);
   font-size: 0.6875rem;
   line-height: 1rem;
-  color: var(--ph-fg-muted);
+  color: var(--fg-muted);
 }
 
 /* ─── 32×32 icon button (header + input bar toolbar) ─── */
@@ -211,31 +211,31 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  border-radius: var(--ph-radius);
+  border-radius: var(--radius);
   border: 1px solid transparent;
   background: transparent;
-  color: var(--ph-fg-muted);
-  transition: background-color var(--ph-duration) var(--ph-ease), color var(--ph-duration) var(--ph-ease);
+  color: var(--fg-muted);
+  transition: background-color var(--duration) var(--ease), color var(--duration) var(--ease);
 }
 .icon-btn-32:hover:not(:disabled) {
-  background: var(--ph-surface-2);
-  color: var(--ph-fg-strong);
+  background: var(--surface-2);
+  color: var(--fg-strong);
 }
 .icon-btn-32:focus-visible {
-  outline: var(--ph-ring-width) solid var(--ph-focus);
-  outline-offset: var(--ph-ring-offset);
+  outline: var(--ring-width) solid var(--focus);
+  outline-offset: var(--ring-offset);
 }
 .icon-btn-32:disabled {
-  color: var(--ph-fg-disabled);
+  color: var(--fg-disabled);
   cursor: not-allowed;
 }
 .icon-btn-32[data-active='true'] {
-  background: var(--ph-primary-soft);
-  color: var(--ph-primary-soft-fg);
+  background: var(--primary-soft);
+  color: var(--primary-soft-fg);
 }
 .icon-btn-32[data-active='true']:hover {
-  background: var(--ph-surface-3);
-  color: var(--ph-fg-strong);
+  background: var(--surface-3);
+  color: var(--fg-strong);
 }
 
 .inputbar-textarea {
@@ -250,13 +250,13 @@
 }
 
 /* Code surface: bg + fg + border in one class so no call site can paint the
- * background and forget the foreground. Hand-written CSS reads `--ph-*` roles
+ * background and forget the foreground. Hand-written CSS reads `--*` roles
  * directly: the `--color-*` aliases above are `@theme inline`, so `var()` of one
  * resolves once on :root (dark) and would not follow a nested `.light` scope. */
 @utility code-surface {
-  background-color: var(--ph-code-bg);
-  color: var(--ph-fg);
-  border-color: var(--ph-border);
+  background-color: var(--code-bg);
+  color: var(--fg);
+  border-color: var(--border);
 }
 
 @utility scrollbar-none {

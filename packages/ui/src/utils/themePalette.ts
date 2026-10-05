@@ -24,12 +24,11 @@ export type Twin = 'dark' | 'light';
 /**
  * The ONE seam where a role name becomes a CSS custom property. Every table
  * below is keyed by prefix-free role names (`primary`, `fg-muted`, …), the
- * shared vocabulary every theme will use. Phosphor still ships them as
- * `--ph-<role>`; the `@abmex/themes` extraction drops that prefix (kb:
- * "Decisions — Design System Consolidation (user, 2026-10-05)" #2). When it
- * lands, change ROLE_VAR_PREFIX to '--' and nothing else.
+ * shared vocabulary every theme uses, emitted as plain `--<role>` (the `ph-`
+ * prefix was dropped 2026-10-05, kb "Decisions — Design System Consolidation"
+ * #2). Keep every role → property conversion going through here.
  */
-export const ROLE_VAR_PREFIX = '--ph-';
+export const ROLE_VAR_PREFIX = '--';
 export const roleVar = (role: string): string => `${ROLE_VAR_PREFIX}${role}`;
 
 /** Generated defaults (from `phosphor.tokens.css`) for every role a

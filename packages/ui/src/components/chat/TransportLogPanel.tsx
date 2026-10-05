@@ -74,12 +74,12 @@ export function TransportLogPanel({
   return (
     <section
       className={cn(
-        'flex min-h-0 flex-col border-t border-ph-border bg-ph-surface px-3 py-2 text-xs',
+        'flex min-h-0 flex-col border-t border-border bg-surface px-3 py-2 text-xs',
         className,
       )}
     >
       <div className="mb-1 flex items-center justify-between">
-        <span className="font-medium uppercase tracking-[0.14em] text-ph-fg-muted">
+        <span className="font-medium uppercase tracking-[0.14em] text-fg-muted">
           {title} ({entries.length})
         </span>
         {onClear ? (
@@ -101,13 +101,13 @@ export function TransportLogPanel({
                 }
               }}
             >
-              <span className="text-xs text-ph-danger-soft-fg">Clear?</span>
+              <span className="text-xs text-danger-soft-fg">Clear?</span>
               <Button
                 ref={clearConfirmRef}
                 variant="ghost"
                 size="sm"
                 onPress={confirmClear}
-                className="text-xs uppercase tracking-[0.14em] text-ph-danger-soft-fg"
+                className="text-xs uppercase tracking-[0.14em] text-danger-soft-fg"
               >
                 Clear
               </Button>
@@ -133,23 +133,23 @@ export function TransportLogPanel({
         ) : null}
       </div>
       {entries.length === 0 ? (
-        <p className="text-ph-fg-muted">No transport activity yet.</p>
+        <p className="text-fg-muted">No transport activity yet.</p>
       ) : (
         <ul className="flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto">
           {entries.map((entry) => (
-            <li key={entry.id} className="rounded border border-ph-border bg-ph-surface-2 p-1">
-              <div className="mb-0.5 flex items-center gap-2 text-ph-fg-muted">
+            <li key={entry.id} className="rounded border border-border bg-surface-2 p-1">
+              <div className="mb-0.5 flex items-center gap-2 text-fg-muted">
                 <span className="tabular-nums">
                   {new Date(entry.ts).toISOString().slice(11, 23)}
                 </span>
                 {entry.direction && <span className="font-mono text-2xs uppercase">{entry.direction}</span>}
                 {entry.channel && <span className="font-mono text-2xs">{entry.channel}</span>}
-                {entry.label && <span className="text-ph-fg-muted">· {entry.label}</span>}
+                {entry.label && <span className="text-fg-muted">· {entry.label}</span>}
                 {entry.sizeBytes !== undefined && (
-                  <span className="ml-auto tabular-nums text-ph-fg-disabled">{entry.sizeBytes}b</span>
+                  <span className="ml-auto tabular-nums text-fg-disabled">{entry.sizeBytes}b</span>
                 )}
               </div>
-              <pre className="overflow-x-auto whitespace-pre-wrap break-words font-mono text-2xs text-ph-fg">
+              <pre className="overflow-x-auto whitespace-pre-wrap break-words font-mono text-2xs text-fg">
                 {JSON.stringify(entry.payload, null, 2)}
               </pre>
             </li>

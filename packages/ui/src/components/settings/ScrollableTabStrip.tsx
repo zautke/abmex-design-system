@@ -153,7 +153,7 @@ export function ScrollableTabStrip({
   return (
     <div
       className={cn(
-        'flex min-w-0 flex-shrink-0 items-stretch border-b border-ph-border bg-ph-surface',
+        'flex min-w-0 flex-shrink-0 items-stretch border-b border-border bg-surface',
         className,
       )}
     >
@@ -163,7 +163,7 @@ export function ScrollableTabStrip({
           aria-label="Scroll tabs left"
           tabIndex={0}
           onClick={() => scrollBy(-SCROLL_STEP_PX)}
-          className="flex flex-shrink-0 items-center justify-center px-1 text-ph-fg-muted transition-colors hover:text-ph-fg-strong"
+          className="flex flex-shrink-0 items-center justify-center px-1 text-fg-muted transition-colors hover:text-fg-strong"
         >
           <ChevronLeft size={14} />
         </button>
@@ -192,8 +192,8 @@ export function ScrollableTabStrip({
               className={cn(
                 'relative flex-shrink-0 px-3 py-2 text-xs font-medium whitespace-nowrap transition-colors',
                 isActive
-                  ? '-mb-px border-b-2 border-ph-primary bg-ph-surface-2 text-ph-fg-strong'
-                  : 'text-ph-fg-sage hover:bg-ph-surface-2 hover:text-ph-fg-strong',
+                  ? '-mb-px border-b-2 border-primary bg-surface-2 text-fg-strong'
+                  : 'text-fg-sage hover:bg-surface-2 hover:text-fg-strong',
               )}
             >
               {tab.label}
@@ -209,7 +209,7 @@ export function ScrollableTabStrip({
           aria-label="Scroll tabs right"
           tabIndex={0}
           onClick={() => scrollBy(SCROLL_STEP_PX)}
-          className="flex flex-shrink-0 items-center justify-center px-1 text-ph-fg-muted transition-colors hover:text-ph-fg-strong"
+          className="flex flex-shrink-0 items-center justify-center px-1 text-fg-muted transition-colors hover:text-fg-strong"
         >
           <ChevronRight size={14} />
         </button>

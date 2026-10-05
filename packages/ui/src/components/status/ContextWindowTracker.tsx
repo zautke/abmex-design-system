@@ -41,7 +41,7 @@ export function ContextWindowTracker({
     return (
       <div
         className={cn(
-          'text-xs font-medium uppercase tracking-[0.14em] text-ph-fg-muted',
+          'text-xs font-medium uppercase tracking-[0.14em] text-fg-muted',
           className,
         )}
       >
@@ -75,11 +75,11 @@ export function ContextWindowTracker({
         .join('\n')}
       className={cn('flex flex-col gap-1', className)}
     >
-      <span className="text-xs font-medium uppercase tracking-[0.14em] text-ph-fg-muted">
+      <span className="text-xs font-medium uppercase tracking-[0.14em] text-fg-muted">
         {meter.estimated ? '~' : ''}
         {value}% left
       </span>
-      <div className="flex h-1 w-24 overflow-hidden rounded-full bg-ph-surface-3">
+      <div className="flex h-1 w-24 overflow-hidden rounded-full bg-surface-3">
         <div className={cn('h-full', FILL_TONE[tone])} style={{ width: `${usedPercent}%` }} />
         <div
           className={cn('h-full opacity-30', FILL_TONE[tone])}
@@ -92,9 +92,9 @@ export function ContextWindowTracker({
 }
 
 const FILL_TONE = {
-  accent: 'bg-ph-info',
-  warning: 'bg-ph-warning',
-  danger: 'bg-ph-danger',
+  accent: 'bg-info',
+  warning: 'bg-warning',
+  danger: 'bg-danger',
 } as const;
 
 function clampPercent(value: number): number {

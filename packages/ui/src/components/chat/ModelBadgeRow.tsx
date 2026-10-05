@@ -19,14 +19,14 @@ export function ModelBadgeRow({ label, className }: ModelBadgeRowProps) {
     <li className="flex justify-start">
       <div
         className={cn(
-          'flex items-center gap-2 text-xs font-medium uppercase tracking-[0.18em] text-ph-fg-muted',
+          'flex items-center gap-2 text-xs font-medium uppercase tracking-[0.18em] text-fg-muted',
           className,
         )}
       >
         <Chip size="sm" variant="secondary" className="text-xs tracking-[0.16em]">
           {label}
         </Chip>
-        <span className="h-px w-10 bg-ph-surface-3" aria-hidden />
+        <span className="h-px w-10 bg-surface-3" aria-hidden />
       </div>
     </li>
   );

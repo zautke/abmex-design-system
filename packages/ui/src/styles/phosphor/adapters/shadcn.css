@@ -23,48 +23,36 @@
 [data-theme="dark"],
 .light,
 [data-theme="light"] {
-  --radius: var(--ph-radius);
-  --background: var(--ph-bg);
-  --foreground: var(--ph-fg);
-  --card: var(--ph-surface);
-  --card-foreground: var(--ph-fg);
-  --popover: var(--ph-overlay);
-  --popover-foreground: var(--ph-fg);
-  --primary: var(--ph-primary);
-  --primary-foreground: var(--ph-primary-fg);
-  --secondary: var(--ph-surface-2);
-  --secondary-foreground: var(--ph-fg-strong);
-  --muted: var(--ph-surface-2);
-  --muted-foreground: var(--ph-fg-muted);
-  --accent: var(--ph-primary-soft);
-  --accent-foreground: var(--ph-fg-strong);
-  --destructive: var(--ph-danger);
-  --destructive-foreground: var(--ph-danger-fg);
-  --border: var(--ph-border);
-  --input: var(--ph-border-strong);
-  --ring: var(--ph-focus);
-  --chart-1: var(--ph-chart-1);
-  --chart-2: var(--ph-chart-2);
-  --chart-3: var(--ph-chart-3);
-  --chart-4: var(--ph-chart-4);
-  --chart-5: var(--ph-chart-5);
-  --sidebar: var(--ph-surface);
-  --sidebar-foreground: var(--ph-fg);
-  --sidebar-primary: var(--ph-primary);
-  --sidebar-primary-foreground: var(--ph-primary-fg);
-  --sidebar-accent: var(--ph-surface-2);
-  --sidebar-accent-foreground: var(--ph-fg-strong);
-  --sidebar-border: var(--ph-border);
-  --sidebar-ring: var(--ph-focus);
+  --background: var(--bg);
+  --foreground: var(--fg);
+  --card: var(--surface);
+  --card-foreground: var(--fg);
+  --popover: var(--overlay);
+  --popover-foreground: var(--fg);
+  --primary-foreground: var(--primary-fg);
+  --secondary: var(--surface-2);
+  --secondary-foreground: var(--fg-strong);
+  --muted: var(--surface-2);
+  --muted-foreground: var(--fg-muted);
+  --accent: var(--primary-soft);
+  --accent-foreground: var(--fg-strong);
+  --destructive: var(--danger);
+  --destructive-foreground: var(--danger-fg);
+  --input: var(--border-strong);
+  --ring: var(--focus);
+  --sidebar: var(--surface);
+  --sidebar-foreground: var(--fg);
+  --sidebar-primary: var(--primary);
+  --sidebar-primary-foreground: var(--primary-fg);
+  --sidebar-accent: var(--surface-2);
+  --sidebar-accent-foreground: var(--fg-strong);
+  --sidebar-border: var(--border);
+  --sidebar-ring: var(--focus);
   /* Phosphor extensions (shadcn has no built-in status tokens) */
-  --success: var(--ph-success);
-  --success-foreground: var(--ph-success-fg);
-  --warning: var(--ph-warning);
-  --warning-foreground: var(--ph-warning-fg);
-  --info: var(--ph-info);
-  --info-foreground: var(--ph-info-fg);
-  --emphasis: var(--ph-emphasis);
-  --emphasis-foreground: var(--ph-emphasis-fg);
+  --success-foreground: var(--success-fg);
+  --warning-foreground: var(--warning-fg);
+  --info-foreground: var(--info-fg);
+  --emphasis-foreground: var(--emphasis-fg);
 }
 
 @theme inline {

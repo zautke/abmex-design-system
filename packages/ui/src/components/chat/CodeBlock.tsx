@@ -14,12 +14,12 @@ export function CodeBlock({ language, value, className }: CodeBlockProps) {
   return (
     <div
       className={cn(
-        'group relative my-4 min-w-0 max-w-full overflow-hidden rounded-ph border border-ph-border code-surface',
+        'group relative my-4 min-w-0 max-w-full overflow-hidden rounded-base border border-border code-surface',
         className,
       )}
     >
-      <div className="flex items-center justify-between border-b border-ph-border bg-ph-surface px-4 py-1.5 text-xs">
-        <span className="font-mono text-2xs text-ph-fg-muted">{language || 'text'}</span>
+      <div className="flex items-center justify-between border-b border-border bg-surface px-4 py-1.5 text-xs">
+        <span className="font-mono text-2xs text-fg-muted">{language || 'text'}</span>
         <CopyButton
           value={value}
           label="Copy"
@@ -34,7 +34,7 @@ export function CodeBlock({ language, value, className }: CodeBlockProps) {
             margin: 0,
             padding: 0,
             background: 'transparent',
-            fontFamily: 'var(--ph-font-mono)',
+            fontFamily: 'var(--font-mono)',
             whiteSpace: 'pre-wrap',
             overflowWrap: 'anywhere',
             wordBreak: 'break-word',

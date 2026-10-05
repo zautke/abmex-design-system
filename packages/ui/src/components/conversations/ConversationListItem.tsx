@@ -137,13 +137,13 @@ export function ConversationListItem({
               }
             }}
           >
-            <span className="text-xs text-ph-danger-soft-fg">Delete?</span>
+            <span className="text-xs text-danger-soft-fg">Delete?</span>
             <Button
               ref={deleteConfirmRef}
               variant="ghost"
               size="sm"
               onPress={confirmDelete}
-              className="text-ph-danger-soft-fg"
+              className="text-danger-soft-fg"
             >
               Delete
             </Button>

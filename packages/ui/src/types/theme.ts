@@ -14,9 +14,9 @@ export interface ColorLCH {
 
 /**
  * Each family's anchor color — the dark-twin value of the Phosphor role the
- * family drives (slate → `--ph-fg-muted`, teal → `--ph-primary`, rose →
- * `--ph-danger`, emerald → `--ph-success`, amber → `--ph-warning`). A family at
- * its anchor writes nothing; the generated `--ph-*` values stay in force.
+ * family drives (slate → `--fg-muted`, teal → `--primary`, rose →
+ * `--danger`, emerald → `--success`, amber → `--warning`). A family at
+ * its anchor writes nothing; the generated `--*` values stay in force.
  */
 export const DEFAULT_LCH: Record<ColorFamily, ColorLCH> = {
   slate: { l: 0.6888, c: 0.0302, h: 158.35 },
@@ -48,7 +48,7 @@ export const SHADES = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950] as 
 export interface Theme {
   id: string;
   name: string;
-  /** Per-family OKLCH anchor; drives that family's `--ph-*` roles in both twins. */
+  /** Per-family OKLCH anchor; drives that family's `--*` roles in both twins. */
   colors: Record<ColorFamily, ColorLCH>;
   /** Explicit overrides keyed by custom-property name → CSS value. Applied last, in every twin. */
   overrides: Record<string, string>;

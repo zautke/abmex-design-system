@@ -120,7 +120,7 @@ export function ColorSystem({ color: initialColor, onChange }: ColorSystemProps)
   };
 
   return (
-    <div className="flex flex-col gap-3 bg-ph-overlay p-3 rounded-xl shadow-ph-overlay border border-ph-border w-[320px] max-w-full" onClick={(e) => e.stopPropagation()}>
+    <div className="flex flex-col gap-3 bg-overlay p-3 rounded-xl shadow-overlay border border-border w-[320px] max-w-full" onClick={(e) => e.stopPropagation()}>
       <div className="flex gap-3 items-start">
         {/* React Colorful Picker — wrapped in a labeled group so the
             saturation/hue draggable surfaces have an accessible name. */}
@@ -138,7 +138,7 @@ export function ColorSystem({ color: initialColor, onChange }: ColorSystemProps)
           <div className="flex items-center gap-1.5">
             <label
               htmlFor={hexInputId}
-              className="text-xs font-semibold text-ph-fg-muted w-8"
+              className="text-xs font-semibold text-fg-muted w-8"
             >
               HEX
             </label>
@@ -150,14 +150,14 @@ export function ColorSystem({ color: initialColor, onChange }: ColorSystemProps)
               onChange={(e) => handleHexChange(e.target.value)}
               aria-label="Hex color value"
               spellCheck={false}
-              className="flex-1 px-1.5 py-1 text-3xs font-mono border border-ph-border-strong rounded focus:outline-none focus:border-ph-focus bg-ph-field text-ph-fg"
+              className="flex-1 px-1.5 py-1 text-3xs font-mono border border-border-strong rounded focus:outline-none focus:border-focus bg-field text-fg"
             />
           </div>
 
           <div className="flex flex-col gap-2.5">
             {/* RGB Channels */}
             <div className="flex flex-col gap-1">
-              <div className="text-xs font-bold text-ph-fg uppercase tracking-wider mb-0.5">RGB</div>
+              <div className="text-xs font-bold text-fg uppercase tracking-wider mb-0.5">RGB</div>
               <ChannelSlider instanceId={instanceId} group="RGB" label="R" value={Math.round(rgb.r * 255)} min={0} max={255} onChange={(v) => handleChannelChange('rgb', 'r', v / 255)} />
               <ChannelSlider instanceId={instanceId} group="RGB" label="G" value={Math.round(rgb.g * 255)} min={0} max={255} onChange={(v) => handleChannelChange('rgb', 'g', v / 255)} />
               <ChannelSlider instanceId={instanceId} group="RGB" label="B" value={Math.round(rgb.b * 255)} min={0} max={255} onChange={(v) => handleChannelChange('rgb', 'b', v / 255)} />
@@ -165,7 +165,7 @@ export function ColorSystem({ color: initialColor, onChange }: ColorSystemProps)
 
             {/* HSL Channels */}
             <div className="flex flex-col gap-1">
-              <div className="text-xs font-bold text-ph-fg uppercase tracking-wider mb-0.5">HSL</div>
+              <div className="text-xs font-bold text-fg uppercase tracking-wider mb-0.5">HSL</div>
               <ChannelSlider instanceId={instanceId} group="HSL" label="H" value={Math.round(hsl.h || 0)} min={0} max={360} unit="deg" onChange={(v) => handleChannelChange('hsl', 'h', v)} />
               <ChannelSlider instanceId={instanceId} group="HSL" label="S" value={Math.round(hsl.s * 100)} min={0} max={100} unit="percent" onChange={(v) => handleChannelChange('hsl', 's', v / 100)} />
               <ChannelSlider instanceId={instanceId} group="HSL" label="L" value={Math.round(hsl.l * 100)} min={0} max={100} unit="percent" onChange={(v) => handleChannelChange('hsl', 'l', v / 100)} />
@@ -173,7 +173,7 @@ export function ColorSystem({ color: initialColor, onChange }: ColorSystemProps)
 
             {/* OKLCH Channels */}
             <div className="flex flex-col gap-1">
-              <div className="text-xs font-bold text-ph-fg uppercase tracking-wider mb-0.5">OKLCH</div>
+              <div className="text-xs font-bold text-fg uppercase tracking-wider mb-0.5">OKLCH</div>
               <ChannelSlider instanceId={instanceId} group="OKLCH" label="L" value={Math.round(internalColor.l * 100)} min={0} max={100} unit="percent" onChange={(v) => handleChannelChange('oklch', 'l', v / 100)} />
               <ChannelSlider instanceId={instanceId} group="OKLCH" label="C" value={internalColor.c} min={0} max={0.4} step={0.01} onChange={(v) => handleChannelChange('oklch', 'c', v)} />
               <ChannelSlider instanceId={instanceId} group="OKLCH" label="H" value={Math.round(internalColor.h || 0)} min={0} max={360} unit="deg" onChange={(v) => handleChannelChange('oklch', 'h', v)} />
@@ -231,7 +231,7 @@ function ChannelSlider({
     <div className="flex items-center gap-1.5">
       <label
         htmlFor={sliderId}
-        className="text-xs font-medium text-ph-fg w-3"
+        className="text-xs font-medium text-fg w-3"
         aria-hidden="true"
       >
         {label}
@@ -247,9 +247,9 @@ function ChannelSlider({
         onChange={(e) => onChange(Number(e.target.value))}
         aria-label={ariaLabel}
         aria-valuetext={valuetext}
-        className="flex-1 h-1 bg-ph-surface-3 rounded-lg appearance-none cursor-pointer accent-ph-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ph-focus [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-2.5 [&::-webkit-slider-thumb]:h-2.5 [&::-webkit-slider-thumb]:bg-ph-primary [&::-webkit-slider-thumb]:rounded-full"
+        className="flex-1 h-1 bg-surface-3 rounded-lg appearance-none cursor-pointer accent-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-2.5 [&::-webkit-slider-thumb]:h-2.5 [&::-webkit-slider-thumb]:bg-primary [&::-webkit-slider-thumb]:rounded-full"
       />
-      <span className="text-3xs text-ph-fg-muted w-7 text-right font-mono tabular-nums leading-none">{displayValue}</span>
+      <span className="text-3xs text-fg-muted w-7 text-right font-mono tabular-nums leading-none">{displayValue}</span>
     </div>
   );
 }

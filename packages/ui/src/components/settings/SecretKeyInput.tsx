@@ -49,13 +49,13 @@ export function SecretKeyInput({
       isDisabled={isDisabled}
     >
       <div className="mb-1 flex items-center justify-between gap-2">
-        <Label className="text-xs font-medium text-ph-fg">{label}</Label>
+        <Label className="text-xs font-medium text-fg">{label}</Label>
         {helpLink ? (
           <a
             href={helpLink.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-0.5 text-xs text-ph-fg-muted hover:text-ph-fg hover:underline"
+            className="inline-flex items-center gap-0.5 text-xs text-fg-muted hover:text-fg hover:underline"
           >
             {helpLink.label}
             <ExternalLink size={10} />

@@ -16,10 +16,10 @@ export interface StreamingRateProps {
  */
 export function StreamingRate({ value, unit, live = false, className }: StreamingRateProps) {
   return (
-    <div className={cn('mt-0.5 flex items-center gap-1.5 px-1 text-xs text-ph-fg-muted', className)}>
-      {live && <span className="h-1.5 w-1.5 shrink-0 animate-pulse rounded-full bg-ph-primary" />}
+    <div className={cn('mt-0.5 flex items-center gap-1.5 px-1 text-xs text-fg-muted', className)}>
+      {live && <span className="h-1.5 w-1.5 shrink-0 animate-pulse rounded-full bg-primary" />}
       <span className="font-bold tabular-nums">{value.toFixed(1)}</span>
-      <span className="font-medium text-ph-fg-muted">{unit}</span>
+      <span className="font-medium text-fg-muted">{unit}</span>
     </div>
   );
 }

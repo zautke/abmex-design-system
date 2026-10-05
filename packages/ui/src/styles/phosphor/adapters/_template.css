@@ -6,7 +6,7 @@
  * ========================================================================== */
 
 /* Any component system can consume Phosphor by mapping ITS variable names to the
- * --ph-* interface below. Rules:
+ * --* interface below. Rules:
  *  1. Declare the mapping on exactly these selectors (so nested .light/.dark
  *     scopes re-resolve):  :root, .dark, [data-theme="dark"], .light, [data-theme="light"]
  *  2. Map by ROLE, never by name: libraries reuse names (accent, muted) for
@@ -17,25 +17,25 @@
  *  5. Import order: library CSS → phosphor.tailwind.css → your adapter.
  *
  * THE INTERFACE (all defined in phosphor.tokens.css, both themes)
- *  Grounds    --ph-bg --ph-bg-sunken --ph-surface --ph-surface-2 --ph-surface-3
- *             --ph-overlay --ph-field --ph-code-bg
- *  Lines      --ph-border (hairline, decorative) --ph-border-strong (3:1 controls)
- *  Text       --ph-fg --ph-fg-strong --ph-fg-sage --ph-fg-muted --ph-fg-disabled --ph-link
- *  Intents    --ph-{primary|danger|success|warning|info|emphasis}
+ *  Grounds    --bg --bg-sunken --surface --surface-2 --surface-3
+ *             --overlay --field --code-bg
+ *  Lines      --border (hairline, decorative) --border-strong (3:1 controls)
+ *  Text       --fg --fg-strong --fg-sage --fg-muted --fg-disabled --link
+ *  Intents    --{primary|danger|success|warning|info|emphasis}
  *             + -fg  -hover  -soft  -soft-fg
- *  Utility    --ph-focus --ph-selection --ph-scrollbar --ph-backdrop
- *  Data viz   --ph-chart-1 … --ph-chart-5
- *  Effects    --ph-shadow-surface --ph-shadow-field --ph-shadow-overlay
- *  Shape/type --ph-radius --ph-border-width --ph-ring-width --ph-ring-offset
- *             --ph-font-sans --ph-font-display --ph-font-mono
- *             --ph-display-weight --ph-display-tracking --ph-duration --ph-ease
+ *  Utility    --focus --selection --scrollbar --backdrop
+ *  Data viz   --chart-1 … --chart-5
+ *  Effects    --shadow-surface --shadow-field --shadow-overlay
+ *  Shape/type --radius --border-width --ring-width --ring-offset
+ *             --font-sans --font-display --font-mono
+ *             --display-weight --display-tracking --duration --ease
  */
 :root,
 .dark,
 [data-theme="dark"],
 .light,
 [data-theme="light"] {
-  /* --library-background: var(--ph-bg); */
-  /* --library-primary: var(--ph-primary); */
-  /* --library-primary-text: var(--ph-primary-fg); */
+  /* --library-background: var(--bg); */
+  /* --library-primary: var(--primary); */
+  /* --library-primary-text: var(--primary-fg); */
 }
