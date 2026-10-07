@@ -21,7 +21,8 @@
 .dark,
 [data-theme="dark"],
 .light,
-[data-theme="light"] {
+[data-theme="light"],
+[data-mode] {
   --field-radius: calc(var(--radius) * 1.5);
   --field-border-width: var(--border-width);
   --ring-offset-width: var(--ring-offset);

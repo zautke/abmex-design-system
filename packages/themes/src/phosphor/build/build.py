@@ -112,14 +112,16 @@ tokens_css = HEADER.format(title='tokens (Layer 1: the role interface)') + '''
  * nested scope re-resolves var() chains instead of inheriting stale values.
  */
 :root,
-.dark,
-[data-theme="dark"] {
+.dark:not([data-mode]),
+[data-theme="dark"]:not([data-mode]),
+[data-mode="dark"] {
   color-scheme: dark;
 ''' + block('dark') + '''
 }
 
-.light,
-[data-theme="light"] {
+.light:not([data-mode]),
+[data-theme="light"]:not([data-mode]),
+[data-mode="light"] {
   color-scheme: light;
 ''' + block('light') + '''
 }
@@ -146,7 +148,7 @@ tokens_css = tokens_css.replace('/* Theme scoping', ROLES_MARKER + '\n/* Theme s
 open(f'{OUT}/phosphor.tokens.css','w',encoding='utf-8',newline=chr(10)).write(tokens_css)
 
 # ---------------------------------------------------------------- tailwind layer
-SEL = ':root,\n.dark,\n[data-theme="dark"],\n.light,\n[data-theme="light"]'
+SEL = ':root,\n.dark,\n[data-theme="dark"],\n.light,\n[data-theme="light"],\n[data-mode]'
 colors = ORDER + ['backdrop']
 tw = HEADER.format(title='Tailwind v4 layer') + '''
 @import "./phosphor.tokens.css";

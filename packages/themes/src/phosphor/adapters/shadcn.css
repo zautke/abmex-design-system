@@ -22,7 +22,8 @@
 .dark,
 [data-theme="dark"],
 .light,
-[data-theme="light"] {
+[data-theme="light"],
+[data-mode] {
   --background: var(--bg);
   --foreground: var(--fg);
   --card: var(--surface);

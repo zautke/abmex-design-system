@@ -34,7 +34,8 @@
 .dark,
 [data-theme="dark"],
 .light,
-[data-theme="light"] {
+[data-theme="light"],
+[data-mode] {
   /* --library-background: var(--bg); */
   /* --library-primary: var(--primary); */
   /* --library-primary-text: var(--primary-fg); */

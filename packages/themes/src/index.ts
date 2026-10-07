@@ -1,165 +1,183 @@
 export type ThemePreference = 'light' | 'dark' | 'system';
 export type ResolvedTheme = 'light' | 'dark';
+export type ThemeStorage = Pick<Storage, 'getItem' | 'setItem'>;
 
 export interface ThemeControllerOptions {
-  /** Element that carries the theme attribute. Default `document.documentElement`. */
   target?: HTMLElement;
-  /**
-   * `'class'` or an attribute name such as `'data-theme'`. Default: the computed
-   * `--theme-attribute` custom property on `target` (Phosphor declares `class`), else `'class'`.
-   */
+  /** Theme identity, independent of mode. Defaults to neutral. */
+  theme?: string;
+  /** Mode attribute; legacy consumers can explicitly select class/data-theme. */
   attribute?: string;
-  /** Attribute value / class name per resolved theme. Default `{ light: 'light', dark: 'dark' }`. */
   values?: Record<ResolvedTheme, string>;
-  /** localStorage key mirrored as `{ pref, resolved }` for the pre-paint snippet. Omit to skip storage. */
+  /** Persistence is opt-in and uses the target document's storage by default. */
   storageKey?: string;
-  /** Initial preference. Default: the stored `pref`, else `'system'`. */
+  storage?: ThemeStorage;
   initial?: ThemePreference;
+  /** Create an inert store for rendering; mount it after commit. */
+  defer?: boolean;
 }
-
 export interface ThemeState {
+  theme: string;
   preference: ThemePreference;
   resolved: ResolvedTheme;
   isTransitioning: boolean;
 }
-
 export interface ThemeController {
-  /** The resolved attribute (`'class'` or an attribute name). */
   readonly attribute: string;
   getState(): ThemeState;
-  /** Applies a preference; animates the swap unless `transition: false` or the duration is 0. */
+  getServerSnapshot(): ThemeState;
+  mount(): void;
+  setTheme(theme: string): void;
   setPreference(preference: ThemePreference, options?: { transition?: boolean }): void;
-  /** Flips the resolved theme to an explicit light/dark preference. */
   toggle(): void;
   subscribe(listener: () => void): () => void;
-  /** Removes `html.no-transition` (set by the pre-paint snippet) after two frames. */
   releaseNoTransition(): void;
-  /** Detaches the system listener and pending timers. `subscribe` re-attaches the listener. */
   destroy(): void;
 }
 
 const DARK_QUERY = '(prefers-color-scheme: dark)';
+const REDUCED_QUERY = '(prefers-reduced-motion: reduce)';
+const isPreference = (value: unknown): value is ThemePreference =>
+  value === 'light' || value === 'dark' || value === 'system';
 
-/** Milliseconds from a CSS time value (`550ms`, `0.5s`); 0 when unset or unparsable. */
+/** CSS time in milliseconds. Malformed and negative values disable motion. */
 export function parseCssTime(value: string): number {
-  const v = value.trim();
-  const n = parseFloat(v);
-  if (!Number.isFinite(n)) return 0;
-  return v.endsWith('ms') ? n : v.endsWith('s') ? n * 1000 : n;
+  const match = /^(\d+(?:\.\d+)?|\.\d+)(ms|s)?$/.exec(value.trim());
+  if (!match) return 0;
+  const result = Number(match[1]) * (match[2] === 's' ? 1000 : 1);
+  return Number.isFinite(result) ? result : 0;
 }
 
-/** Removes `no-transition` from `<html>` after first paint (double rAF). */
-export function releaseNoTransition(doc: Document = document) {
-  requestAnimationFrame(() => requestAnimationFrame(() => doc.documentElement.classList.remove('no-transition')));
-}
-
-function readStored(key: string | undefined): { pref?: ThemePreference } {
-  if (!key) return {};
-  try {
-    return JSON.parse(localStorage.getItem(key) ?? '{}') ?? {};
-  } catch {
-    return {};
+function afterPaint(target: HTMLElement): () => void {
+  const view = target.ownerDocument.defaultView;
+  if (!view?.requestAnimationFrame) {
+    target.classList.remove('no-transition');
+    return () => {};
   }
+  let frame = view.requestAnimationFrame(() => {
+    frame = view.requestAnimationFrame(() => target.classList.remove('no-transition'));
+  });
+  return () => view.cancelAnimationFrame(frame);
 }
 
-/**
- * Framework-agnostic theme controller: resolves `system` via `matchMedia`, writes the
- * class/attribute and `color-scheme`, runs the `html.theme-transitioning` choreography
- * timed from `--theme-transition-duration`, and mirrors `{ pref, resolved }` to storage.
- */
+/** Importing this module never reads document or storage. */
+export function releaseNoTransition(doc?: Document): () => void {
+  const target = doc?.documentElement ?? (typeof document === 'undefined' ? undefined : document.documentElement);
+  return target ? afterPaint(target) : () => {};
+}
+
+function validateTheme(theme: string): string {
+  if (!theme.trim() || theme === 'light' || theme === 'dark') {
+    throw new TypeError('Theme identity must be nonempty and distinct from light/dark mode.');
+  }
+  return theme;
+}
+
 export function createThemeController(options: ThemeControllerOptions = {}): ThemeController {
-  const target = options.target ?? document.documentElement;
-  const root = target.ownerDocument.documentElement;
-  const view = target.ownerDocument.defaultView ?? window;
+  const attribute = options.attribute ?? 'data-mode';
   const values = options.values ?? { light: 'light', dark: 'dark' };
-  const attribute =
-    options.attribute || view.getComputedStyle(target).getPropertyValue('--theme-attribute').trim() || 'class';
-  const media = view.matchMedia(DARK_QUERY);
-  const stored = readStored(options.storageKey).pref;
-  const listeners = new Set<() => void>();
+  const initial = options.initial ?? 'system';
+  if (!isPreference(initial)) throw new TypeError('Invalid theme preference.');
+  const serverState: ThemeState = {
+    theme: validateTheme(options.theme ?? 'neutral'), preference: initial,
+    resolved: initial === 'dark' ? 'dark' : 'light', isTransitioning: false,
+  };
+  let state = serverState;
+  let target: HTMLElement | undefined;
+  let view: Window | null | undefined;
+  let media: MediaQueryList | undefined;
+  let reduced: MediaQueryList | undefined;
+  let storage: ThemeStorage | undefined;
+  let mounted = false;
+  let initialized = false;
   let timer: ReturnType<typeof setTimeout> | undefined;
-  let attached = false;
-
-  const resolve = (pref: ThemePreference): ResolvedTheme =>
-    pref === 'system' ? (media.matches ? 'dark' : 'light') : pref;
-
-  const initial: ThemePreference =
-    options.initial ?? (stored === 'light' || stored === 'dark' || stored === 'system' ? stored : 'system');
-  let state: ThemeState = { preference: initial, resolved: resolve(initial), isTransitioning: false };
-
+  let cancelPaint = () => {};
+  const listeners = new Set<() => void>();
   const emit = (next: Partial<ThemeState>) => {
     state = { ...state, ...next };
-    listeners.forEach((l) => l());
+    listeners.forEach(listener => listener());
   };
-
-  const write = (resolved: ResolvedTheme) => {
+  const stopTransition = () => {
+    clearTimeout(timer);
+    timer = undefined;
+    target?.classList.remove('theme-transitioning');
+  };
+  const write = () => {
+    if (!mounted || !target) return;
+    if (attribute !== 'data-theme') target.setAttribute('data-theme', state.theme);
     if (attribute === 'class') {
       target.classList.remove(...Object.values(values));
-      target.classList.add(values[resolved]);
-    } else {
-      target.setAttribute(attribute, values[resolved]);
-    }
-    target.style.colorScheme = resolved;
+      target.classList.add(values[state.resolved]);
+    } else target.setAttribute(attribute, values[state.resolved]);
+    target.style.colorScheme = state.resolved;
   };
-
-  const persist = () => {
-    if (!options.storageKey) return;
-    try {
-      localStorage.setItem(options.storageKey, JSON.stringify({ pref: state.preference, resolved: state.resolved }));
-    } catch {
-      // Storage blocked (private mode, sandbox): the in-memory state still applies.
-    }
-  };
-
   const apply = (preference: ThemePreference, transition: boolean) => {
-    const resolved = resolve(preference);
-    const changed = resolved !== state.resolved;
-    const duration = parseCssTime(view.getComputedStyle(root).getPropertyValue('--theme-transition-duration'));
-    if (transition && changed && duration > 0) {
-      clearTimeout(timer);
-      root.classList.add('theme-transitioning');
-      write(resolved);
-      emit({ preference, resolved, isTransitioning: true });
-      timer = setTimeout(() => {
-        root.classList.remove('theme-transitioning');
-        emit({ isTransitioning: false });
-      }, duration);
-    } else {
-      write(resolved);
-      emit({ preference, resolved });
+    if (!isPreference(preference)) throw new TypeError('Invalid theme preference.');
+    const resolved = preference === 'system' ? (media?.matches ? 'dark' : 'light') : preference;
+    const duration = mounted && target && view && !reduced?.matches
+      ? parseCssTime(view.getComputedStyle(target).getPropertyValue('--theme-transition-duration')) : 0;
+    const animate = transition && resolved !== state.resolved && duration > 0;
+    stopTransition();
+    state = { ...state, preference, resolved, isTransitioning: animate };
+    if (animate) target?.classList.add('theme-transitioning');
+    write();
+    if (animate) timer = setTimeout(() => {
+      stopTransition();
+      emit({ isTransitioning: false });
+    }, duration);
+    if (mounted && options.storageKey) {
+      try { storage?.setItem(options.storageKey, JSON.stringify({ pref: preference, resolved })); }
+      catch { /* Storage failures leave the live in-memory preference usable. */ }
     }
-    persist();
+    emit({});
   };
-
   const onSystemChange = () => {
     if (state.preference === 'system') apply('system', true);
   };
-  const attach = () => {
-    if (attached) return;
-    attached = true;
-    media.addEventListener('change', onSystemChange);
+  const onMotionChange = () => {
+    if (reduced?.matches && state.isTransitioning) {
+      stopTransition();
+      emit({ isTransitioning: false });
+    }
   };
-
-  write(state.resolved);
-  persist();
-  attach();
-
-  return {
-    attribute,
-    getState: () => state,
+  const mount = () => {
+    if (mounted) return;
+    target = options.target ?? (typeof document === 'undefined' ? undefined : document.documentElement);
+    if (!target) return;
+    view = target.ownerDocument.defaultView;
+    media = view?.matchMedia?.(DARK_QUERY);
+    reduced = view?.matchMedia?.(REDUCED_QUERY);
+    if (options.storageKey) {
+      try { storage = options.storage ?? view?.localStorage; } catch { storage = undefined; }
+    }
+    let preference = state.preference;
+    if (!initialized && !options.initial && options.storageKey) {
+      try {
+        const stored: unknown = JSON.parse(storage?.getItem(options.storageKey) ?? 'null');
+        if (stored && typeof stored === 'object' && 'pref' in stored && isPreference(stored.pref)) preference = stored.pref;
+      } catch { /* Malformed stored data never prevents a usable theme. */ }
+    }
+    initialized = mounted = true;
+    media?.addEventListener('change', onSystemChange);
+    reduced?.addEventListener('change', onMotionChange);
+    apply(preference, false);
+  };
+  const controller: ThemeController = {
+    attribute, getState: () => state, getServerSnapshot: () => serverState, mount,
+    setTheme(theme) { state = { ...state, theme: validateTheme(theme) }; write(); emit({}); },
     setPreference: (preference, opts) => apply(preference, opts?.transition ?? true),
     toggle: () => apply(state.resolved === 'dark' ? 'light' : 'dark', true),
-    subscribe(listener) {
-      attach();
-      listeners.add(listener);
-      return () => listeners.delete(listener);
-    },
-    releaseNoTransition: () => releaseNoTransition(target.ownerDocument),
+    subscribe(listener) { listeners.add(listener); return () => { listeners.delete(listener); }; },
+    releaseNoTransition() { cancelPaint(); if (target) cancelPaint = afterPaint(target); },
     destroy() {
-      attached = false;
-      media.removeEventListener('change', onSystemChange);
-      clearTimeout(timer);
-      root.classList.remove('theme-transitioning');
+      mounted = false;
+      media?.removeEventListener('change', onSystemChange);
+      reduced?.removeEventListener('change', onMotionChange);
+      cancelPaint();
+      stopTransition();
+      state = { ...state, isTransitioning: false };
     },
   };
+  if (!options.defer) mount();
+  return controller;
 }

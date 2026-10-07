@@ -1,6 +1,6 @@
 {
   "name": "@abmex/themes",
-  "version": "0.7.0-next.0",
+  "version": "0.7.0-next.1",
   "description": "Framework-neutral ABMEX themes, tokens and motion",
   "type": "module",
   "license": "MIT",
@@ -15,7 +15,8 @@
   },
   "scripts": {
     "build": "python3 src/phosphor/build/build.py && tsc -p tsconfig.json && node scripts/copy-styles.mjs",
-    "typecheck": "tsc -p tsconfig.json --noEmit"
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "prepack": "pnpm build"
   },
   "devDependencies": {"typescript": "5.9.3"},
   "publishConfig": {"access": "public"}

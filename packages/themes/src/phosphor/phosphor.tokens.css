@@ -16,8 +16,9 @@
  * nested scope re-resolves var() chains instead of inheriting stale values.
  */
 :root,
-.dark,
-[data-theme="dark"] {
+.dark:not([data-mode]),
+[data-theme="dark"]:not([data-mode]),
+[data-mode="dark"] {
   color-scheme: dark;
   /* Neutrals */
   --bg: oklch(0.2143 0.0177 170.07); /* #111c18 */
@@ -94,8 +95,9 @@
   --shadow-overlay: 0 0 0 1px rgba(168, 191, 174, 0.06), 0 16px 40px -12px rgba(0, 0, 0, 0.7);
 }
 
-.light,
-[data-theme="light"] {
+.light:not([data-mode]),
+[data-theme="light"]:not([data-mode]),
+[data-mode="light"] {
   color-scheme: light;
   /* Neutrals */
   --bg: oklch(0.9609 0.0119 111.76); /* #f2f3ea */
