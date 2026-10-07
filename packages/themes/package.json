@@ -4,6 +4,7 @@
   "description": "Framework-neutral ABMEX themes, tokens and motion",
   "type": "module",
   "license": "MIT",
+  "repository": {"type": "git", "url": "git+https://github.com/zautke/abmex-design-system.git", "directory": "packages/themes"},
   "files": ["dist"],
   "sideEffects": ["**/*.css"],
   "exports": {

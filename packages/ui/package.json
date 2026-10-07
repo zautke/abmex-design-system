@@ -5,6 +5,11 @@
   "type": "module",
   "private": false,
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zautke/abmex-design-system.git",
+    "directory": "packages/ui"
+  },
   "sideEffects": [
     "**/*.css"
   ],
