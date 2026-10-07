@@ -5,6 +5,7 @@
  * Requires: Tailwind CSS >= 4.2 (verified on 4.2.x and 4.3.x) where noted.
  * ========================================================================== */
 
+@import "./motion.css";
 /* theme-editor: roles — parseSemanticVariables lists every declaration between
  * this marker and the end marker as the theme's role group. */
 
@@ -187,7 +188,5 @@
   --font-mono: "Victor Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
   --display-weight: 600;
   --display-tracking: -0.02em;
-  --duration: 140ms;
-  --ease: cubic-bezier(0.2, 0, 0, 1);
 }
 /* theme-editor: roles-end */

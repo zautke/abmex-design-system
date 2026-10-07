@@ -104,6 +104,7 @@ HEADER = '''/* =================================================================
  * ========================================================================== */
 '''
 tokens_css = HEADER.format(title='tokens (Layer 1: the role interface)') + '''
+@import "./motion.css";
 /* Theme scoping
  *   default (no class)            → dark
  *   .dark  | [data-theme="dark"]  → dark   (works on any element, nests)
@@ -139,8 +140,6 @@ tokens_css = HEADER.format(title='tokens (Layer 1: the role interface)') + '''
   --font-mono: "Victor Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
   --display-weight: 600;
   --display-tracking: -0.02em;
-  --duration: 140ms;
-  --ease: cubic-bezier(0.2, 0, 0, 1);
 }
 '''
 ROLES_MARKER = '/* theme-editor: roles — parseSemanticVariables lists every declaration between\n * this marker and the end marker as the theme\'s role group. */\n'
