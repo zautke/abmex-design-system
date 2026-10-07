@@ -29,7 +29,7 @@ name: publish-to-npm
 
 on:
   push:
-    branches: [main, feat/standalone-design-system]  # TEMP: verification run; revert
+    branches: [main]
   release:
     types: [published]
   workflow_dispatch:
