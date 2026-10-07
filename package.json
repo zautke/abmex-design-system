@@ -7,7 +7,10 @@
     "build": "pnpm -r --if-present build",
     "typecheck": "pnpm -r --if-present typecheck",
     "test": "vitest run",
-    "check": "pnpm build && pnpm typecheck && pnpm test"
+    "check": "pnpm build && pnpm typecheck && pnpm test && node --test tests/package-css.test.mjs && pnpm test:types",
+    "ci:postpublish:github": "node scripts/create-tags-and-releases.mjs",
+    "test:browser": "node tests/browser/tabs.test.mjs",
+    "test:types": "tsc --noEmit --strict --skipLibCheck false --moduleResolution Bundler --module ESNext --target ES2022 --jsx react-jsx tests/package-types.ts"
   },
   "devDependencies": {
     "culori": "4.0.2",
@@ -21,6 +24,7 @@
     "tailwindcss": "4.3.0",
     "typescript": "5.9.3",
     "vite": "7.3.3",
-    "vitest": "4.1.6"
+    "vitest": "4.1.6",
+    "@playwright/test": "1.60.0"
   }
 }

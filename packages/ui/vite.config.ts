@@ -16,6 +16,9 @@ export default defineConfig({
         resolve(__dirname, 'src/components/tabs/Sortable.tsx'),
         resolve(__dirname, 'src/components/button-group/index.ts'),
         resolve(__dirname, 'src/components/theme-toggle/index.ts'),
+        ...['chat', 'composer', 'conversations', 'settings', 'status', 'theme'].map(
+          family => resolve(__dirname, `src/components/${family}/index.ts`),
+        ),
       ],
       formats: ['es'],
       fileName: (_format, name) => `${name}.js`,

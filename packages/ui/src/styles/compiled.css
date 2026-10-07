@@ -1,0 +1,3 @@
+/* Complete browser stylesheet. Consumers need no CSS compiler. */
+@import '@heroui/styles';
+@import './tailwind.css';

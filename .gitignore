@@ -1,8 +1,10 @@
 node_modules/
 dist/
 .build/
+.build-native/
 .swiftpm/
 coverage/
 *.tgz
 .DS_Store
 __pycache__/
+pnpm-publish-summary.json

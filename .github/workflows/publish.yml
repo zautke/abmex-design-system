@@ -1,0 +1,140 @@
+name: publish-to-npm
+
+# -------------------------------------------------------------------
+# npm OIDC Trusted Publishing workflow (ported from zautke/design-system)
+#
+# Prerequisites (one-time manual setup on npmjs.com, per package):
+#   Packages: @abmex/themes, @abmex/ui
+#   npm only accepts a trusted publisher for a package that already
+#   exists, so each package needs one bootstrap publish first.
+#   1. Go to https://www.npmjs.com/package/<package>/access
+#   2. Under "Trusted Publisher", click "GitHub Actions"
+#   3. Fill in:
+#        Organization or user: zautke
+#        Repository:           abmex-design-system
+#        Workflow filename:    publish.yml
+#        Allowed actions:      npm publish
+#   4. Click "Set up connection"
+#   5. (Recommended) Enable "Require two-factor authentication
+#      and disallow tokens" for maximum security
+#   CLI equivalent (present in npm 11.19.1, account 2FA required):
+#     npm trust github <package> --file publish.yml \
+#       --repo zautke/abmex-design-system --allow-publish
+#
+# No NPM_TOKEN secret is needed — OIDC handles authentication.
+# pnpm 11 publishes natively and performs the OIDC token exchange
+# itself. Provenance is automatic only while the repository is
+# public; do not pass --provenance while it is private.
+# -------------------------------------------------------------------
+
+on:
+  push:
+    branches: [main]
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      registry_url:
+        description: 'Optional registry URL override'
+        required: false
+
+permissions:
+  id-token: write    # Required for OIDC token generation
+  contents: write    # Needed to create/push tags + GitHub releases
+
+concurrency:
+  group: publish-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo (fetch tags & history)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Resolve REGISTRY_URL (dispatch -> secret -> variable -> default)
+        id: resolve-registry
+        run: |
+          set -euo pipefail
+          INPUT_REGISTRY="${{ github.event.inputs.registry_url || '' }}"
+          SECRET_REGISTRY="${{ secrets.REGISTRY_URL || '' }}"
+          VAR_REGISTRY="${{ vars.REGISTRY_URL || '' }}"
+
+          if [ -n "$INPUT_REGISTRY" ]; then
+            REGISTRY="$INPUT_REGISTRY"
+            SOURCE="workflow_dispatch input"
+          elif [ -n "$SECRET_REGISTRY" ]; then
+            REGISTRY="$SECRET_REGISTRY"
+            SOURCE="repository secret"
+          elif [ -n "$VAR_REGISTRY" ]; then
+            REGISTRY="$VAR_REGISTRY"
+            SOURCE="repository variable"
+          else
+            REGISTRY="https://registry.npmjs.org"
+            SOURCE="default fallback"
+          fi
+
+          echo "REGISTRY_URL=$REGISTRY" >> $GITHUB_ENV
+          echo "source=$SOURCE" >> $GITHUB_OUTPUT
+          echo "Resolved REGISTRY_URL=$REGISTRY (source: $SOURCE)"
+        shell: bash
+
+      # Version comes from package.json "packageManager" (pnpm@11.x).
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js 24 + pnpm cache
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          cache: 'pnpm'
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Report toolchain
+        run: |
+          echo "node $(node --version) / npm $(npm --version) / pnpm $(pnpm --version)"
+        shell: bash
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # build + typecheck + test
+      - name: Verify packages
+        run: pnpm check
+
+      # Prerelease versions (x.y.z-next.N) go to the "next" dist-tag,
+      # stable versions to "latest". Packages are versioned in lockstep.
+      - name: Resolve dist-tag
+        run: |
+          VERSION=$(node -p "require('./packages/ui/package.json').version")
+          PRE="${VERSION#*-}"
+          if [ "$PRE" = "$VERSION" ]; then TAG=latest; else TAG="${PRE%%.*}"; fi
+          echo "DIST_TAG=$TAG" >> $GITHUB_ENV
+          echo "Version $VERSION -> dist-tag $TAG"
+        shell: bash
+
+      # OIDC Trusted Publishing: no NODE_AUTH_TOKEN needed.
+      - name: Publish to npm (OIDC)
+        run: |
+          # Clear token envs so pnpm uses OIDC trusted publishing.
+          unset NODE_AUTH_TOKEN
+          unset NPM_TOKEN
+          unset NPM_CONFIG_USERCONFIG
+          pnpm publish -r --no-git-checks --access public --tag "$DIST_TAG" --report-summary --registry "$REGISTRY_URL"
+        shell: bash
+
+      - name: Upload publish summary
+        if: always() && hashFiles('pnpm-publish-summary.json') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: pnpm-publish-summary
+          path: pnpm-publish-summary.json
+
+      - name: Create tags and GitHub releases for published packages
+        if: hashFiles('pnpm-publish-summary.json') != ''
+        run: pnpm ci:postpublish:github
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,12 +1,11 @@
 /* Theme transition — the labsupapg choreography, generic.
  *
- * createThemeController adds `theme-transitioning` to <html> for
+ * createThemeController adds `theme-transitioning` to its target scope for
  * --theme-transition-duration while it swaps the theme, so every surface eases
  * together. The pre-paint snippet adds `no-transition` until the app calls
  * releaseNoTransition() after first paint.
  */
 :root {
-  --theme-transition-duration: 550ms;
   /* 26-stop easing: slow gather (0–30%), steady build, punch (70–90%), gentle settle. */
   --theme-easing: linear(
     0, 0.002, 0.008, 0.018, 0.032,
@@ -18,29 +17,32 @@
 }
 
 /* Explicit properties only (never `all`): layout and transforms stay instant. */
-html.theme-transitioning,
-html.theme-transitioning *,
-html.theme-transitioning *::before,
-html.theme-transitioning *::after {
+.theme-transitioning,
+.theme-transitioning *,
+.theme-transitioning *::before,
+.theme-transitioning *::after {
   transition-property: background-color, color, border-color, fill, stroke, box-shadow !important;
   transition-duration: var(--theme-transition-duration) !important;
   transition-timing-function: var(--theme-easing) !important;
 }
 
 /* Opt-out for heavy subtrees (editors, canvases, long lists). */
-html.theme-transitioning [data-no-theme-transition],
-html.theme-transitioning [data-no-theme-transition] *,
-html.theme-transitioning [data-no-theme-transition] *::before,
-html.theme-transitioning [data-no-theme-transition] *::after,
-html.no-transition,
-html.no-transition *,
-html.no-transition *::before,
-html.no-transition *::after {
+.theme-transitioning [data-no-theme-transition],
+.theme-transitioning [data-no-theme-transition] *,
+.theme-transitioning [data-no-theme-transition] *::before,
+.theme-transitioning [data-no-theme-transition] *::after,
+.no-transition,
+.no-transition *,
+.no-transition *::before,
+.no-transition *::after {
   transition: none !important;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  :root {
-    --theme-transition-duration: 0ms;
+  .theme-transitioning,
+  .theme-transitioning *,
+  .theme-transitioning *::before,
+  .theme-transitioning *::after {
+    transition: none !important;
   }
 }

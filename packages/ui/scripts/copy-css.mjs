@@ -5,7 +5,7 @@ import { dirname, join } from 'node:path';
 
 function Usage() {
   console.log('Usage: copy-css.mjs [-h|--help]');
-  console.log('Writes dist/styles.css (src/styles/tailwind.css with its relative @imports inlined),');
+  console.log('Writes dist/tailwind.css (src/styles/tailwind.css with relative @imports inlined),');
   console.log('dist/fonts/ and the drop-in Phosphor theme layer at dist/phosphor/ (plus standalone mask.css and theme-transition.css).');
 }
 
@@ -21,7 +21,7 @@ if (args.length > 0) {
 
 const RELATIVE_IMPORT = /^@import\s+['"](\.{1,2}\/[^'"]+)['"];\s*$/gm;
 
-// Inline relative @imports so dist/styles.css is one string: the theme editor
+// Inline relative @imports so dist/tailwind.css is one string: the theme editor
 // parses it via `?raw`, which never follows imports. Package imports
 // ('tailwindcss') stay as they are for the consumer's bundler.
 async function inline(path) {
@@ -37,7 +37,7 @@ async function inline(path) {
 }
 
 const flat = await inline('src/styles/tailwind.css');
-await writeFile('dist/styles.css', flat.replaceAll("@source '../", "@source './"));
+await writeFile('dist/tailwind.css', flat.replaceAll("@source '../", "@source './"));
 await cp('../themes/src/phosphor/fonts', 'dist/fonts', { recursive: true });
 await cp('../themes/src/phosphor', 'dist/phosphor', {
   recursive: true,

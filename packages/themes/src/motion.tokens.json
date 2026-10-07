@@ -1,0 +1,14 @@
+{
+  "duration": {"$type": "duration", "$value": {"value": 140, "unit": "ms"}},
+  "tab-enter": {"$type": "duration", "$value": {"value": 180, "unit": "ms"}},
+  "tab-exit": {"$type": "duration", "$value": {"value": 135, "unit": "ms"}},
+  "theme-transition": {"$type": "duration", "$value": {"value": 550, "unit": "ms"}},
+  "mask-fade": {"$type": "duration", "$value": {"value": 200, "unit": "ms"}},
+  "pop": {"$type": "duration", "$value": {"value": 360, "unit": "ms"}},
+  "toggle": {"$type": "duration", "$value": {"value": 300, "unit": "ms"}},
+  "ease": {"$type": "cubicBezier", "$value": [0.2, 0, 0, 1]},
+  "tab-enter-ease": {"$type": "cubicBezier", "$value": [0.2, 0.8, 0.2, 1]},
+  "tab-exit-ease": {"$type": "cubicBezier", "$value": [0.4, 0, 1, 1]},
+  "pop-in-ease": {"$type": "cubicBezier", "$value": [0.42, 0, 1, 1]},
+  "pop-out-ease": {"$type": "cubicBezier", "$value": [0.22, 1, 0.36, 1]}
+}

@@ -1,0 +1,15 @@
+/* Generated from motion.tokens.json. */
+:root {
+  --duration: 140ms;
+  --tab-enter-duration: 180ms;
+  --tab-exit-duration: 135ms;
+  --theme-transition-duration: 550ms;
+  --mask-fade-duration: 200ms;
+  --pop-duration: 360ms;
+  --toggle-duration: 300ms;
+  --ease: cubic-bezier(0.2, 0, 0, 1);
+  --tab-enter-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --tab-exit-ease: cubic-bezier(0.4, 0, 1, 1);
+  --pop-in-ease: cubic-bezier(0.42, 0, 1, 1);
+  --pop-out-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
