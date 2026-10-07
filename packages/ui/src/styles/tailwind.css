@@ -16,12 +16,14 @@
  * (scripts/copy-css.mjs), so the theme editor can parse one string.
  */
 @import 'tailwindcss' source(none);
-@import './phosphor/phosphor.fonts.css';
-@import './phosphor/phosphor.tailwind.css';
+@import '../../../themes/src/phosphor/phosphor.fonts.css';
+@import '../../../themes/src/phosphor/phosphor.tailwind.css';
 /* theme-editor: heroui-bridge — parseSemanticVariables lists every declaration
  * between this marker and the end marker as the editor's "heroui" group. */
-@import './phosphor/adapters/heroui.css';
+@import '../../../themes/src/phosphor/adapters/heroui.css';
 /* theme-editor: heroui-bridge-end */
+@import './mask/mask.css';
+@import '../components/theme-toggle/theme-transition.css';
 @source '../components';
 @source '../hooks';
 @source '../internal';

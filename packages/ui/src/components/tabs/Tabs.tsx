@@ -2,7 +2,6 @@ import {
   Children,
   cloneElement,
   createContext,
-  useCallback,
   isValidElement,
   useContext,
   useEffect,
@@ -19,10 +18,12 @@ import {
   type ReactNode,
   type RefObject,
 } from 'react';
-import { ChevronLeft, ChevronRight, PanelLeftClose, PanelLeftOpen, X } from 'lucide-react';
+import { ChevronLeft, ChevronRight, MoveHorizontal, MoveVertical, PanelLeftClose, PanelLeftOpen, X } from 'lucide-react';
 import { cn } from '../../utils/cn';
+import { useOverflowEdges } from '../../hooks/useOverflowEdges';
+import { ButtonGroupContext } from '../button-group/ButtonGroup';
 
-// Phosphor tab system. React + --ph-* roles only — no component-library import in
+// Phosphor tab system. React + --* roles only — no component-library import in
 // this family, so a tabs consumer needs only react + lucide-react.
 
 export type TabsOrientation = 'horizontal' | 'vertical';
@@ -70,9 +71,9 @@ const ListContext = createContext<RefObject<boolean> | null>(null);
 export const TabGhostContext = createContext(false);
 
 export const focusRing =
-  'outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ph-focus)]';
-export const motion = 'transition-colors duration-[var(--ph-duration)] ease-[var(--ph-ease)] motion-reduce:transition-none';
-const mono = 'font-[family-name:var(--ph-font-mono)]';
+  'outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--focus)]';
+export const motion = 'transition-colors duration-[var(--duration)] ease-[var(--ease)] motion-reduce:transition-none';
+const mono = 'font-[family-name:var(--font-mono)]';
 
 const ENTER_MS = 180;
 const EXIT_MS = 135;
@@ -124,7 +125,13 @@ function TabsRoot({
         data-orientation={orientation}
         data-density={density}
         data-motion={motionPref}
-        className={cn('flex min-h-0', orientation === 'horizontal' ? 'flex-col' : 'flex-row', className)}
+        data-slot="tabs"
+        // Folder frame: the folder colour wraps the paper pane on the open sides (the strip/rail is the closed side).
+        className={cn(
+          'flex min-h-0 bg-folder p-1.5',
+          orientation === 'horizontal' ? 'flex-col pt-0' : 'flex-row pl-0',
+          className,
+        )}
         {...rest}
       />
     </TabsContext.Provider>
@@ -274,38 +281,13 @@ function SheetList({
   ...rest
 }: TabsSheetListProps) {
   const { motion: motionPref, density } = useTabs('SheetList');
-  const scroller = useRef<HTMLDivElement>(null);
   const list = useRef<HTMLDivElement>(null);
   const ready = useListReady();
   const items = usePresence(children, resolveMotion(motionPref) !== 'none');
-  const [edges, setEdges] = useState({ start: false, end: false });
+  // Overflow edges drive the arrows and, via data-overflow-*, the scroller's mask-fade.
+  const { ref: setScroller, edges, node: scroller } = useOverflowEdges('x');
   useRovingFallback(list);
   useWheelToHorizontal(scroller);
-  // Overflow edges. A callback ref (React 19 cleanup form) binds the listeners to
-  // whichever node is actually mounted, and a per-render layout pass re-measures
-  // when tabs change; a mount-only effect could miss both.
-  const measure = useRef<() => void>(() => {});
-  const setScroller = useCallback((el: HTMLDivElement | null) => {
-    scroller.current = el;
-    if (!el) return;
-    const run = () => {
-      const start = el.scrollLeft > 1;
-      const end = el.scrollLeft + el.clientWidth < el.scrollWidth - 1;
-      setEdges((p) => (p.start === start && p.end === end ? p : { start, end }));
-    };
-    measure.current = run;
-    run();
-    el.addEventListener('scroll', run, { passive: true });
-    const ro = new ResizeObserver(run);
-    ro.observe(el);
-    if (el.firstElementChild) ro.observe(el.firstElementChild);
-    return () => {
-      el.removeEventListener('scroll', run);
-      ro.disconnect();
-      measure.current = () => {};
-    };
-  }, []);
-  useLayoutEffect(() => measure.current());
   const overflow = edges.start || edges.end;
   const arrow = (dir: -1 | 1, enabled: boolean, Icon: typeof ChevronLeft, label: string) =>
     overflow && (
@@ -316,11 +298,11 @@ function SheetList({
         aria-disabled={!enabled || undefined}
         onClick={() => enabled && scroller.current?.scrollBy({ left: dir * 200, behavior: scrollBehavior(motionPref) })}
         className={cn(
-          'grid shrink-0 place-items-center text-ph-fg-sage',
+          'grid shrink-0 place-items-center text-fg-sage',
           density === 'compact' ? 'size-8' : 'size-9',
           motion,
           focusRing,
-          enabled ? 'hover:text-ph-fg' : 'cursor-default opacity-40',
+          enabled ? 'hover:text-fg' : 'cursor-default opacity-40',
           'forced-colors:text-[ButtonText] forced-colors:aria-disabled:text-[GrayText]',
         )}
       >
@@ -331,11 +313,12 @@ function SheetList({
     <div
       ref={ref}
       style={{ '--tab-min-width': tabMinWidth, '--tab-max-width': tabMaxWidth, ...style } as CSSProperties}
-      className={cn('flex items-end bg-ph-surface pt-1.5 px-1.5', className)}
+      className={cn('flex items-end bg-folder pt-1.5', className)}
       {...rest}
     >
       {arrow(-1, edges.start, ChevronLeft, 'Scroll tabs left')}
-      <div ref={setScroller} data-slot="scroller" className="min-w-0 flex-1 overflow-x-auto [scrollbar-width:none]">
+      <div ref={setScroller} data-slot="scroller" className="mask-fade min-w-0 flex-1 overflow-x-auto [scrollbar-width:none]">
+        {/* Inline padding = the flare width, so the end tabs' flares are not clipped by the scroller. */}
         <div
           ref={list}
           role="tablist"
@@ -344,7 +327,7 @@ function SheetList({
           aria-label={ariaLabel}
           aria-orientation="horizontal"
           onKeyDown={(e) => onListKeyDown(e, 'horizontal')}
-          className="flex w-max items-end gap-0.5"
+          className="flex w-max items-end px-[var(--tab-flare)]"
         >
           <ListContext.Provider value={ready}>{items}</ListContext.Provider>
         </div>
@@ -352,7 +335,7 @@ function SheetList({
       {arrow(1, edges.end, ChevronRight, 'Scroll tabs right')}
       {after && (
         <div className={cn('flex shrink-0 items-center gap-1 pl-1', density === 'compact' ? 'h-8' : 'h-9')}>
-          <span aria-hidden data-slot="separator" className="h-5 border-l border-ph-border" />
+          <span aria-hidden data-slot="separator" className="h-5 border-l border-border" />
           {after}
         </div>
       )}
@@ -385,7 +368,7 @@ function Rail({
   ...rest
 }: TabsRailProps) {
   const { motion: motionPref } = useTabs('Rail');
-  const list = useRef<HTMLDivElement>(null);
+  const { ref: setList, node: list } = useOverflowEdges('y');
   const ready = useListReady();
   const items = usePresence(children, resolveMotion(motionPref) !== 'none');
   useRovingFallback(list);
@@ -393,21 +376,21 @@ function Rail({
   return (
     <nav
       className={cn(
-        'flex shrink-0 flex-col border-r border-ph-border bg-ph-surface',
+        'flex shrink-0 flex-col bg-folder',
         collapsed ? 'w-12' : 'w-[280px]',
         className,
       )}
       {...rest}
     >
       <div className="flex h-9 items-center gap-2 px-2">
-        {!collapsed && <span className="flex-1 truncate text-sm font-semibold text-ph-fg-strong">{title}</span>}
+        {!collapsed && <span className="flex-1 truncate text-sm font-semibold text-fg-strong">{title}</span>}
         {onCollapsedChange && (
           <button
             type="button"
             aria-label={collapsed ? 'Expand document rail' : 'Collapse document rail'}
             aria-expanded={!collapsed}
             onClick={() => onCollapsedChange(!collapsed)}
-            className={cn('grid size-8 place-items-center rounded-[var(--ph-radius)] text-ph-fg-sage hover:bg-ph-surface-2 hover:text-ph-fg', motion, focusRing)}
+            className={cn('grid size-8 place-items-center rounded-[var(--radius)] text-fg-sage hover:bg-surface-2 hover:text-fg', motion, focusRing)}
           >
             <Toggle className="size-4" aria-hidden />
           </button>
@@ -422,7 +405,7 @@ function Rail({
             placeholder="Filter documents"
             aria-label="Filter documents"
             className={cn(
-              'h-9 w-full rounded-[var(--ph-radius)] border border-ph-border bg-ph-field px-2.5 text-sm text-ph-fg placeholder:text-ph-fg-muted',
+              'h-9 w-full rounded-[var(--radius)] border border-border bg-field px-2.5 text-sm text-fg placeholder:text-fg-muted',
               motion,
               focusRing,
             )}
@@ -432,11 +415,11 @@ function Rail({
       {!collapsed && after && (
         <>
           <div className="px-2 pb-2">{after}</div>
-          <div aria-hidden data-slot="separator" className="mx-2 mb-2 border-t border-ph-border" />
+          <div aria-hidden data-slot="separator" className="mx-2 mb-2 border-t border-border" />
         </>
       )}
       <div
-        ref={list}
+        ref={setList}
         role="tablist"
         data-slot="tablist"
         data-orientation="vertical"
@@ -444,7 +427,7 @@ function Rail({
         aria-orientation="vertical"
         hidden={collapsed}
         onKeyDown={(e) => onListKeyDown(e, 'vertical')}
-        className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto px-2 pb-2"
+        className="mask-fade mask-fade-x-0 mask-fade-y-6 flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto px-2 pb-2"
       >
         <ListContext.Provider value={ready}>{items}</ListContext.Provider>
       </div>
@@ -463,7 +446,7 @@ function RailGroup({ label, meta, className, children, ...rest }: TabsRailGroupP
   const items = usePresence(children, resolveMotion(motionPref) !== 'none');
   return (
     <div role="presentation" className={cn('flex flex-col gap-0.5', className)} {...rest}>
-      <div className="flex items-center justify-between px-2 py-1 text-xs font-semibold uppercase tracking-wide text-ph-fg-muted">
+      <div className="flex items-center justify-between px-2 py-1 text-xs font-semibold uppercase tracking-wide text-fg-muted">
         <span>{label}</span>
         {meta !== undefined && <span className={mono}>{meta}</span>}
       </div>
@@ -475,7 +458,7 @@ function RailGroup({ label, meta, className, children, ...rest }: TabsRailGroupP
 // ── Tab + parts ───────────────────────────────────────────────────────────
 export interface TabsTabProps extends ComponentPropsWithRef<'div'> {
   value: string;
-  /** Kind colour (plugin tabColor): tints the active fill, stripes, Chip and any `data-slot="icon"` child. */
+  /** Kind colour (plugin tabColor): tints the indicator, Chip and any `data-slot="icon"` child. */
   color?: string;
   /** Unsaved changes: Close shows a dot until hovered. */
   dirty?: boolean;
@@ -484,7 +467,7 @@ export interface TabsTabProps extends ComponentPropsWithRef<'div'> {
 }
 
 const triggerFocusRing =
-  'has-[[data-slot=tab-trigger]:focus-visible]:outline-2 has-[[data-slot=tab-trigger]:focus-visible]:outline-offset-2 has-[[data-slot=tab-trigger]:focus-visible]:outline-[var(--ph-focus)]';
+  'has-[[data-slot=tab-trigger]:focus-visible]:outline-2 has-[[data-slot=tab-trigger]:focus-visible]:outline-offset-2 has-[[data-slot=tab-trigger]:focus-visible]:outline-[var(--focus)]';
 
 /**
  * Outer wrapper (data-slot="tab": gets ref/style/rest, e.g. Sortable's drag
@@ -562,37 +545,47 @@ function TabRoot({ value, color, dirty, disabled, className, style, children, on
         style={color ? ({ '--tab-color': color, ...style } as CSSProperties) : style}
         className={cn(
           'group relative flex shrink-0 select-none gap-2',
+          // --tab-bg: the paper this tab opens; --tab-ind: indicator colour (kind colour or primary).
+          '[--tab-bg:var(--paper)] [--tab-ind:var(--tab-color,var(--primary))]',
           compact ? 'text-xs' : 'text-sm',
           motion,
           triggerFocusRing,
           horizontal
             ? cn(
-                'min-w-[var(--tab-min-width,7rem)] max-w-[var(--tab-max-width,15rem)] items-center rounded-t-[var(--ph-radius)]',
+                'min-w-[var(--tab-min-width,7rem)] max-w-[var(--tab-max-width,15rem)] items-center rounded-t-[var(--tab-flare)]',
                 compact ? 'h-8 px-2' : 'h-9 px-2.5',
               )
-            : cn('w-full items-start rounded-[var(--ph-radius)]', compact ? 'min-h-8 px-2 py-1' : 'min-h-9 px-2 py-1.5'),
+            : cn('w-full items-start rounded-[var(--radius)]', compact ? 'min-h-8 px-2 py-1' : 'min-h-9 px-2 py-1.5'),
           disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer',
           selected
-            ? cn('text-ph-fg-strong', color ? 'bg-[color-mix(in_oklab,var(--tab-color)_7%,var(--ph-surface-2))]' : 'bg-ph-surface-2')
-            : cn('text-ph-fg-sage', !disabled && 'hover:bg-ph-surface-2/60 hover:text-ph-fg'),
-          // Active indicator: top edge (sheets) / left edge (rail), kind colour or primary.
+            ? 'bg-[var(--tab-bg)] text-fg-strong'
+            : cn(
+                'text-fg-sage',
+                !disabled && 'hover:bg-[color-mix(in_oklab,var(--paper)_50%,var(--folder))] hover:text-fg',
+              ),
+          // Active indicator: inset top edge (sheets) / left edge (rail).
+          selected && (horizontal ? 'shadow-[inset_0_2px_0_0_var(--tab-ind)]' : 'shadow-[inset_2px_0_0_0_var(--tab-ind)]'),
+          // Folder tab: the selected sheet sits on top of its neighbours and flares out at its foot
+          // into the pane (concave quarter-circles in --tab-bg), so tab and paper read as one sheet.
           selected &&
-            (horizontal
-              ? 'before:absolute before:inset-x-0 before:top-0 before:h-0.5 before:rounded-t-[var(--ph-radius)]'
-              : 'before:absolute before:inset-y-1 before:left-0 before:w-0.5'),
-          selected && (color ? 'before:bg-[var(--tab-color)]' : 'before:bg-ph-primary'),
-          // Inactive sheet with a kind colour: muted bottom stripe.
-          !selected &&
-            color &&
             horizontal &&
-            'after:absolute after:inset-x-1.5 after:bottom-0 after:h-0.5 after:bg-[color-mix(in_oklab,var(--tab-color)_35%,transparent)]',
+            cn(
+              'z-10',
+              'before:absolute before:bottom-0 before:left-[calc(-1_*_var(--tab-flare))] before:size-[var(--tab-flare)]',
+              'before:bg-[radial-gradient(circle_at_0_0,transparent_calc(var(--tab-flare)_-_0.5px),var(--tab-bg)_var(--tab-flare))]',
+              'after:absolute after:bottom-0 after:right-[calc(-1_*_var(--tab-flare))] after:size-[var(--tab-flare)]',
+              'after:bg-[radial-gradient(circle_at_100%_0,transparent_calc(var(--tab-flare)_-_0.5px),var(--tab-bg)_var(--tab-flare))]',
+            ),
+          // Inactive sheets: hairline divider on the left, except first and right after the selected tab.
+          !selected &&
+            horizontal &&
+            'before:absolute before:inset-y-2.5 before:left-0 before:w-px before:bg-folder-edge first:before:hidden [[data-selected]+&]:before:hidden',
           color && '[&_[data-slot=icon]]:text-[var(--tab-color)]',
-          // Windows high contrast drops backgrounds: outline the selected tab, keep stripes as system colours.
-          'forced-colors:before:[forced-color-adjust:none] forced-colors:after:[forced-color-adjust:none]',
+          // Windows high contrast drops backgrounds and box-shadows: outline the selected tab, hide
+          // the flares (their gradient would paint the light paper colour), keep dividers as GrayText.
           selected &&
-            'forced-colors:outline forced-colors:outline-2 forced-colors:-outline-offset-2 forced-colors:outline-[Highlight] forced-colors:before:bg-[Highlight]',
-          !selected && color && 'forced-colors:after:bg-[GrayText]',
-          className,
+            'forced-colors:outline forced-colors:outline-2 forced-colors:-outline-offset-2 forced-colors:outline-[Highlight] forced-colors:before:hidden forced-colors:after:hidden',
+          !selected && 'forced-colors:before:[forced-color-adjust:none] forced-colors:before:bg-[GrayText]',          className,
         )}
         {...rest}
       >
@@ -635,7 +628,7 @@ export interface TabsTabLabelProps extends Omit<ComponentPropsWithRef<'span'>, '
   children: string;
   /** Enables inline rename on double-click; called with the trimmed new name. */
   onRename?: (name: string) => void;
-  /** Characters kept by middle truncation. */
+  /** Opt into middle truncation, keeping this many characters. Default: CSS end-ellipsis at the tab's width. */
   max?: number;
 }
 
@@ -679,7 +672,7 @@ function TabLabel({ children, onRename, max, className, ...rest }: TabsTabLabelP
           }
         }}
         onFocus={(e) => e.currentTarget.select()}
-        className="h-6 min-w-0 flex-1 rounded-[var(--ph-radius)] border border-ph-primary bg-ph-field px-1 text-sm text-ph-fg outline-none"
+        className="h-6 min-w-0 flex-1 rounded-[var(--radius)] border border-primary bg-field px-1 text-sm text-fg outline-none"
       />
     );
   }
@@ -698,7 +691,7 @@ function TabLabel({ children, onRename, max, className, ...rest }: TabsTabLabelP
       className={cn('min-w-0 flex-1 overflow-hidden text-ellipsis whitespace-nowrap', className)}
       {...rest}
     >
-      {middleTruncate(children, max)}
+      {max === undefined ? children : middleTruncate(children, max)}
     </span>
   );
 }
@@ -711,12 +704,21 @@ function TabChip({ className, style, ...rest }: TabsTabChipProps) {
     <span
       data-slot="chip"
       className={cn(
-        'shrink-0 rounded-[var(--ph-radius)] border px-1 text-[10px] leading-4 uppercase',
+        'shrink-0 rounded-[var(--radius)] px-1 text-[10px] leading-4 font-medium uppercase',
         mono,
-        !color && 'border-ph-border text-ph-fg-muted',
+        !color && 'bg-surface-3 text-fg-sage',
         className,
       )}
-      style={color ? { color, borderColor: `color-mix(in oklab, ${color} 45%, transparent)`, ...style } : style}
+      // Filled kind chip: a tint of the kind colour, text pulled toward fg-strong so it stays legible.
+      style={
+        color
+          ? {
+              color: `color-mix(in oklab, ${color} 55%, var(--fg-strong))`,
+              backgroundColor: `color-mix(in oklab, ${color} 18%, transparent)`,
+              ...style,
+            }
+          : style
+      }
       {...rest}
     />
   );
@@ -726,7 +728,20 @@ export interface TabsTabMetaProps extends ComponentPropsWithRef<'span'> {}
 
 /** Second line in the rail: "Markdown · 2m ago". */
 function TabMeta({ className, ...rest }: TabsTabMetaProps) {
-  return <span data-slot="meta" className={cn('basis-full truncate text-xs text-ph-fg-muted', mono, className)} {...rest} />;
+  // Wraps under the label (vertical triggers flex-wrap); after an icon it indents by the icon
+  // width (--tab-icon-size, default 0.875rem) plus the trigger gap so it aligns with the label.
+  return (
+    <span
+      data-slot="meta"
+      className={cn(
+        'basis-full truncate text-xs text-fg-muted',
+        '[[data-slot=icon]~&]:ps-[calc(var(--tab-icon-size,0.875rem)+0.5rem)]',
+        mono,
+        className,
+      )}
+      {...rest}
+    />
+  );
 }
 
 export interface TabsTabCloseProps extends Omit<ComponentPropsWithRef<'button'>, 'onClick'> {
@@ -761,7 +776,7 @@ function TabClose({ onClose, label, visibility = 'hover', className, ...rest }: 
         if (e.key === 'Enter' || e.key === ' ') e.stopPropagation();
       }}
       className={cn(
-        'relative grid size-5 shrink-0 place-items-center rounded-[var(--ph-radius)] text-ph-fg-muted hover:bg-ph-surface-3 hover:text-ph-fg',
+        'relative grid size-5 shrink-0 place-items-center rounded-[var(--radius)] text-fg-muted hover:bg-surface-3 hover:text-fg',
         motion,
         focusRing,
         !dirty && closeVisibility[visibility],
@@ -770,7 +785,7 @@ function TabClose({ onClose, label, visibility = 'hover', className, ...rest }: 
       )}
       {...rest}
     >
-      {dirty && <span aria-hidden className="size-2 rounded-full bg-ph-primary group-hover:hidden forced-colors:bg-[ButtonText]" />}
+      {dirty && <span aria-hidden className="size-2 rounded-full bg-primary group-hover:hidden forced-colors:bg-[ButtonText]" />}
       <X aria-hidden className={cn('size-3.5', dirty && 'hidden group-hover:block')} />
     </button>
   );
@@ -795,7 +810,8 @@ function Panel({ value, keepMounted = true, className, children, ...rest }: Tabs
       aria-labelledby={`${id}-tab-${value}`}
       hidden={!selected}
       tabIndex={0}
-      className={cn('min-h-0 min-w-0 flex-1 bg-ph-surface-2', focusRing, className)}
+      // Paper lying on the folder frame (Tabs root).
+      className={cn('min-h-0 min-w-0 flex-1 rounded-[var(--radius)] bg-paper shadow-surface', focusRing, className)}
       {...rest}
     >
       {children}
@@ -807,19 +823,28 @@ function Panel({ value, keepMounted = true, className, children, ...rest }: Tabs
 export interface TabsOrientationToggleProps extends Omit<ComponentPropsWithRef<'div'>, 'onChange'> {
   value: TabsOrientation;
   onValueChange: (value: TabsOrientation) => void;
+  /** Visible content per option. Defaults to lucide MoveHorizontal / MoveVertical icons. */
   labels?: Record<TabsOrientation, ReactNode>;
+  /** Accessible name (and tooltip) per option; the default labels are icons. */
+  itemLabels?: Record<TabsOrientation, string>;
   'aria-label'?: string;
 }
 
 function OrientationToggle({
   value,
   onValueChange,
-  labels = { horizontal: 'Sheets', vertical: 'Rail' },
+  labels = {
+    horizontal: <MoveHorizontal aria-hidden className="size-4" />,
+    vertical: <MoveVertical aria-hidden className="size-4" />,
+  },
+  itemLabels = { horizontal: 'Horizontal tabs', vertical: 'Vertical tabs' },
   className,
   'aria-label': ariaLabel = 'Tab layout',
   ...rest
 }: TabsOrientationToggleProps) {
   const options: TabsOrientation[] = ['horizontal', 'vertical'];
+  // Inside a ButtonGroup the group draws the frame and the radios become flush segments.
+  const grouped = useContext(ButtonGroupContext);
   return (
     <div
       role="radiogroup"
@@ -831,7 +856,11 @@ function OrientationToggle({
         onValueChange(next);
         e.currentTarget.querySelector<HTMLElement>(`[data-value="${next}"]`)?.focus();
       }}
-      className={cn('inline-flex h-9 rounded-[var(--ph-radius)] border border-ph-border bg-ph-field p-0.5', className)}
+      className={cn(
+        'inline-flex',
+        grouped ? 'divide-x divide-border' : 'rounded-[var(--radius)] border border-border bg-field',
+        className,
+      )}
       {...rest}
     >
       {options.map((o) => (
@@ -841,13 +870,16 @@ function OrientationToggle({
           role="radio"
           data-value={o}
           aria-checked={value === o}
+          aria-label={itemLabels[o]}
+          title={itemLabels[o]}
           tabIndex={value === o ? 0 : -1}
           onClick={() => onValueChange(o)}
           className={cn(
-            'rounded-[calc(var(--ph-radius)-1px)] px-2.5 text-sm',
+            'grid size-9 place-items-center text-sm',
+            !grouped && 'first:rounded-l-[calc(var(--radius)-1px)] last:rounded-r-[calc(var(--radius)-1px)]',
             motion,
             focusRing,
-            value === o ? 'bg-ph-primary text-ph-primary-fg' : 'text-ph-fg-sage hover:text-ph-fg',
+            value === o ? 'bg-primary-soft text-primary-soft-fg' : 'text-fg-sage hover:bg-surface-2 hover:text-fg',
           )}
         >
           {labels[o]}

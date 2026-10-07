@@ -1,0 +1,14 @@
+{
+  "captured_at": "2026-10-06",
+  "merlyn_head": "8617c2068a93b19762a0ccf3054e515eaff7674a",
+  "adagio_tabs_head": "b448e26ff9c1c59d27128ed947a89e86706bf6b9",
+  "adagio_mdeditor_head": "1c833535cf6c3568a82a15fe8257a9f933a23953",
+  "files": {
+    "adagio-tabs-dirty.patch": "cfb4095ed90dd3be54243af3cfcc3fb464a9d6ef62f7ac95b3f4f8f9282bc9bd",
+    "abmex-tabs-20261006.bundle": "dfd0c578517bfe8a7c47eb4233badf7aaa4e2f3f9c530730f9d0d29c60972a3f",
+    "abmex-ui-0.6.4.tgz": "83d2a6b414cf8fad01cf5d6b40a1f2b2fa17fa51a595d7c7d258191db0cd6a76",
+    "adagio-tabs-status.txt": "6e563f69e640471e3b24a3d603cb85b43deaaccd87499da0b3b9e00b6f1a9ce7",
+    "adagio-mdeditor-status.txt": "e35db93e648ee2730848f672629f55bf05e14c2f104e8bc83bb4cdf568345634",
+    "adagio-tabs-source.tar.gz": "a835b7fc55f482a7e3e3e09de949cb10d9645dd80448c603c5e2ecf6d1a96d51"
+  }
+}

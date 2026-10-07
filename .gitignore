@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.build/
+.swiftpm/
+coverage/
+*.tgz
+.DS_Store
+__pycache__/

@@ -34,6 +34,11 @@
   --fg-sage: oklch(0.7824 0.0346 153.50); /* #a8bfae */
   --fg-muted: oklch(0.6888 0.0302 158.35); /* #8ca194 */
   --fg-disabled: oklch(0.4694 0.0301 157.32); /* #4d6054 */
+  /* Folder */
+  --folder: oklch(0.2522 0.0181 165.41); /* #1a2520 */
+  --paper: oklch(0.3156 0.0336 157.48); /* #23372b */
+  --folder-edge: oklch(0.3354 0.0191 163.55); /* #2e3a34 */
+  --page: oklch(0.2143 0.0177 170.07); /* #111c18 */
   /* Primary */
   --primary: oklch(0.7848 0.1370 176.88); /* #2ed5b7 */
   --primary-fg: oklch(0.2143 0.0177 170.07); /* #111c18 */
@@ -107,6 +112,11 @@
   --fg-sage: oklch(0.3986 0.0398 157.68); /* #354e3f */
   --fg-muted: oklch(0.5000 0.0306 109.81); /* #646551 */
   --fg-disabled: oklch(0.7007 0.0152 138.72); /* #9aa198 */
+  /* Folder */
+  --folder: oklch(0.9387 0.0120 79.78); /* #efeae2 */
+  --paper: oklch(0.9844 0.0108 95.16); /* #fcfaf2 */
+  --folder-edge: oklch(0.8998 0.0098 72.65); /* #e2ddd7 */
+  --page: oklch(0.9665 0.0067 97.35); /* #f5f4ef */
   /* Primary */
   --primary: oklch(0.5059 0.0937 176.17); /* #037663 */
   --primary-fg: oklch(0.9857 0.0080 114.22); /* #fafbf5 */
@@ -164,7 +174,9 @@
 
 /* Non-color tokens (theme-independent) */
 :root {
+  --theme-attribute: class;      /* how this theme is scoped; read by createThemeController */
   --radius: 0.25rem;          /* crisp instrument corners; every radius derives from this */
+  --tab-flare: 6px;           /* folder tab: top radius and the outward flare at its foot */
   --border-width: 1px;
   --ring-width: 2px;
   --ring-offset: 2px;

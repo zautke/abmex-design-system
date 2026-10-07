@@ -20,7 +20,6 @@ export { SegmentedControl } from './SegmentedControl';
 export type {
   SegmentedControlOption,
   SegmentedControlProps,
-  // Deprecated aliases — kept so the existing ButtonGroup consumer keeps typing.
+  // Deprecated alias. `ButtonGroupProps` now names the joined-segment ButtonGroup (0.6.1).
   ButtonGroupOption,
-  ButtonGroupProps,
 } from './SegmentedControl';

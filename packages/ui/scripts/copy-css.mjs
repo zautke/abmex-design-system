@@ -6,7 +6,7 @@ import { dirname, join } from 'node:path';
 function Usage() {
   console.log('Usage: copy-css.mjs [-h|--help]');
   console.log('Writes dist/styles.css (src/styles/tailwind.css with its relative @imports inlined),');
-  console.log('dist/fonts/ and the drop-in Phosphor theme layer at dist/phosphor/.');
+  console.log('dist/fonts/ and the drop-in Phosphor theme layer at dist/phosphor/ (plus standalone mask.css and theme-transition.css).');
 }
 
 const args = process.argv.slice(2);
@@ -38,8 +38,12 @@ async function inline(path) {
 
 const flat = await inline('src/styles/tailwind.css');
 await writeFile('dist/styles.css', flat.replaceAll("@source '../", "@source './"));
-await cp('src/styles/phosphor/fonts', 'dist/fonts', { recursive: true });
-await cp('src/styles/phosphor', 'dist/phosphor', {
+await cp('../themes/src/phosphor/fonts', 'dist/fonts', { recursive: true });
+await cp('../themes/src/phosphor', 'dist/phosphor', {
   recursive: true,
   filter: (src) => !/[\\/]build([\\/]|$)/.test(src),
 });
+// Standalone layers for apps that compose the phosphor/* files instead of styles.css
+// (same source as the inlined copies, so they never drift).
+await writeFile('dist/phosphor/mask.css', await inline('src/styles/mask/mask.css'));
+await writeFile('dist/phosphor/theme-transition.css', await inline('src/components/theme-toggle/theme-transition.css'));

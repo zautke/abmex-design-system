@@ -1,0 +1,24 @@
+{
+  "merlyn_commit": "8617c2068a93b19762a0ccf3054e515eaff7674a",
+  "paths": [
+    "tests/components/AppFooter.test.tsx",
+    "tests/components/ColorSystem.test.tsx",
+    "tests/components/MarkdownRenderer.test.tsx",
+    "tests/components/PromptComposer.test.tsx",
+    "tests/components/ScrollableTabStrip.test.tsx",
+    "tests/components/ThemeEditorPanel.test.tsx",
+    "tests/components/chat/MessageList.test.tsx",
+    "tests/components/cn.test.ts",
+    "tests/components/parseSemanticVariables.test.ts",
+    "tests/components/settings/JsonConfigEditor.test.tsx",
+    "tests/components/settings/McpServerList.test.tsx",
+    "tests/components/settings/SecretsList.test.tsx",
+    "tests/components/settings/ToolsPanel.test.tsx",
+    "tests/components/status-usage.test.tsx",
+    "tests/components/themePalette.test.ts",
+    "tests/components/ui/SegmentedControl.test.tsx"
+  ],
+  "dirty_adagio": [
+    "tests/components/themeController.test.ts"
+  ]
+}

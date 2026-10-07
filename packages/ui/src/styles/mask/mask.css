@@ -1,0 +1,117 @@
+/* @abmex/ui — mask tokens: an opacity-gradient fade on any scroll edge.
+ *
+ * `mask-fade` fades content out toward the edges of its own box on both axes
+ * (x: start/end, y: top/bottom). Defaults: 2rem on x, none on y. Every stop is
+ * a token, so the curve is fully tunable from CSS. See ./README.md.
+ *
+ * Activation: an edge whose `data-overflow-<edge>` attribute is "false" gets a
+ * zero-size fade, so with `useOverflowEdges()` writing those attributes the fade
+ * shows only where content is clipped, and slides in/out as you scroll.
+ */
+
+/* Registered so they interpolate (the size transition) and inherit. */
+@property --mask-fade-start-size {
+  syntax: '<length-percentage>';
+  inherits: true;
+  initial-value: 0px;
+}
+@property --mask-fade-end-size {
+  syntax: '<length-percentage>';
+  inherits: true;
+  initial-value: 0px;
+}
+@property --mask-fade-top-size {
+  syntax: '<length-percentage>';
+  inherits: true;
+  initial-value: 0px;
+}
+@property --mask-fade-bottom-size {
+  syntax: '<length-percentage>';
+  inherits: true;
+  initial-value: 0px;
+}
+
+/* Knobs (set on the element or any ancestor):
+ *   --mask-fade-size      default fade length for start/end (2rem)
+ *   --mask-fade-from      opacity at the very edge (0)
+ *   --mask-fade-to        opacity inside the fade (1)
+ *   --mask-fade-mid       opacity at the midpoint (linear: halfway from → to)
+ *   --mask-fade-mid-at    where the midpoint sits, as a fraction 0–1 of the fade (0.5)
+ *   --mask-fade-duration  size transition (200ms)
+ *   --mask-fade-ease      size easing (the Phosphor ease)
+ * Per-edge sizes come from the sizing utilities below (`mask-fade-x-8`,
+ * `mask-fade-start-[3rem]`, `mask-fade-y-6`, …) or the raw --mask-fade-{edge} vars. */
+@utility mask-fade {
+  --mask-fade-start-size: var(--mask-fade-start, var(--mask-fade-size, 2rem));
+  --mask-fade-end-size: var(--mask-fade-end, var(--mask-fade-size, 2rem));
+  --mask-fade-top-size: var(--mask-fade-top, 0px);
+  --mask-fade-bottom-size: var(--mask-fade-bottom, 0px);
+  --_mf-from: rgb(0 0 0 / var(--mask-fade-from, 0));
+  --_mf-mid: rgb(0 0 0 / var(--mask-fade-mid, calc((var(--mask-fade-from, 0) + var(--mask-fade-to, 1)) / 2)));
+  --_mf-to: rgb(0 0 0 / var(--mask-fade-to, 1));
+  --_mf-at: var(--mask-fade-mid-at, 0.5);
+  mask-image:
+    linear-gradient(
+      to right,
+      var(--_mf-from) 0,
+      var(--_mf-mid) calc(var(--mask-fade-start-size) * var(--_mf-at)),
+      var(--_mf-to) var(--mask-fade-start-size),
+      var(--_mf-to) calc(100% - var(--mask-fade-end-size)),
+      var(--_mf-mid) calc(100% - var(--mask-fade-end-size) * var(--_mf-at)),
+      var(--_mf-from) 100%
+    ),
+    linear-gradient(
+      to bottom,
+      var(--_mf-from) 0,
+      var(--_mf-mid) calc(var(--mask-fade-top-size) * var(--_mf-at)),
+      var(--_mf-to) var(--mask-fade-top-size),
+      var(--_mf-to) calc(100% - var(--mask-fade-bottom-size)),
+      var(--_mf-mid) calc(100% - var(--mask-fade-bottom-size) * var(--_mf-at)),
+      var(--_mf-from) 100%
+    );
+  mask-composite: intersect;
+  mask-repeat: no-repeat;
+  mask-size: 100% 100%;
+  transition-property: --mask-fade-start-size, --mask-fade-end-size, --mask-fade-top-size, --mask-fade-bottom-size;
+  transition-duration: var(--mask-fade-duration, 200ms);
+  transition-timing-function: var(--mask-fade-ease, var(--ease, ease));
+
+  &[data-overflow-start='false'] { --mask-fade-start-size: 0px; }
+  &[data-overflow-end='false'] { --mask-fade-end-size: 0px; }
+  &[data-overflow-top='false'] { --mask-fade-top-size: 0px; }
+  &[data-overflow-bottom='false'] { --mask-fade-bottom-size: 0px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition-duration: 0ms;
+  }
+}
+
+/* Sizing: theme spacing steps (`-8` = 2rem), arbitrary lengths or percentages. */
+@utility mask-fade-x-* {
+  --mask-fade-start: calc(var(--spacing) * --value(number));
+  --mask-fade-start: --value(--spacing-*, [length], [percentage]);
+  --mask-fade-end: calc(var(--spacing) * --value(number));
+  --mask-fade-end: --value(--spacing-*, [length], [percentage]);
+}
+@utility mask-fade-y-* {
+  --mask-fade-top: calc(var(--spacing) * --value(number));
+  --mask-fade-top: --value(--spacing-*, [length], [percentage]);
+  --mask-fade-bottom: calc(var(--spacing) * --value(number));
+  --mask-fade-bottom: --value(--spacing-*, [length], [percentage]);
+}
+@utility mask-fade-start-* {
+  --mask-fade-start: calc(var(--spacing) * --value(number));
+  --mask-fade-start: --value(--spacing-*, [length], [percentage]);
+}
+@utility mask-fade-end-* {
+  --mask-fade-end: calc(var(--spacing) * --value(number));
+  --mask-fade-end: --value(--spacing-*, [length], [percentage]);
+}
+@utility mask-fade-top-* {
+  --mask-fade-top: calc(var(--spacing) * --value(number));
+  --mask-fade-top: --value(--spacing-*, [length], [percentage]);
+}
+@utility mask-fade-bottom-* {
+  --mask-fade-bottom: calc(var(--spacing) * --value(number));
+  --mask-fade-bottom: --value(--spacing-*, [length], [percentage]);
+}

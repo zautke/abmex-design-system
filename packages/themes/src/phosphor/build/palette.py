@@ -59,6 +59,22 @@ LIGHT = {
   'info':        (0.500, 0.075, 230),
   'emphasis':    (0.500, 0.090, 319),   # mauve ink
 }
+# Folder roles (2026-10-05): manila folder tabs holding a paper pane. Light is
+# pixel-sampled from the Sheets mockup, except paper, which is ivory, not white.
+# Dark reuses the matching neutral, so the dark look is unchanged.
+DARK.update({
+  'folder':      DARK['surface'],         # folder strip, inactive tabs, frame around the pane
+  'paper':       DARK['surface-2'],       # active tab + pane
+  'folder-edge': DARK['border'],          # dividers between folder tabs
+  'page':        DARK['bg'],              # ground the folder sits on
+})
+LIGHT.update({
+  'folder':      (0.9387, 0.0120, 79.8),  # #efeae2
+  'paper':       (0.9844, 0.0108, 95.2),  # #fcfaf2 ivory
+  'folder-edge': (0.8998, 0.0098, 72.7),  # #e2ddd7
+  'page':        (0.9665, 0.0067, 97.4),  # #f5f4ef
+})
+FOLDER = ['folder', 'paper', 'folder-edge', 'page']
 MUTED_HUE = {'dark': 157.8, 'light': 110}
 INTENTS = ['primary','danger','success','warning','info','emphasis']
 

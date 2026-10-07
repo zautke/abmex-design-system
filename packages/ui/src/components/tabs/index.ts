@@ -13,6 +13,8 @@ export const Tabs = Object.assign(TabsRoot, {
 });
 
 export { middleTruncate } from './Tabs';
+export { useOverflowEdges } from '../../hooks/useOverflowEdges';
+export type { OverflowAxis, OverflowEdges } from '../../hooks/useOverflowEdges';
 export type {
   TabsOrientation,
   TabsMotion,

@@ -1,7 +1,8 @@
-import { useEffect, useId, useRef, useState, type ComponentPropsWithRef, type ReactNode } from 'react';
+import { useContext, useEffect, useEffectEvent, useId, useRef, useState, type ComponentPropsWithRef, type ReactNode } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { cn } from '../../utils/cn';
 import { focusRing, motion, useTabsOptional } from './Tabs';
+import { ButtonGroupContext } from '../button-group/ButtonGroup';
 
 export interface SwitcherItem {
   value: string;
@@ -32,6 +33,8 @@ export interface TabsSwitcherProps extends Omit<ComponentPropsWithRef<'div'>, 'o
   /** Controlled open state; omit for uncontrolled. */
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
+  /** Classes for the caret trigger button (`className` styles the wrapper). */
+  triggerClassName?: string;
   'aria-label'?: string;
 }
 
@@ -52,6 +55,7 @@ export function Switcher({
   open: openProp,
   onOpenChange,
   className,
+  triggerClassName,
   'aria-label': ariaLabel = 'Switch document',
   ...rest
 }: TabsSwitcherProps) {
@@ -69,6 +73,7 @@ export function Switcher({
   const root = useRef<HTMLDivElement>(null);
   const trigger = useRef<HTMLButtonElement>(null);
   const listId = useId();
+  const grouped = useContext(ButtonGroupContext);
 
   const q = query.trim().toLowerCase();
   const visible = groups
@@ -98,17 +103,19 @@ export function Switcher({
     // eslint-disable-next-line react-hooks/exhaustive-deps -- on open only
   }, [open]);
 
+  // Latest `close` (controlled `onOpenChange` may change) without re-binding the listener.
+  const closeOutside = useEffectEvent(() => close(false));
   useEffect(() => {
     if (!open) return;
     const onDown = (e: PointerEvent) => {
-      if (!root.current?.contains(e.target as Node)) close(false);
+      if (!root.current?.contains(e.target as Node)) closeOutside();
     };
     document.addEventListener('pointerdown', onDown);
     return () => document.removeEventListener('pointerdown', onDown);
   }, [open]);
 
   const activeId = flat[cursor] ? `${listId}-${flat[cursor].value}` : undefined;
-  const kbd = cn('rounded-[var(--ph-radius)] border border-ph-border px-1 font-[family-name:var(--ph-font-mono)] text-[10px]');
+  const kbd = cn('rounded-[var(--radius)] border border-border px-1 font-[family-name:var(--font-mono)] text-[10px]');
 
   return (
     <div ref={root} className={cn('relative inline-flex', className)} {...rest}>
@@ -121,10 +128,12 @@ export function Switcher({
         aria-expanded={open}
         onClick={() => (open ? close() : show())}
         className={cn(
-          'grid size-9 place-items-center rounded-[var(--ph-radius)] text-ph-fg-sage hover:bg-ph-surface-2 hover:text-ph-fg',
-          open && 'bg-ph-surface-2 text-ph-fg',
+          'grid size-9 place-items-center text-fg-sage hover:bg-surface-2 hover:text-fg',
+          !grouped && 'rounded-[var(--radius)]',
+          open && 'bg-surface-2 text-fg',
           motion,
           focusRing,
+          triggerClassName,
         )}
       >
         <ChevronDown aria-hidden className="size-4" />
@@ -133,9 +142,9 @@ export function Switcher({
         <div
           role="dialog"
           aria-label={ariaLabel}
-          className="absolute right-0 top-full z-50 mt-1 flex w-80 max-w-[calc(100vw-2rem)] flex-col rounded-[var(--ph-radius)] border border-ph-border bg-ph-overlay text-ph-fg shadow-[var(--ph-shadow-overlay)]"
+          className="absolute right-0 top-full z-50 mt-1 flex w-80 max-w-[calc(100vw-2rem)] flex-col rounded-[var(--radius)] border border-border bg-overlay text-fg shadow-[var(--shadow-overlay)]"
         >
-          <div className="flex items-center gap-2 border-b border-ph-border px-2.5 py-2">
+          <div className="flex items-center gap-2 border-b border-border px-2.5 py-2">
             <input
               autoFocus
               role="combobox"
@@ -161,14 +170,14 @@ export function Switcher({
                   close();
                 }
               }}
-              className="h-7 min-w-0 flex-1 bg-transparent text-sm text-ph-fg outline-none placeholder:text-ph-fg-muted"
+              className="h-7 min-w-0 flex-1 bg-transparent text-sm text-fg outline-none placeholder:text-fg-muted"
             />
-            <span className="shrink-0 font-[family-name:var(--ph-font-mono)] text-xs text-ph-fg-muted">{total} open</span>
+            <span className="shrink-0 font-[family-name:var(--font-mono)] text-xs text-fg-muted">{total} open</span>
           </div>
           <div id={listId} role="listbox" aria-label="Open documents" className="max-h-80 overflow-y-auto p-1">
             {visible.map((g) => (
               <div key={g.label} role="group" aria-label={g.label}>
-                <div className="px-2 pb-0.5 pt-2 text-xs font-semibold uppercase tracking-wide text-ph-fg-muted">{g.label}</div>
+                <div className="px-2 pb-0.5 pt-2 text-xs font-semibold uppercase tracking-wide text-fg-muted">{g.label}</div>
                 {g.items.map((item) => {
                   const idx = flat.indexOf(item);
                   return (
@@ -181,28 +190,28 @@ export function Switcher({
                       onPointerMove={() => setCursor(idx)}
                       onClick={() => activate(item)}
                       className={cn(
-                        'flex h-9 cursor-pointer items-center gap-2 rounded-[var(--ph-radius)] px-2 text-sm',
-                        idx === cursor ? 'bg-ph-surface-2 text-ph-fg-strong' : 'text-ph-fg-sage',
+                        'flex h-9 cursor-pointer items-center gap-2 rounded-[var(--radius)] px-2 text-sm',
+                        idx === cursor ? 'bg-surface-2 text-fg-strong' : 'text-fg-sage',
                       )}
                     >
                       <span
                         aria-hidden
                         className="size-2 shrink-0 rounded-full"
-                        style={{ background: item.color ?? 'var(--ph-border-strong)' }}
+                        style={{ background: item.color ?? 'var(--border-strong)' }}
                       />
                       <span className="min-w-0 flex-1 truncate">{item.label}</span>
-                      {item.value === current && <span className="size-1.5 rounded-full bg-ph-primary" aria-hidden />}
+                      {item.value === current && <span className="size-1.5 rounded-full bg-primary" aria-hidden />}
                       {item.meta && (
-                        <span className="shrink-0 font-[family-name:var(--ph-font-mono)] text-xs text-ph-fg-muted">{item.meta}</span>
+                        <span className="shrink-0 font-[family-name:var(--font-mono)] text-xs text-fg-muted">{item.meta}</span>
                       )}
                     </div>
                   );
                 })}
               </div>
             ))}
-            {!flat.length && <div className="px-2 py-3 text-sm text-ph-fg-muted">No open document matches “{query}”.</div>}
+            {!flat.length && <div className="px-2 py-3 text-sm text-fg-muted">No open document matches “{query}”.</div>}
           </div>
-          <div className="flex gap-3 border-t border-ph-border px-2.5 py-1.5 text-xs text-ph-fg-muted">
+          <div className="flex gap-3 border-t border-border px-2.5 py-1.5 text-xs text-fg-muted">
             <span><kbd className={kbd}>↑↓</kbd> move</span>
             <span><kbd className={kbd}>Enter</kbd> open</span>
             <span><kbd className={kbd}>Esc</kbd> close</span>

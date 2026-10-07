@@ -14,6 +14,8 @@ export default defineConfig({
         // Lean tabs subpath: consumers that only need tabs skip the chat/HeroUI families.
         resolve(__dirname, 'src/components/tabs/index.ts'),
         resolve(__dirname, 'src/components/tabs/Sortable.tsx'),
+        resolve(__dirname, 'src/components/button-group/index.ts'),
+        resolve(__dirname, 'src/components/theme-toggle/index.ts'),
       ],
       formats: ['es'],
       fileName: (_format, name) => `${name}.js`,

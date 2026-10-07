@@ -17,6 +17,8 @@ export * from './components/conversations';
 export * from './components/settings';
 export * from './components/theme';
 export * from './components/tabs';
+export * from './components/button-group';
+export * from './components/theme-toggle';
 
 // ── Primitives ─────────────────────────────────────────────────────────────
 export { StatusDot } from './primitives/StatusDot';

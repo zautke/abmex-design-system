@@ -35,6 +35,10 @@
   --color-fg-sage: var(--fg-sage);
   --color-fg-muted: var(--fg-muted);
   --color-fg-disabled: var(--fg-disabled);
+  --color-folder: var(--folder);
+  --color-paper: var(--paper);
+  --color-folder-edge: var(--folder-edge);
+  --color-page: var(--page);
   --color-primary: var(--primary);
   --color-primary-fg: var(--primary-fg);
   --color-primary-hover: var(--primary-hover);

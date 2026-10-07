@@ -3,7 +3,7 @@
 Outputs: ../*.css (drop-in), build/tokens.generated.json (seed for ../tokens.json, which is hand-curated after generation), build/contrast.json."""
 import json, os, math
 from color import *
-from palette import resolve, hexof, INTENTS
+from palette import resolve, hexof, INTENTS, FOLDER
 
 OUT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 os.makedirs(f'{OUT}/adapters', exist_ok=True)
@@ -32,7 +32,7 @@ SHADOW = {
  },
 }
 ORDER = (['bg','bg-sunken','surface','surface-2','surface-3','overlay','field','border','border-strong',
-          'fg','fg-strong','fg-sage','fg-muted','fg-disabled'] +
+          'fg','fg-strong','fg-sage','fg-muted','fg-disabled'] + FOLDER +
          [f'{i}{s}' for i in INTENTS for s in ('','-fg','-hover','-soft','-soft-fg')] +
          ['focus','link','selection','code-bg','scrollbar'] + [f'chart-{i}' for i in range(1,6)])
 
@@ -56,6 +56,10 @@ USAGE = {
  'selection': 'Text selection and highlighted search matches.',
  'code-bg': 'Code surface: blends toward app bg, bordered by `border`.',
  'scrollbar': 'Scrollbar thumb.',
+ 'folder': 'Manila folder: tab strip, inactive tabs and the frame that wraps the paper pane.',
+ 'paper': 'Paper lying on the folder: the active tab and the pane it opens (ivory in light).',
+ 'folder-edge': 'Hairline dividers between folder tabs. Decorative only.',
+ 'page': 'Ground the folder sits on (app page behind the frame).',
  'backdrop': 'Modal scrim behind dialogs and sheets.',
 }
 INTENT_NOTE = {
@@ -82,7 +86,7 @@ def oklch_str(h):
 # ---------------------------------------------------------------- tokens.css (framework-agnostic)
 def block(th):
     res = R[th][0]; lines = []
-    groups = [('Neutrals', ORDER[:14])] + [(i.capitalize(), [f'{i}{s}' for s in ('','-fg','-hover','-soft','-soft-fg')]) for i in INTENTS] + \
+    groups = [('Neutrals', ORDER[:14]), ('Folder', FOLDER)] + [(i.capitalize(), [f'{i}{s}' for s in ('','-fg','-hover','-soft','-soft-fg')]) for i in INTENTS] + \
              [('Utility', ['focus','link','selection','code-bg','scrollbar']), ('Charts', [f'chart-{i}' for i in range(1,6)])]
     for g, keys in groups:
         lines.append(f'  /* {g} */')
@@ -122,7 +126,9 @@ tokens_css = HEADER.format(title='tokens (Layer 1: the role interface)') + '''
 
 /* Non-color tokens (theme-independent) */
 :root {
+  --theme-attribute: class;      /* how this theme is scoped; read by createThemeController */
   --radius: 0.25rem;          /* crisp instrument corners; every radius derives from this */
+  --tab-flare: 6px;           /* folder tab: top radius and the outward flare at its foot */
   --border-width: 1px;
   --ring-width: 2px;
   --ring-offset: 2px;
@@ -388,14 +394,13 @@ tokens = {
    'usage': {'shadow-surface':'Cards: none in dark (hairline does the work), a faint lift on paper.',
              'shadow-field':'Inputs.','shadow-overlay':'Popovers, menus, dialogs.'}[k]} for k in SHADOW['dark']]},
 }
-os.makedirs('../project', exist_ok=True)
 json.dump(tokens, open(os.path.join(os.path.dirname(__file__), 'tokens.generated.json'),'w',encoding='utf-8',newline=chr(10)), indent=1, ensure_ascii=False)
 
 # ---------------------------------------------------------------- contrast audit
 PAIRS = []
 for th in R:
     res = R[th][0]
-    grounds = ['bg','bg-sunken','surface','surface-2','overlay','field']
+    grounds = ['bg','bg-sunken','surface','surface-2','overlay','field','folder','paper','page']
     for t in ['fg','fg-strong','fg-sage','fg-muted','link']:
         for g in grounds: PAIRS.append((th,t,g,4.5))
     for i in INTENTS:
@@ -417,3 +422,4 @@ json.dump(rows, open(os.path.join(os.path.dirname(__file__), 'contrast.json'),'w
 print(f'{len(rows)} pairs checked, {len(fails)} failing')
 for f in fails: print('  FAIL', f)
 print('min per theme:', {th: min(r[3] for r in rows if r[0]==th and r[5]==4.5) for th in R})
+raise SystemExit(bool(fails))

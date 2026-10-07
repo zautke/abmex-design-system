@@ -122,7 +122,7 @@ function SortableArea({
             <div
               aria-hidden
               inert
-              className="pointer-events-none scale-[1.03] opacity-95 shadow-[var(--ph-shadow-overlay)] rounded-[var(--ph-radius)]"
+              className="pointer-events-none scale-[1.03] opacity-95 shadow-[var(--shadow-overlay)] rounded-[var(--radius)]"
             >
               <TabGhostContext.Provider value>
                 {renderOverlay ? renderOverlay(activeId) : ghost && <Tab {...ghost} id={undefined} />}
