@@ -48,6 +48,16 @@ Plan source: `docs/ABMEX_INTERNAL_PLAN_VERBATIM.md` (verbatim KB note)
 - Merlyn and other organization consumers still use existing local sources.
 - Full tabs/mobile/accessibility parity, rollback, registry-install, and release gates remain open.
 
+## Repository transfer
+
+- Committed all implementation and documentation changes as `fcb4510` (`feat(design-system): add motion and native foundation`).
+- Created private remote `https://github.com/zautke/abmex-design-system` and pushed `main` plus `feat/standalone-design-system`.
+- Opened pull request [#1](https://github.com/zautke/abmex-design-system/pull/1).
+- Created private transfer remote `https://github.com/zautke/abmex-ai` and local checkout `/Volumes/MACDEV/abmex-ai`.
+- Pushed transfer `main` at `672d499` and `feat/abmex-ai-foundation` at `fcb4510`.
+- Opened transfer pull request [#1](https://github.com/zautke/abmex-ai/pull/1).
+- The transfer repository contains this record, the verbatim internal plan, continuity set, package source, generated artifacts, and native foundation.
+
 ## Release safety
 
 This checkpoint is intentionally prerelease and incomplete. Do not promote a stable package or delete local donor sources until exact artifact publication, registry verification, real consumer tests, and rollback gates pass.
