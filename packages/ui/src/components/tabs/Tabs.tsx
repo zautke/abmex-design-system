@@ -3,6 +3,7 @@ import {
   cloneElement,
   createContext,
   isValidElement,
+  useCallback,
   useContext,
   useEffect,
   useId,
@@ -17,7 +18,9 @@ import {
   type ReactElement,
   type ReactNode,
   type RefObject,
+  type Ref,
 } from 'react';
+import { durations, easings } from '@abmex/themes/motion';
 import { ChevronLeft, ChevronRight, MoveHorizontal, MoveVertical, PanelLeftClose, PanelLeftOpen, X } from 'lucide-react';
 import { cn } from '../../utils/cn';
 import { useOverflowEdges } from '../../hooks/useOverflowEdges';
@@ -39,6 +42,7 @@ interface TabsContextValue {
   id: string;
   motion: TabsMotion;
   density: TabsDensity;
+  root: RefObject<HTMLDivElement | null>;
 }
 
 const TabsContext = createContext<TabsContextValue | null>(null);
@@ -75,8 +79,41 @@ export const focusRing =
 export const motion = 'transition-colors duration-[var(--duration)] ease-[var(--ease)] motion-reduce:transition-none';
 const mono = 'font-[family-name:var(--font-mono)]';
 
-const ENTER_MS = 180;
-const EXIT_MS = 135;
+function useComposedRef<T>(local: RefObject<T | null>, forwarded?: Ref<T>) {
+  return useCallback((element: T | null) => {
+    local.current = element;
+    const cleanup = typeof forwarded === 'function' ? forwarded(element) : undefined;
+    if (forwarded && typeof forwarded !== 'function') forwarded.current = element;
+    return () => {
+      local.current = null;
+      if (typeof cleanup === 'function') cleanup();
+      else if (typeof forwarded === 'function') forwarded(null);
+      else if (forwarded) forwarded.current = null;
+    };
+  }, [local, forwarded]);
+}
+
+/** Read from the tab scope, keeping animation and retained exit lifetime identical. */
+function tabTiming(root: HTMLElement | null, phase: 'tab-enter' | 'tab-exit') {
+  const style = root ? getComputedStyle(root) : undefined;
+  const value = style?.getPropertyValue(`--${phase}-duration`).trim() ?? '';
+  const match = /^(\d*\.?\d+)(ms|s)$/.exec(value);
+  const duration = match ? Number(match[1]) * (match[2] === 's' ? 1000 : 1) : durations[phase] * 1000;
+  return {
+    duration: Number.isFinite(duration) ? duration : durations[phase] * 1000,
+    easing: style?.getPropertyValue(`--${phase}-ease`).trim() || `cubic-bezier(${easings[`${phase}-ease`].join(',')})`,
+  };
+}
+
+function cancelOnReducedMotion(animation: Animation) {
+  const preference = window.matchMedia?.('(prefers-reduced-motion: reduce)');
+  const changed = () => { if (preference?.matches) animation.cancel(); };
+  preference?.addEventListener('change', changed);
+  return () => {
+    preference?.removeEventListener('change', changed);
+    animation.cancel();
+  };
+}
 
 const prefersReducedMotion = () =>
   typeof window !== 'undefined' && !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
@@ -110,8 +147,11 @@ function TabsRoot({
   motion: motionPref = 'standard',
   density = 'comfortable',
   className,
+  ref,
   ...rest
 }: TabsProps) {
+  const root = useRef<HTMLDivElement>(null);
+  const setRoot = useComposedRef(root, ref);
   const [inner, setInner] = useState(defaultValue);
   const id = useId();
   const current = value ?? inner;
@@ -120,8 +160,9 @@ function TabsRoot({
     onValueChange?.(next);
   };
   return (
-    <TabsContext.Provider value={{ value: current, select, orientation, id, motion: motionPref, density }}>
+    <TabsContext.Provider value={{ value: current, select, orientation, id, motion: motionPref, density, root }}>
       <div
+        ref={setRoot}
         data-orientation={orientation}
         data-density={density}
         data-motion={motionPref}
@@ -148,8 +189,9 @@ const liveTabs = (root: Element | null | undefined) =>
 function onListKeyDown(e: KeyboardEvent<HTMLElement>, orientation: TabsOrientation) {
   // A handler further in (e.g. an active keyboard drag) already owns this key.
   if (e.defaultPrevented) return;
-  const prev = orientation === 'horizontal' ? 'ArrowLeft' : 'ArrowUp';
-  const next = orientation === 'horizontal' ? 'ArrowRight' : 'ArrowDown';
+  const rtl = getComputedStyle(e.currentTarget).direction === 'rtl';
+  const prev = orientation === 'horizontal' ? (rtl ? 'ArrowRight' : 'ArrowLeft') : 'ArrowUp';
+  const next = orientation === 'horizontal' ? (rtl ? 'ArrowLeft' : 'ArrowRight') : 'ArrowDown';
   if (![prev, next, 'Home', 'End'].includes(e.key)) return;
   const tabs = liveTabs(e.currentTarget);
   const i = tabs.indexOf(document.activeElement as HTMLElement);
@@ -165,8 +207,10 @@ function useRovingFallback(list: RefObject<HTMLElement | null>) {
   useEffect(() => {
     const tabs = Array.from(list.current?.querySelectorAll<HTMLElement>('[role="tab"]') ?? []);
     const stop =
-      tabs.find((t) => t.getAttribute('aria-selected') === 'true' && !t.closest('[inert]')) ?? liveTabs(list.current)[0];
+      liveTabs(list.current).find((t) => t.getAttribute('aria-selected') === 'true') ?? liveTabs(list.current)[0];
     for (const t of tabs) t.tabIndex = t === stop ? 0 : -1;
+    const focused = document.activeElement as HTMLElement;
+    if (tabs.includes(focused) && (focused.getAttribute('aria-disabled') === 'true' || focused.closest('[inert]'))) stop?.focus();
   });
 }
 
@@ -202,10 +246,11 @@ const keyOf = (n: ReactNode): Key | null => (isValidElement(n) ? n.key : null);
 
 /**
  * Minimal presence: a keyed child that disappears stays rendered (with
- * `data-exiting`, which Tab turns into `inert` + exit animation) for EXIT_MS.
+ * `data-exiting`, which Tab turns into `inert` + exit animation) for the scoped exit duration.
  * ponytail: render-time ref bookkeeping (idempotent under StrictMode); swap for a presence lib if lists need layout animation.
  */
 function usePresence(children: ReactNode, enabled: boolean): ReactNode[] {
+  const { root } = useTabs('presence');
   const next = Children.toArray(children);
   const shown = useRef<ReactNode[]>(next);
   const expired = useRef(new Set<Key>());
@@ -238,13 +283,27 @@ function usePresence(children: ReactNode, enabled: boolean): ReactNode[] {
           timers.current.delete(k);
           expired.current.add(k);
           rerender();
-        }, EXIT_MS),
+        }, tabTiming(root.current, 'tab-exit').duration),
       );
     }
   });
   useEffect(() => {
     const t = timers.current;
-    return () => t.forEach(clearTimeout);
+    const preference = window.matchMedia?.('(prefers-reduced-motion: reduce)');
+    const changed = () => {
+      if (!preference?.matches) return;
+      for (const [key, timer] of t) {
+        clearTimeout(timer);
+        expired.current.add(key);
+      }
+      t.clear();
+      rerender();
+    };
+    preference?.addEventListener('change', changed);
+    return () => {
+      t.forEach(clearTimeout);
+      preference?.removeEventListener('change', changed);
+    };
   }, []);
   return out;
 }
@@ -475,7 +534,7 @@ const triggerFocusRing =
  */
 function TabRoot({ value, color, dirty, disabled, className, style, children, onClick, ref, ...rest }: TabsTabProps) {
   const ghost = useContext(TabGhostContext);
-  const { value: active, select, orientation, id, motion: motionPref, density } = useTabs('Tab');
+  const { value: active, select, orientation, id, motion: motionPref, density, root } = useTabs('Tab');
   const ready = useContext(ListContext);
   const [label, setLabel] = useState<string>();
   const node = useRef<HTMLDivElement | null>(null);
@@ -489,11 +548,7 @@ function TabRoot({ value, color, dirty, disabled, className, style, children, on
   const close = parts.find((c): c is ReactElement<TabsTabCloseProps> => isValidElement(c) && c.type === TabClose);
   const body = parts.filter((c) => c !== close);
 
-  const setNode = (el: HTMLDivElement | null) => {
-    node.current = el;
-    if (typeof ref === 'function') ref(el);
-    else if (ref) ref.current = el;
-  };
+  const setNode = useComposedRef(node, ref);
 
   // Enter: only tabs added after the list mounted.
   useLayoutEffect(() => {
@@ -501,23 +556,21 @@ function TabRoot({ value, color, dirty, disabled, className, style, children, on
     const m = resolveMotion(motionPref);
     if (!el || typeof el.animate !== 'function' || m === 'none' || !ready?.current) return;
     const from = horizontal ? 'translateY(4px) scale(0.92)' : 'translateX(-4px) scale(0.92)';
-    el.animate(m === 'standard' ? [{ opacity: 0, transform: from }, { opacity: 1, transform: 'none' }] : [{ opacity: 0 }, { opacity: 1 }], {
-      duration: ENTER_MS,
-      easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)',
-    });
+    const animation = el.animate(m === 'standard' ? [{ opacity: 0, transform: from }, { opacity: 1, transform: 'none' }] : [{ opacity: 0 }, { opacity: 1 }], tabTiming(root.current, 'tab-enter'));
+    return cancelOnReducedMotion(animation);
     // eslint-disable-next-line react-hooks/exhaustive-deps -- mount only
   }, []);
 
-  // Exit: usePresence keeps the tab mounted for EXIT_MS.
+  // Exit: usePresence uses the same scoped duration.
   useLayoutEffect(() => {
     const el = node.current;
     const m = resolveMotion(motionPref);
     if (!exiting || !el || typeof el.animate !== 'function' || m === 'none') return;
-    el.animate(m === 'standard' ? [{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'scale(0.92)' }] : [{ opacity: 1 }, { opacity: 0 }], {
-      duration: EXIT_MS,
-      easing: 'cubic-bezier(0.4, 0, 1, 1)',
+    const animation = el.animate(m === 'standard' ? [{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'scale(0.92)' }] : [{ opacity: 1 }, { opacity: 0 }], {
+      ...tabTiming(root.current, 'tab-exit'),
       fill: 'forwards',
     });
+    return cancelOnReducedMotion(animation);
     // eslint-disable-next-line react-hooks/exhaustive-deps -- exit only
   }, [exiting]);
 
@@ -539,8 +592,8 @@ function TabRoot({ value, color, dirty, disabled, className, style, children, on
         data-orientation={orientation}
         inert={exiting || undefined}
         onClick={(e) => {
-          if (!disabled && !exiting) select(value);
           onClick?.(e);
+          if (!e.defaultPrevented && !disabled && !exiting) select(value);
         }}
         style={color ? ({ '--tab-color': color, ...style } as CSSProperties) : style}
         className={cn(
@@ -597,7 +650,7 @@ function TabRoot({ value, color, dirty, disabled, className, style, children, on
           aria-selected={ghost ? undefined : selected}
           aria-controls={ghost ? undefined : `${id}-panel-${value}`}
           aria-disabled={disabled || undefined}
-          tabIndex={ghost ? -1 : selected ? 0 : -1}
+          tabIndex={ghost || disabled || exiting ? -1 : selected ? 0 : -1}
           onKeyDown={(e) => {
             if (e.defaultPrevented || e.target !== e.currentTarget || disabled) return;
             if (e.key === 'Enter' || e.key === ' ') {

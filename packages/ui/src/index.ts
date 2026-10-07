@@ -5,9 +5,9 @@
 // not. Where a component previously reached for one of those, its props now
 // carry a `// WIRING:` note naming what the consumer must supply.
 //
-// HeroUI v3 (`@heroui/react` + `@heroui/styles`) is a PEER dependency: the app
-// installs it and imports `@heroui/styles` BEFORE `@abmex/ui/styles.css`, so a
-// single copy of React Aria owns focus and portal context.
+// HeroUI React is a peer so one React Aria instance owns focus and portals.
+// Import @abmex/ui/styles.css for compiled styles, including HeroUI's styles.
+// Optional compiler integration uses @heroui/styles then @abmex/ui/tailwind.css.
 
 // ── Families ───────────────────────────────────────────────────────────────
 export * from './components/chat';

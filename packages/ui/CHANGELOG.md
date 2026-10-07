@@ -1,11 +1,5 @@
 # @abmex/ui
 
-## 0.7.0-next.2
-
-### Changed
-
-- First release published from GitHub Actions via npm trusted publishing (OIDC) with provenance. Adds `repository` metadata to `@abmex/ui` and `@abmex/themes`.
-
 ## 0.6.4
 
 ### Fixed

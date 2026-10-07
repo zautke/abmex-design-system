@@ -9,7 +9,7 @@ This is a **presentation kit**. The components render and emit intent; they do n
 ```bash
 pnpm add @abmex/ui
 # Peer dependencies:
-pnpm add react react-dom tailwindcss lucide-react @heroui/react @heroui/styles
+pnpm add react react-dom lucide-react @heroui/react
 ```
 
 HeroUI is a **peer**, not a dependency, on purpose: two copies of React Aria in one bundle means two focus/portal contexts, and menus and overlays break in ways that are miserable to debug.
@@ -27,13 +27,24 @@ import {
 ```
 
 ```css
-/* Import order is load-bearing. */
-@import '@heroui/styles';      /* 1. HeroUI's semantic surface */
-@import '@abmex/ui/styles.css'; /* 2. re-points that surface at the chat skin */
+@import '@abmex/ui/styles.css';
+```
+
+`styles.css` is compiled and includes the required HeroUI styles. No Tailwind
+compiler or separate HeroUI stylesheet is needed. Do not import both stylesheets.
+
+For consumers integrating their own Tailwind v4 compilation, install the optional
+`tailwindcss` and `@heroui/styles` peers and use this alternative:
+
+```css
+@import '@heroui/styles';
+@import '@abmex/ui/tailwind.css';
 @source '../src';
 ```
 
-Flip those two lines and HeroUI's stock blue accent wins the cascade.
+Family entrypoints such as `@abmex/ui/components/chat` and `@abmex/ui/tabs`
+allow narrower imports. Sortable tabs require the optional `@dnd-kit` peers and
+are available separately at `@abmex/ui/tabs/sortable`.
 
 Everything is driven by props and callbacks, so a consumer with no database, no extension APIs, and no provider registry can mount the entire surface from plain `useState`. See `examples/consumer/src/App.tsx`, which does exactly that.
 
@@ -83,7 +94,7 @@ React 19.2 · HeroUI v3 (React Aria) · Tailwind v4 · TypeScript 5.9 (strict + 
 |---|---|
 | `react` | `^19.2.0` |
 | `react-dom` | `^19.2.0` |
-| `tailwindcss` | `^4.2.0` |
+| `tailwindcss` (optional compiler integration) | `^4.3.0` |
 | `lucide-react` | `^0.575.0` |
 | `@heroui/react` | `^3.2.2` |
-| `@heroui/styles` | `^3.2.2` |
+| `@heroui/styles` (optional compiler integration) | `^3.2.2` |

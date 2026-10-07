@@ -5,15 +5,16 @@
  * interface lives in ./phosphor/ (generated from ./phosphor/build/palette.py —
  * never hand-edit those values). This file only wires it into the kit.
  *
- * Consumers import '@heroui/styles' FIRST, then this file: the Phosphor layer
+ * Optional Tailwind compiler consumers import '@heroui/styles' FIRST, then this file: the Phosphor layer
  * replaces HeroUI's `dark` variant and the adapter re-points HeroUI's semantic
  * surface at `--*`. Reverse the order and HeroUI's stock blue wins.
  *
  * Theme scope: no class → dark; `.light` / `[data-theme="light"]` → light, on
  * any element, nesting allowed.
  *
- * dist/styles.css is this file with the ./phosphor imports inlined
- * (scripts/copy-css.mjs), so the theme editor can parse one string.
+ * dist/tailwind.css inlines relative imports (scripts/copy-css.mjs).
+ * dist/styles.css is the separate complete compiled stylesheet, including
+ * HeroUI styles, for consumers without a Tailwind compiler.
  */
 @import 'tailwindcss' source(none);
 @import '../../../themes/src/phosphor/phosphor.fonts.css';

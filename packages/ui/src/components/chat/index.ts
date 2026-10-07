@@ -1,6 +1,11 @@
 // Chat family — presentation only. Every component here takes primitives and
 // children; none of them touch persistence, transports, or the browser.
 
+export { TaskList, ToolResult, ImageGallery, ImageTile, ApprovalRequest } from './RichContent';
+export type { TaskItem, TaskListProps, ToolResultProps, ImageTileProps, ApprovalRequestProps } from './RichContent';
+export { FileList } from './FileList';
+export type { FileListEntry, FileListProps } from './FileList';
+
 export { ChatBubble } from './ChatBubble';
 export type { ChatBubbleProps } from './ChatBubble';
 

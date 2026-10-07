@@ -4,6 +4,34 @@ import AbmexTokens
 @testable import AbmexUI
 
 final class AbmexThemeTests: XCTestCase {
+    func testGeneratedEasingAndInvalidOverrideRecovery() {
+        XCTAssertEqual(AbmexTokens.easings["tab-enter-ease"], [0.2, 0.8, 0.2, 1])
+        let custom = AbmexTheme(easings: ["tab-enter-ease": [0.1, -0.2, 0.7, 1.2]])
+        XCTAssertEqual(custom.easing("tab-enter-ease"), [0.1, -0.2, 0.7, 1.2])
+        for invalid in [[Double.nan, 0, 1, 1], [-1, 0, 1, 1], [0, 1]] {
+            XCTAssertEqual(AbmexTheme(easings: ["tab-enter-ease": invalid]).easing("tab-enter-ease"),
+                           AbmexTokens.easings["tab-enter-ease"])
+        }
+        XCTAssertEqual(AbmexTheme().easing("unknown"), AbmexTokens.easings["ease"])
+    }
+
+    func testUnknownTokensUseExplicitFallbacksWithoutTrapping() {
+        let theme = AbmexTheme()
+        XCTAssertEqual(theme.color("unknown", scheme: .dark, fallback: .clear), .clear)
+        XCTAssertEqual(theme.dimension("unknown", fallback: 12), 12)
+        XCTAssertEqual(theme.dimension("unknown", fallback: .infinity), 0)
+        XCTAssertNil(theme.animation("unknown", reduceMotion: false))
+    }
+
+    func testInvalidOverridesRecoverCatalogValues() {
+        for invalid in [Double.nan, Double.infinity, -1] {
+            let theme = AbmexTheme(dimensions: ["space-2": invalid], durations: ["duration": invalid])
+            XCTAssertEqual(theme.dimension("space-2"), AbmexTheme().dimension("space-2"))
+            XCTAssertNotNil(theme.animation("duration", reduceMotion: false))
+            XCTAssertNil(theme.animation("duration", reduceMotion: true))
+        }
+    }
+
     func testDefaultThemeResolvesBothCatalogModes() throws {
         let theme = AbmexTheme()
         for (mode, scheme) in [("light", ColorScheme.light), ("dark", ColorScheme.dark)] {
@@ -72,7 +100,6 @@ final class AbmexCompositionTests: XCTestCase {
             }
         }
         .environment(\.dynamicTypeSize, .accessibility3)
-        .environment(\.accessibilityReduceMotion, true)
         .environment(\.colorScheme, .dark)
         let host = NSHostingView(rootView: view)
         let size = host.fittingSize
