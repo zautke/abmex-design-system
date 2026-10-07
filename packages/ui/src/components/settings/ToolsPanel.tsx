@@ -61,7 +61,7 @@ export interface ToolsPanelProps {
 
   /**
    * WIRING: shell-access copy. The default is deliberately generic — the source's
-   * text named `com.merlyn.shell` and `companion/native-host/install.sh`, which
+   * text names the Merlyn gateway (`pnpm sync:up`, `MERLYN_GATEWAY_EXEC`), which
    * are Merlyn facts, not kit facts. Pass your own to say them.
    */
   shellDescription?: ReactNode;
@@ -145,7 +145,7 @@ export function ToolsPanel({
         title="Shell access"
         description={
           shellDescription ??
-          'Enables shell command execution through a native-messaging companion host. The host must be installed separately.'
+          'Enables shell command execution through a local gateway service, which must be running.'
         }
       >
         <Switch
