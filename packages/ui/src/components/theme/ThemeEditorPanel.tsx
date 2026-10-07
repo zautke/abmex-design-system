@@ -64,6 +64,8 @@ export interface ThemeEditorPanelProps {
   saveNewTheme: (name: string) => void;
   deleteTheme: (id: string) => void;
   renameTheme: (id: string, name: string) => void;
+  /** Short status next to the theme picker (e.g. "restoring…", "not saved"); hidden when empty. */
+  themeStatus?: string;
 }
 
 export function ThemeEditorPanel({
@@ -82,6 +84,7 @@ export function ThemeEditorPanel({
   saveNewTheme,
   deleteTheme,
   renameTheme,
+  themeStatus,
 }: ThemeEditorPanelProps) {
   const [semanticVars, setSemanticVars] = useState<SemanticVariable[]>([]);
   const [filter, setFilter] = useState('');
@@ -181,6 +184,11 @@ export function ThemeEditorPanel({
                   >
                     <Plus size={14} />
                   </button>
+                  {themeStatus && (
+                    <span role="status" className="ml-1 text-[10px] text-fg-muted whitespace-nowrap">
+                      {themeStatus}
+                    </span>
+                  )}
 
                   <Popover.Content placement="bottom start" className="w-48 bg-overlay border border-border rounded-lg shadow-overlay py-1">
                     <Popover.Dialog aria-label="Theme selector" className="p-0">

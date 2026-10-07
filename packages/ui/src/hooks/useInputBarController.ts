@@ -3,14 +3,13 @@
 // textarea / keyboard handlers (useReadlineKeys + InputBarKeyboardHandler
 // stay element-coupled and run alongside this controller).
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 const PROMPT_HISTORY_STORAGE_KEY = 'inputbar.promptHistory.v1';
 const MAX_PROMPT_HISTORY_ITEMS = 200;
 
-function readPromptHistoryFromStorage(key: string): string[] {
+function parsePromptHistory(raw: string | null): string[] {
   try {
-    const raw = localStorage.getItem(key);
     if (!raw) return [];
     const parsed = JSON.parse(raw) as unknown;
     if (!Array.isArray(parsed)) return [];
@@ -23,6 +22,27 @@ function readPromptHistoryFromStorage(key: string): string[] {
   } catch {
     return [];
   }
+}
+
+function readPromptHistoryFromStorage(key: string): string[] {
+  try {
+    return parsePromptHistory(localStorage.getItem(key));
+  } catch {
+    return [];
+  }
+}
+
+/**
+ * Merges a proposed serialized history into the current serialized one:
+ * current entries first, then the proposal's entries that are missing, capped
+ * to the most recent MAX_PROMPT_HISTORY_ITEMS. A persistence layer that
+ * re-reads the stored value under a lock uses this so a panel holding a stale
+ * array never drops another panel's entries.
+ */
+export function mergePromptHistory(current: string | null, proposed: string): string {
+  const merged = parsePromptHistory(current);
+  for (const entry of parsePromptHistory(proposed)) if (!merged.includes(entry)) merged.push(entry);
+  return JSON.stringify(merged.slice(-MAX_PROMPT_HISTORY_ITEMS));
 }
 
 function writePromptHistoryToStorage(key: string, history: string[]): void {
@@ -44,17 +64,29 @@ export interface UseInputBarControllerInput {
    */
   promptHistoryStorageKey?: string;
   /**
-   * Optional side-effect callback fired after each successful localStorage
-   * write of the prompt history. Consumers (e.g. the extension sidepanel)
-   * wire this to the Dexie syncOutbox so the Postgres mirror lane can track
-   * localStorage persistence without packages/ui depending on the main app's
-   * db instance.
+   * Durable persistence of the prompt history. The callback MUST write the
+   * value it resolves with to localStorage itself before resolving.
    *
-   * Decision: dependency-injection via callback rather than a direct import of
-   * db.ts, which would create a cross-package dependency from packages/ui into
-   * the main extension app — violating the package boundary.
+   * When given, it OWNS the write: the controller awaits it before touching
+   * in-memory history, passes the
+   * proposed serialized history, and adopts the value it resolves with (the
+   * committed value, which may hold entries merged in from elsewhere) as its
+   * state. The callback must have written that value to localStorage before
+   * resolving — the controller does not write storage itself in this mode, so
+   * a late write can never clobber a newer value persisted by another panel.
+   * Rejection leaves history and storage unchanged, sets `historyNotSaved`,
+   * and the unsaved entries are retried with the next submit.
+   *
+   * Omitted: the controller writes localStorage itself, synchronously.
    */
-  onStoragePersist?: (key: string, value: unknown) => void;
+  onStoragePersist?: (key: string, serialized: string) => Promise<string>;
+  /**
+   * Default true. While false, submit still sends but records nothing in
+   * history and calls no persistence (e.g. while a restore is pending); the
+   * texts are kept in memory and recorded (persisted) as soon as it turns
+   * true again.
+   */
+  historyEnabled?: boolean;
 }
 
 export interface UseInputBarControllerResult {
@@ -79,6 +111,10 @@ export interface UseInputBarControllerResult {
   /** Adaptive placeholder text matching the current shiftEnterToSend mode. */
   placeholder: string;
   shiftEnterToSend: boolean;
+  /** True after `onStoragePersist` rejected, until a later persist succeeds. */
+  historyNotSaved: boolean;
+  /** Re-read history from storage (e.g. after a restore wrote it post-mount). */
+  reloadHistoryFromStorage: () => void;
 }
 
 export function useInputBarController(
@@ -89,20 +125,65 @@ export function useInputBarController(
     shiftEnterToSend = false,
     promptHistoryStorageKey = PROMPT_HISTORY_STORAGE_KEY,
     onStoragePersist,
+    historyEnabled = true,
   } = input;
 
   const [inputValue, setInputValue] = useState('');
   const [promptHistory, setPromptHistory] = useState<string[]>([]);
   const [navigationIndex, setNavigationIndex] = useState<number | null>(null);
   const [navigationDraft, setNavigationDraft] = useState('');
+  const [historyNotSaved, setHistoryNotSaved] = useState(false);
+  // Entries not yet recorded (persist rejected, or history disabled): retried with the next submit.
+  const unsavedRef = useRef<string[]>([]);
 
-  useEffect(() => {
+  const reloadHistoryFromStorage = useCallback(() => {
     setPromptHistory(readPromptHistoryFromStorage(promptHistoryStorageKey));
     // Reset navigation state — the prior index/draft point at a different
     // history array now and would address wrong entries.
     setNavigationIndex(null);
     setNavigationDraft('');
   }, [promptHistoryStorageKey]);
+
+  useEffect(() => {
+    reloadHistoryFromStorage();
+  }, [reloadHistoryFromStorage]);
+
+  /** Records the kept entries plus `extra` (persisting them when `onStoragePersist` is given). */
+  const record = useCallback((extra: string[]) => {
+    const pending = [...new Set([...unsavedRef.current, ...extra])];
+    unsavedRef.current = [];
+    if (pending.length === 0) return;
+    if (!onStoragePersist) {
+      setPromptHistory((prev) => {
+        const add = pending.filter((t) => !prev.includes(t));
+        if (add.length === 0) return prev;
+        const next = [...prev, ...add].slice(-MAX_PROMPT_HISTORY_ITEMS);
+        writePromptHistoryToStorage(promptHistoryStorageKey, next);
+        return next;
+      });
+      return;
+    }
+    const entries = pending.filter((t) => !promptHistory.includes(t));
+    if (entries.length === 0) return;
+    const proposed = JSON.stringify([...promptHistory, ...entries].slice(-MAX_PROMPT_HISTORY_ITEMS));
+    onStoragePersist(promptHistoryStorageKey, proposed).then(
+      (committed) => {
+        setPromptHistory(parsePromptHistory(committed));
+        setHistoryNotSaved(false);
+      },
+      () => {
+        unsavedRef.current = [...new Set([...unsavedRef.current, ...entries])];
+        setHistoryNotSaved(true);
+      },
+    );
+  }, [promptHistory, promptHistoryStorageKey, onStoragePersist]);
+
+  // Texts kept while history was disabled are recorded as soon as it is enabled again, not only
+  // with the next submit.
+  useEffect(() => {
+    // Fires on the enable transition only; `record` is this render's.
+    if (historyEnabled && unsavedRef.current.length > 0) record([]);
+  }, [historyEnabled]);
 
   const submit = useCallback((opts?: { allowEmpty?: boolean } | string) => {
     const allowEmpty = typeof opts === 'object' && opts !== null && opts.allowEmpty === true;
@@ -113,14 +194,12 @@ export function useInputBarController(
     setNavigationIndex(null);
     setNavigationDraft('');
     if (!text) return;
-    setPromptHistory((prev) => {
-      if (prev.includes(text)) return prev;
-      const next = [...prev, text].slice(-MAX_PROMPT_HISTORY_ITEMS);
-      writePromptHistoryToStorage(promptHistoryStorageKey, next);
-      onStoragePersist?.(promptHistoryStorageKey, next);
-      return next;
-    });
-  }, [inputValue, onSend, promptHistoryStorageKey, onStoragePersist]);
+    if (!historyEnabled) {
+      if (!unsavedRef.current.includes(text)) unsavedRef.current = [...unsavedRef.current, text];
+      return;
+    }
+    record([text]);
+  }, [inputValue, onSend, historyEnabled, record]);
 
   const navigateHistoryUp = useCallback(() => {
     if (promptHistory.length === 0) return;
@@ -181,5 +260,7 @@ export function useInputBarController(
     notifyManualEdit,
     placeholder,
     shiftEnterToSend,
+    historyNotSaved,
+    reloadHistoryFromStorage,
   };
 }
