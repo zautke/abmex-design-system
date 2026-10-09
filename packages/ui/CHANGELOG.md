@@ -1,5 +1,11 @@
 # @abmex/ui
 
+## 0.7.0-next.5
+
+### Added
+
+- `ButtonGroup` `variant="spaced"`: negative-space separation (gap only, no frame or divider; `ButtonGroupContext` false). Salvaged from the largo `IconButtonGroup` primitive as a variant of the existing group instead of a second component.
+
 ## 0.6.4
 
 ### Fixed
