@@ -1,0 +1,40 @@
+{
+  "$schema": "../../checks/manifest.schema.json",
+  "name": "Disclosure",
+  "package": "@abmex/ui",
+  "entry": "@abmex/ui/Disclosure",
+  "kind": "compound",
+  "engine": { "library": "@heroui/react", "export": "Disclosure", "underlying": "react-aria-components/Disclosure" },
+  "parts": ["disclosure", "disclosure-heading", "disclosure-trigger", "disclosure-content", "disclosure-body", "disclosure-indicator"],
+  "partMap": {
+    "Root": "disclosure",
+    "Heading": "disclosure-heading",
+    "Trigger": "disclosure-trigger",
+    "Content": "disclosure-content",
+    "Body": "disclosure-body",
+    "Indicator": "disclosure-indicator"
+  },
+  "focusable": "Trigger",
+  "options": [
+    { "prop": "isExpanded", "values": "boolean", "default": "undefined (uncontrolled)", "part": "Root" },
+    { "prop": "defaultExpanded", "values": "boolean", "default": "false", "part": "Root" },
+    { "prop": "onExpandedChange", "values": "(isExpanded: boolean) => void", "default": "undefined", "part": "Root", "note": "details argument lands at layer 3 (CF-13)" },
+    { "prop": "isDisabled", "values": "boolean", "default": "false", "part": "Root" }
+  ],
+  "states": {
+    "declared": false,
+    "note": "authored at layer 3 (CF-24): states open/closed, events trigger-press|keyboard|programmatic, closed-world reason enum"
+  },
+  "formParticipation": false,
+  "field": false,
+  "events": { "declared": false, "note": "eventOrder per part authored at layer 3 (CF-28)" },
+  "lifecycle": { "status": "draft", "a11yReviewed": null },
+  "budget": { "gzipBytes": 4096 },
+  "tokens": [],
+  "stories": [],
+  "native": { "swiftui": "pending" },
+  "coverage": {
+    "exercises": ["CF-01", "CF-02", "CF-04", "CF-05", "CF-27", "CF-32"],
+    "exempt": { "CF-26": "formParticipation=false", "CF-29": "field=false", "CF-21": "ui package" }
+  }
+}
