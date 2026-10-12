@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://abmex.dev/spec/manifest.schema.json",
+  "title": "abmex component manifest (CF-01)",
+  "type": "object",
+  "required": ["name", "package", "entry", "kind", "parts", "partMap", "options", "states", "formParticipation", "field", "events", "lifecycle", "budget", "tokens", "stories", "native", "coverage"],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": { "type": "string" },
+    "name": { "type": "string", "pattern": "^[A-Z][A-Za-z0-9]*$" },
+    "package": { "enum": ["@abmex/ui", "@abmex/ai", "@abmex/themes"] },
+    "entry": { "type": "string", "pattern": "^@abmex/(ui|ai|themes)/[A-Z][A-Za-z0-9]*$" },
+    "kind": { "enum": ["atom", "compound"] },
+    "engine": {
+      "type": "object",
+      "required": ["library", "export"],
+      "properties": { "library": { "type": "string" }, "export": { "type": "string" }, "underlying": { "type": "string" } }
+    },
+    "parts": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "pattern": "^[a-z][a-z0-9]*(-[a-z0-9]+)*$" } },
+    "partMap": { "type": "object", "required": ["Root"], "additionalProperties": { "type": "string" } },
+    "focusable": { "type": "string" },
+    "options": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["prop", "values", "default", "part"],
+        "properties": { "prop": { "type": "string" }, "values": { "type": "string" }, "default": { "type": "string" }, "part": { "type": "string" }, "note": { "type": "string" } }
+      }
+    },
+    "states": { "type": "object", "required": ["declared"], "properties": { "declared": { "type": "boolean" } } },
+    "formParticipation": { "type": "boolean" },
+    "field": {
+      "oneOf": [
+        { "const": false },
+        { "type": "object", "required": ["wiring"], "properties": { "wiring": { "enum": ["rac", "custom"] }, "rationale": { "type": "string" } } }
+      ]
+    },
+    "events": { "type": "object", "required": ["declared"], "properties": { "declared": { "type": "boolean" } } },
+    "lifecycle": {
+      "type": "object",
+      "required": ["status", "a11yReviewed"],
+      "properties": { "status": { "enum": ["draft", "alpha", "beta", "stable", "deprecated"] }, "a11yReviewed": { "type": ["string", "null"] } }
+    },
+    "budget": { "type": "object", "required": ["gzipBytes"], "properties": { "gzipBytes": { "type": "integer", "minimum": 1 } } },
+    "tokens": { "type": "array", "items": { "type": "string" } },
+    "stories": { "type": "array", "items": { "type": "string" } },
+    "fixtures": { "type": "array", "items": { "type": "string" } },
+    "native": { "type": "object", "additionalProperties": { "type": "string" } },
+    "errors": {
+      "type": "array",
+      "items": { "type": "object", "required": ["code", "name", "when"], "properties": { "code": { "type": "string", "pattern": "^ABMEX_[A-Z_]+$" }, "name": { "type": "string" }, "when": { "type": "string" } } }
+    },
+    "ssr": {
+      "type": "object",
+      "required": ["postHydrationMutations"],
+      "properties": {
+        "postHydrationMutations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["selector", "attr", "static", "hydrated", "reason"],
+            "additionalProperties": false,
+            "properties": {
+              "selector": { "type": "string" },
+              "attr": { "type": "string" },
+              "static": { "type": ["string", "null"], "description": "exact server-rendered value; null = attribute absent" },
+              "hydrated": { "type": "string", "description": "regex the post-hydration value must match in full" },
+              "reason": { "type": "string", "minLength": 10 }
+            }
+          }
+        }
+      }
+    },
+    "coverage": {
+      "type": "object",
+      "required": ["exercises", "exempt"],
+      "properties": {
+        "exercises": { "type": "array", "items": { "type": "string", "pattern": "^CF-\\d{2}$" } },
+        "exempt": { "type": "object", "additionalProperties": { "type": "string" } }
+      }
+    }
+  }
+}

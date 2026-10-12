@@ -5,7 +5,7 @@ Updated: 2026-10-11 (largo, Claude Fable 5.1 with glm-5.3 + kimi-k3 peers)
 ## Where we are
 
 - `main` = `6ddad7c`. `@abmex/themes` + `@abmex/ui` **0.7.0-next.5** published to npm via OIDC with provenance (run 37976835873). `next` dist-tag → next.5; `latest` still 0.7.0-next.1. Merlyn (`wxt-prompt`) consumes from the registry (PR #32 pins next.5, retargeted to `development`, not merged — needs a live extension run).
-- Active work: **ABMEX SSoT Composable Compound Component specification**, branch `spec/ccc-foundation`, folder `specification/`. Layer 1 landed as local commit `4138946` (not pushed).
+- Active work: **ABMEX SSoT Composable Compound Component specification**, branch `spec/ccc-foundation`, folder `specification/`. Layers 1–2 landed; branch pushed, PR #7 open for review (reviews from Codex, Copilot, graphify addressed in follow-up commit).
 - Decided (user, 2026-10-10): packages `@abmex/themes ← @abmex/ui ← @abmex/ai`; `ui` plumbing-free; `ai` keeps opinionated drop-in plumbing behind injectable seams and MUST compose `ui`; debug surfaces genericised → `ui`. 32 common features CF-01..32 ruled `final`. Prototype = `Disclosure`.
 
 ## specification/ status
@@ -13,7 +13,7 @@ Updated: 2026-10-11 (largo, Claude Fable 5.1 with glm-5.3 + kimi-k3 peers)
 | Layer | Title | Status |
 |---|---|---|
 | 1 | structure + `data-slot` (CF-01, 02, 04, 05, 27, 32 scaffold; CF-25 constraint) | landed `4138946` — `pnpm spec:check` 7 files / 23 tests green; `pnpm test` 28 / 198 green |
-| 2 | context + orphan errors (CF-15, CF-25 gate) | landed `4ec5790` — 9 files / 36 tests green; engine post-hydration mutations declared in manifest `ssr.postHydrationMutations` |
+| 2 | context + orphan errors (CF-15, CF-25 gate) | landed `4ec5790` — 9 files / 39 tests green; engine post-hydration mutations declared (exact values) in manifest `ssr.postHydrationMutations` |
 | 3 | controlled state + details (CF-13, 24, 28) | next |
 | 4 | render prop + refs (CF-11, 12) | pending |
 | 5 | styling surface (CF-06, 07, 08, 09, 10, 30, 31) | pending |

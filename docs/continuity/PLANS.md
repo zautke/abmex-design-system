@@ -10,7 +10,7 @@ Approved plan (plan mode, 2026-10-10): research → feature list → `specificat
 
 - **Phase 1 research** — done. Three lanes (spec methodology & governance / headless-behaviour / styled kits & AI kits) × three modalities (web, Context7, GitHub) + a HeroUI v3 emitted-DOM capture. All raw results and peer analyses verbatim in kb `…/ssot-component-spec/research/`.
 - **Phase 2 feature list** — done. 32 features CF-01..32 ruled `final` by the user after two peer rounds (0 rejects, 13 amendments). Mirror: `specification/features.json`.
-- **Phase 3 prototype** — in progress on branch `spec/ccc-foundation`. ONE component (`Disclosure`, HeroUI engine) grown one layer per commit (`spec(<lead CF>): …`), each commit = code + checks + rewritten SPEC sections, `pnpm spec:check` green. 7 layers; layer 1 landed. No pushes without the user's say-so.
+- **Phase 3 prototype** — in progress on branch `spec/ccc-foundation`. ONE component (`Disclosure`, HeroUI engine) grown one layer per commit (`spec(<lead CF>): …`), each commit = code + checks + rewritten SPEC sections, `pnpm spec:check` green. 7 layers; layers 1–2 landed; PR #7 open (pushed on user go 2026-10-12). Further pushes only on the user's say-so.
 - **After Phase 3:** component #2 (Tabs or Select) to exercise selection/positioning rows; then a writing-plans migration plan to rewrite the existing 53 `@abmex/ui` components into the spec and split `@abmex/ai` out. Nothing under `packages/*` changes until then.
 
 ## 3. Hygiene queue (needs user go)

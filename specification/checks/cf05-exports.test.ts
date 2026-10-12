@@ -9,8 +9,8 @@ describe('CF-05 exports (Disclosure)', () => {
   const partNames = Object.keys(m.partMap).filter((k) => k !== 'Root');
 
   it('exports exactly one runtime value: the compound', () => {
-    const runtime = Object.entries(entry).filter(([, v]) => typeof v === 'function' || typeof v === 'object');
-    expect(runtime.map(([k]) => k)).toEqual([m.name]);
+    // Type-only exports are erased at runtime, so every remaining key is a runtime value.
+    expect(Object.keys(entry)).toEqual([m.name]);
   });
 
   it('every manifest part is reachable as Compound.Part', () => {

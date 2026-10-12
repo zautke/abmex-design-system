@@ -27,17 +27,11 @@ afterEach(() => { for (const r of roots.splice(0)) act(() => r.unmount()); });
 
 const parse = (html: string) => new DOMParser().parseFromString(`<body>${html}</body>`, 'text/html').body;
 
-/** Serialise with declared mutations stripped; report which declared ones were live. */
-function normalise(root: HTMLElement) {
+/** Serialise with declared mutation attributes removed (their values are asserted exactly, separately). */
+function withoutDeclared(root: HTMLElement) {
   const clone = root.cloneNode(true) as HTMLElement;
-  const live: string[] = [];
-  for (const { selector, attr } of declared) {
-    for (const el of clone.querySelectorAll(selector)) {
-      if (el.hasAttribute(attr)) live.push(`${selector}@${attr}=${el.getAttribute(attr)}`);
-      el.removeAttribute(attr);
-    }
-  }
-  return { html: clone.innerHTML, live };
+  for (const { selector, attr } of declared) for (const el of clone.querySelectorAll(selector)) el.removeAttribute(attr);
+  return clone.innerHTML;
 }
 
 describe.each(Object.entries(fixtures))('CF-25 SSR (Disclosure fixture: %s)', (_name, Fixture) => {
@@ -64,15 +58,19 @@ describe.each(Object.entries(fixtures))('CF-25 SSR (Disclosure fixture: %s)', (_
     spy.mockRestore();
     expect(errors, 'hydration warnings').toEqual([]);
 
-    const before = normalise(parse(html));
-    const after = normalise(container);
-    expect(after.html).toBe(before.html);
-    // Count declared mutations that really happened (checked in aggregate by afterAll).
+    // Declared mutations: static value must be exactly as declared, hydrated value
+    // must match the declared regex in full. Anything else on that attribute fails.
+    const staticRoot = parse(html);
     for (const d of declared) {
-      const s = parse(html).querySelector(d.selector)?.getAttribute(d.attr) ?? null;
+      const key = `${d.selector}@${d.attr}`;
+      const s = staticRoot.querySelector(d.selector)?.getAttribute(d.attr) ?? null;
       const h = container.querySelector(d.selector)?.getAttribute(d.attr) ?? null;
-      if (h !== s) occurred.set(`${d.selector}@${d.attr}`, (occurred.get(`${d.selector}@${d.attr}`) ?? 0) + 1);
+      if (s === null && h === null) continue; // attribute not applicable in this fixture
+      expect(s, `${key} static value`).toBe(d.static);
+      expect(h, `${key} hydrated value`).toMatch(new RegExp(d.hydrated));
+      occurred.set(key, (occurred.get(key) ?? 0) + 1);
     }
+    expect(withoutDeclared(container)).toBe(withoutDeclared(staticRoot));
     container.remove();
   });
 });

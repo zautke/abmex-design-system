@@ -1,10 +1,15 @@
 // CF-01 Kind manifest — every component ships a manifest with the required
 // fields; `kind` is one of exactly two values (CCC: atom | compound).
 import { describe, expect, it } from 'vitest';
-import { loadManifest } from './manifest';
+import { loadManifest, schemaErrors } from './manifest';
 
 describe('CF-01 kind manifest (Disclosure)', () => {
   const m = loadManifest('Disclosure');
+
+  it('validates against checks/manifest.schema.json (the $schema it declares)', () => {
+    expect((m as unknown as { $schema?: string }).$schema).toBe('../../checks/manifest.schema.json');
+    expect(schemaErrors('checks/manifest.schema.json', m)).toEqual([]);
+  });
 
   it('declares exactly one of the two kinds', () => {
     expect(['atom', 'compound']).toContain(m.kind);

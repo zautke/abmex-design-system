@@ -6,7 +6,7 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { SPEC_ROOT, loadManifest } from './manifest';
+import { SPEC_ROOT, loadManifest, schemaErrors } from './manifest';
 
 const here = (p: string) => resolve(SPEC_ROOT, 'checks', p);
 const features = JSON.parse(readFileSync(here('../features.json'), 'utf8')) as {
@@ -17,6 +17,11 @@ const features = JSON.parse(readFileSync(here('../features.json'), 'utf8')) as {
 const spec = readFileSync(here('../SPEC.md'), 'utf8');
 
 describe('features.json ↔ SPEC.md ↔ manifest', () => {
+  it('features.json validates against the schema it declares', () => {
+    expect((features as { $schema?: string }).$schema).toBe('./features.schema.json');
+    expect(schemaErrors('features.schema.json', features)).toEqual([]);
+  });
+
   it('all 32 features are final', () => {
     expect(features.features).toHaveLength(32);
     for (const f of features.features) expect(f.status, f.id).toBe('final');
@@ -46,7 +51,7 @@ describe('features.json ↔ SPEC.md ↔ manifest', () => {
     const m = loadManifest(features.prototype);
     const exempt = features.layers.flatMap((l) => l.exempt ?? []);
     for (const id of exempt) expect(Object.keys(m.coverage.exempt), id).toContain(id);
-    for (const id of features.features.filter((f) => f.landedLayer === 1).map((f) => f.id)) {
+    for (const id of features.features.filter((f) => f.landedLayer !== null).map((f) => f.id)) {
       expect(m.coverage.exercises, id).toContain(id);
     }
   });

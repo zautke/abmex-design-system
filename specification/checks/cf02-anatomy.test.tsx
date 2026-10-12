@@ -49,8 +49,8 @@ describe('CF-02 anatomy (Disclosure)', () => {
     expect([...union].sort()).toEqual([...manifestSet].sort());
   });
 
-  it('each part renders exactly one element carrying its slot', () => {
-    const { container } = render(<Fixture expanded />);
+  it.each([false, true])('each part renders exactly one element carrying its slot (expanded=%s)', (expanded) => {
+    const { container } = render(<Fixture expanded={expanded} />);
     for (const slot of m.parts) {
       expect(container.querySelectorAll(`[data-slot="${slot}"]`).length, slot).toBe(1);
     }

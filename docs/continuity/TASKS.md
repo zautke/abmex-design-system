@@ -25,7 +25,7 @@
 - [ ] Layer 5 — styling surface (CF-06, 07, 08, 09, 10, 30, 31); first CSS.
 - [ ] Layer 6 — motion (CF-22).
 - [ ] Layer 7 — final gates (CF-03, 14, 16, 17, 18, 19, 20, 23); CF-21/26/29 report `exempt`.
-- [ ] Push `spec/ccc-foundation`, open draft PR (on user go).
+- [x] Push `spec/ccc-foundation`, open PR #7 (2026-10-12).
 - [ ] Component #2 (Tabs or Select).
 - [ ] writing-plans: migration of existing components + `@abmex/ai` split.
 

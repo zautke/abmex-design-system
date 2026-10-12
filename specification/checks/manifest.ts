@@ -2,6 +2,7 @@
 // prototype folder and exposes the typed shape the checks assert against.
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
+import Ajv from 'ajv/dist/2020';
 
 /** Absolute path of `specification/`. Uses cwd (vitest root) because
  *  `import.meta.url` is not a file URL under the jsdom environment. */
@@ -29,7 +30,7 @@ export interface ComponentManifest {
   errors?: Array<{ code: string; name: string; when: string }>;
   fixtures?: string[];
   /** CF-25: engine mutations after hydration that are declared, not silent. Each must actually occur. */
-  ssr?: { postHydrationMutations: Array<{ selector: string; attr: string; reason: string }> };
+  ssr?: { postHydrationMutations: Array<{ selector: string; attr: string; static: string | null; hydrated: string; reason: string }> };
 }
 
 export const RANK_WORDS = ['atoms', 'molecules', 'organisms', 'primitives', 'core', 'patterns'];
@@ -41,3 +42,11 @@ export function loadManifest(name: string): ComponentManifest {
 
 /** Verdict vocabulary for flag-scoped rows: never silent (spec rule, R2). */
 export type Verdict = 'pass' | 'fail' | 'exempt';
+
+/** Validate a JSON document against a schema file under `specification/`; returns ajv error strings. */
+export function schemaErrors(schemaRel: string, data: unknown): string[] {
+  const schema = JSON.parse(readFileSync(resolve(SPEC_ROOT, schemaRel), 'utf8'));
+  const ajv = new Ajv({ allErrors: true, strict: false });
+  const ok = ajv.validate(schema, data);
+  return ok ? [] : (ajv.errors ?? []).map((e) => `${e.instancePath || '/'} ${e.message ?? ''}`);
+}

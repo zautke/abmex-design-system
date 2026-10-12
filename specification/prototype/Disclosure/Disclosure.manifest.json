@@ -109,11 +109,15 @@
       {
         "selector": "[data-slot=\"disclosure-content\"]",
         "attr": "hidden",
+        "static": "",
+        "hydrated": "^until-found$",
         "reason": "RAC sets hidden=\"until-found\" in a layout effect; the value cannot be server-rendered. Static HTML carries hidden=\"\" (same a11y/visual result)."
       },
       {
         "selector": "[data-slot=\"disclosure-content\"]",
         "attr": "style",
+        "static": null,
+        "hydrated": "^--disclosure-panel-width: (0px|auto); --disclosure-panel-height: (0px|auto);$",
         "reason": "HeroUI measures the panel and writes --disclosure-panel-width/height for height animation (CF-22 motion). Re-evaluated at layer 6."
       }
     ]
