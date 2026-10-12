@@ -19,7 +19,7 @@
 - [x] Phase 1 research, 3 lanes × 3 modalities, verbatim.
 - [x] Phase 2 feature list: 32 rows `final`.
 - [x] Layer 1 — structure + `data-slot` (`4138946`).
-- [ ] Layer 2 — context + orphan errors (CF-15) + CF-25 hydration/aria-pair gate.
+- [x] Layer 2 — context + orphan errors (CF-15) + CF-25 hydration/aria-pair gate (`4ec5790`).
 - [ ] Layer 3 — controlled state + `details` (CF-13), `states` block + closed-world reason enum (CF-24), `eventOrder` (CF-28).
 - [ ] Layer 4 — `render` prop + refs (CF-11, CF-12); regression 24/25/28.
 - [ ] Layer 5 — styling surface (CF-06, 07, 08, 09, 10, 30, 31); first CSS.

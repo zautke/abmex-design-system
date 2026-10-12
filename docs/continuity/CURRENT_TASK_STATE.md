@@ -13,8 +13,8 @@ Updated: 2026-10-11 (largo, Claude Fable 5.1 with glm-5.3 + kimi-k3 peers)
 | Layer | Title | Status |
 |---|---|---|
 | 1 | structure + `data-slot` (CF-01, 02, 04, 05, 27, 32 scaffold; CF-25 constraint) | landed `4138946` — `pnpm spec:check` 7 files / 23 tests green; `pnpm test` 28 / 198 green |
-| 2 | context + orphan errors (CF-15, CF-25 gate) | next |
-| 3 | controlled state + details (CF-13, 24, 28) | pending |
+| 2 | context + orphan errors (CF-15, CF-25 gate) | landed `4ec5790` — 9 files / 36 tests green; engine post-hydration mutations declared in manifest `ssr.postHydrationMutations` |
+| 3 | controlled state + details (CF-13, 24, 28) | next |
 | 4 | render prop + refs (CF-11, 12) | pending |
 | 5 | styling surface (CF-06, 07, 08, 09, 10, 30, 31) | pending |
 | 6 | motion (CF-22) | pending |
