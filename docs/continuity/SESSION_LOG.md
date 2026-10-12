@@ -31,3 +31,8 @@
 - Phase 2: 23 rows → R1 (0 rejects, 6 amendments) → 9 new rows → R2 (0 rejects, 7 amendments) → user: all 32 `final`; prototype Disclosure.
 - Phase 3: branch `spec/ccc-foundation`; `specification/{SPEC.md,features.json,README.md}`, `prototype/Disclosure` on HeroUI engine, checks CF-01/02/04/05/27/32 + completeness gate; `@heroui/react`+`@heroui/styles` 3.2.2 added to root devDeps; `spec:check` script + vitest include. Layer 1 commit `4138946`: 7 files / 23 tests green, full suite 28 / 198 green. Not pushed.
 - kb `database is locked` from ~22:00Z; pending entries staged in `~/.claude/deferred-kb-sync/`.
+
+## 2026-10-12
+
+- PR #6 merged to `main` (`4ad2569`): `publish.yml` gains final `always()` step `Notify publish webhook` (POST status/version/dist-tag/published/sha/run_url to secret `PUBLISH_WEBHOOK_URL`, optional bearer `PUBLISH_WEBHOOK_TOKEN`, routine `/fire` body shape). Consumer modes documented in repo `CLAUDE.md` (local: `gh run watch --exit-status` + registry retry; cloud: routine API trigger, prompt `docs/routines/post-publish.md`).
+- Lockstep bump 0.7.0-next.6 published by run 38294594198 (success). Webhook delivered once to the webhook.site catcher currently in `PUBLISH_WEBHOOK_URL`; swap to the routine `/fire` URL + token once created on claude.ai/code/routines (CLI cannot mint tokens). Claude Code routine GitHub triggers support only PR and Release events, not `workflow_run`, hence the outgoing step.

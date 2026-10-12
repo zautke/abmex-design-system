@@ -1,7 +1,7 @@
 # Remember
 
 - Preserve dirty donor worktrees and paused pull requests. Another session often has `/Volumes/FLOUNDER/dev/wxt-prompt` checked out dirty — never touch it; verify in a separate worktree.
-- Do not claim release completion from package build/test results alone. After an npm publish, the packument/`npm view` can 404 for ~2 min (CDN lag); trust the CI `✅ Published` line plus the version endpoint.
+- Do not claim release completion from package build/test results alone. After an npm publish, the packument/`npm view` can 404 for ~2 min (CDN lag); trust the `Notify publish webhook` step line `notified … status=…` plus the version endpoint. Local sessions cannot receive that webhook: poll with `gh run watch --exit-status` (see repo `CLAUDE.md`).
 - Keep React and Tailwind optional to framework-neutral themes; keep sortable tab dependencies isolated.
 - Native deployment floors remain iOS 15 and macOS 12.
 - The reviewed migration plan is preserved verbatim in `docs/ABMEX_INTERNAL_PLAN_VERBATIM.md`; the component **spec** (`specification/SPEC.md`, `features.json`) now outranks it for what "done" means per component.
