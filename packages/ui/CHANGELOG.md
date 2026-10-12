@@ -1,5 +1,11 @@
 # @abmex/ui
 
+## 0.7.0-next.6
+
+### Fixed
+
+- `MessageList`: the `role="log"` scroller is now `position: relative`, so it is the containing block of absolutely positioned descendants. Before, an `sr-only` label (or any `absolute` child) inside a message resolved against the outer wrapper, escaped the scroller's clip at its static position, inflated every `overflow: hidden` ancestor, and the tail `scrollIntoView` scrolled those ancestors too, shoving the whole conversation above the host viewport.
+
 ## 0.7.0-next.5
 
 ### Added

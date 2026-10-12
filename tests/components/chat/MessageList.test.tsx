@@ -51,6 +51,20 @@ function scrollTo(el: HTMLElement, scrollTop: number) {
 }
 
 describe('MessageList — landmark', () => {
+  it('is the containing block of absolutely positioned descendants', () => {
+    // jsdom does no layout, so assert the class that makes the scroller
+    // `position: relative`. Without it an `sr-only` child escapes the clip and
+    // the tail scrollIntoView scrolls overflow:hidden ancestors (2026-10-12).
+    render(
+      <MessageList>
+        <li>
+          <span className="sr-only">in progress</span>
+        </li>
+      </MessageList>,
+    );
+    expect(screen.getByRole('log').className).toMatch(/(^|\s)relative(\s|$)/);
+  });
+
   it('exposes role="log", an aria-label and a polite live region', () => {
     render(
       <MessageList label="Chat history">

@@ -105,7 +105,13 @@ export function MessageList({
         role="log"
         aria-label={label}
         aria-live="polite"
-        className="flex min-w-0 flex-1 flex-col gap-2 overflow-y-auto overflow-x-hidden px-3 py-4"
+        // `relative`: the scroller must be the containing block of absolutely
+        // positioned descendants (e.g. Tailwind `sr-only` labels). Unpositioned,
+        // they resolve against the wrapper above, escape this clip at their
+        // static y, inflate every overflow:hidden ancestor, and the tail
+        // `scrollIntoView` then scrolls those ancestors too, pushing the whole
+        // log above the host viewport (Merlyn sidepanel, 2026-10-12).
+        className="relative flex min-w-0 flex-1 flex-col gap-2 overflow-y-auto overflow-x-hidden px-3 py-4"
       >
         {children}
         <div ref={bottomRef} aria-hidden />
