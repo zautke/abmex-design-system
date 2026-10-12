@@ -4,7 +4,8 @@
 
 ### Fixed
 
-- `MessageList`: the `role="log"` scroller is now `position: relative`, so it is the containing block of absolutely positioned descendants. Before, an `sr-only` label (or any `absolute` child) inside a message resolved against the outer wrapper, escaped the scroller's clip at its static position, inflated every `overflow: hidden` ancestor, and the tail `scrollIntoView` scrolled those ancestors too, shoving the whole conversation above the host viewport.
+- `MessageList`: the `role="log"` scroller is now `position: relative`, so it is the containing block of absolutely positioned descendants. Before, an `sr-only` label (`TaskList` status text, or any `absolute` child) inside a message resolved against the outer wrapper, escaped the scroller's clip at its static position, inflated every `overflow: hidden` ancestor, and the tail `scrollIntoView` scrolled those ancestors too, shoving the whole conversation above the host viewport.
+- `MessageList` follows the tail with `scrollTo` on the log itself instead of `scrollIntoView` on a trailing sentinel. `scrollIntoView` also scrolls every scrollable ancestor (`overflow: hidden` included), so any overflow in the host's layout chain could push the log out of view. The sentinel `<div>` inside the `<ul>` (invalid list content) is gone.
 
 ## 0.7.0-next.5
 
