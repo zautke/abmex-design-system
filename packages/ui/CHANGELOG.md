@@ -1,5 +1,11 @@
 # @abmex/ui
 
+## 0.7.0-next.6
+
+### Changed
+
+- Publish workflow posts a completion webhook (status, version, dist-tag, packages, run URL) so the agent that triggered the publish can react. No runtime changes.
+
 ## 0.7.0-next.5
 
 ### Added
