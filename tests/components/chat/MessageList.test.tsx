@@ -9,7 +9,7 @@
 // owns it explicitly, so it is asserted explicitly here.
 //
 // jsdom does no layout: scrollHeight/scrollTop/clientHeight are all 0 and
-// scrollIntoView does not exist. Both are supplied below, which is what lets the
+// Element.scrollTo does not exist. Both are supplied below, which is what lets the
 // 40px threshold be tested at all.
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
@@ -25,16 +25,18 @@ const CONTENT_H = 1000;
 const AT_BOTTOM_TOP = CONTENT_H - VIEWPORT_H - (AT_BOTTOM_THRESHOLD_PX - 20); // 20px from tail
 const SCROLLED_AWAY_TOP = CONTENT_H - VIEWPORT_H - 100; // 100px from tail
 
-// Typed to Element.prototype.scrollIntoView's real signature so the assignment
-// below needs no cast — and so `toHaveBeenCalledWith({ behavior: … })` is checked.
-type ScrollIntoView = (arg?: boolean | ScrollIntoViewOptions) => void;
+// Typed to the options overload of Element.prototype.scrollTo; `mock.contexts`
+// records which element was scrolled.
+type ElementScrollTo = (this: Element, options?: ScrollToOptions) => void;
 
-let scrollIntoView: ReturnType<typeof vi.fn<ScrollIntoView>>;
+let scrollToSpy: ReturnType<typeof vi.fn<ElementScrollTo>>;
 
 beforeEach(() => {
-  scrollIntoView = vi.fn<ScrollIntoView>();
-  Element.prototype.scrollIntoView = scrollIntoView;
+  scrollToSpy = vi.fn<ElementScrollTo>();
+  Element.prototype.scrollTo = scrollToSpy as unknown as Element['scrollTo'];
 });
+
+const scrolledWith = (behavior: ScrollBehavior) => expect.objectContaining({ behavior });
 
 afterEach(() => cleanup());
 
@@ -65,13 +67,54 @@ describe('MessageList — landmark', () => {
 });
 
 describe('MessageList — auto-scroll', () => {
+  // Regression, 2026-10-12: the tail used to be reached with scrollIntoView,
+  // which also scrolled the host's overflow:hidden ancestors and pushed the
+  // whole log above the viewport. Only the log itself may move.
+  it('scrolls the log itself to its full height, never an ancestor', () => {
+    const { rerender } = render(
+      <div>
+        <MessageList scrollKey={1}>
+          <li>one</li>
+        </MessageList>
+      </div>,
+    );
+    const log = screen.getByRole('log');
+    setScrollMetrics(log, 0);
+    scrollToSpy.mockClear();
+
+    rerender(
+      <div>
+        <MessageList scrollKey={2}>
+          <li>one</li>
+          <li>two</li>
+        </MessageList>
+      </div>,
+    );
+
+    expect(scrollToSpy).toHaveBeenCalledTimes(1);
+    expect(scrollToSpy.mock.contexts[0]).toBe(log);
+    expect(scrollToSpy).toHaveBeenCalledWith(expect.objectContaining({ top: CONTENT_H }));
+  });
+
+  it('is the containing block of absolutely positioned descendants', () => {
+    // jsdom has no layout, so this guards the class only: without `relative`
+    // an sr-only child resolves against the wrapper, escapes the log's clip
+    // and inflates overflow:hidden ancestors.
+    render(
+      <MessageList>
+        <li>one</li>
+      </MessageList>,
+    );
+    expect(screen.getByRole('log').className).toMatch(/(^|\s)relative(\s|$)/);
+  });
+
   it('scrolls to the tail smoothly when the timeline changes', () => {
     const { rerender } = render(
       <MessageList scrollKey={1}>
         <li>one</li>
       </MessageList>,
     );
-    scrollIntoView.mockClear();
+    scrollToSpy.mockClear();
 
     rerender(
       <MessageList scrollKey={2}>
@@ -80,7 +123,7 @@ describe('MessageList — auto-scroll', () => {
       </MessageList>,
     );
 
-    expect(scrollIntoView).toHaveBeenCalledWith({ behavior: 'smooth' });
+    expect(scrollToSpy).toHaveBeenCalledWith(scrolledWith('smooth'));
   });
 
   it('scrolls instantly while streaming, so appends do not animate under the reader', () => {
@@ -89,7 +132,7 @@ describe('MessageList — auto-scroll', () => {
         <li>one</li>
       </MessageList>,
     );
-    scrollIntoView.mockClear();
+    scrollToSpy.mockClear();
 
     rerender(
       <MessageList scrollKey={2} streaming>
@@ -97,7 +140,7 @@ describe('MessageList — auto-scroll', () => {
       </MessageList>,
     );
 
-    expect(scrollIntoView).toHaveBeenCalledWith({ behavior: 'instant' });
+    expect(scrollToSpy).toHaveBeenCalledWith(scrolledWith('instant'));
   });
 });
 
@@ -137,7 +180,7 @@ describe('MessageList — freeze on user scroll', () => {
       </MessageList>,
     );
     scrollTo(screen.getByRole('log'), SCROLLED_AWAY_TOP);
-    scrollIntoView.mockClear();
+    scrollToSpy.mockClear();
 
     rerender(
       <MessageList scrollKey={2}>
@@ -146,7 +189,7 @@ describe('MessageList — freeze on user scroll', () => {
       </MessageList>,
     );
 
-    expect(scrollIntoView).not.toHaveBeenCalled();
+    expect(scrollToSpy).not.toHaveBeenCalled();
     // Still frozen, so the pill stays up.
     expect(screen.getByRole('button', { name: /Resume/i })).toBeTruthy();
   });
@@ -159,12 +202,12 @@ describe('MessageList — freeze on user scroll', () => {
       </MessageList>,
     );
     scrollTo(screen.getByRole('log'), SCROLLED_AWAY_TOP);
-    scrollIntoView.mockClear();
+    scrollToSpy.mockClear();
     onScrollStateChange.mockClear();
 
     fireEvent.click(screen.getByRole('button', { name: /Resume/i }));
 
-    expect(scrollIntoView).toHaveBeenCalledWith({ behavior: 'smooth' });
+    expect(scrollToSpy).toHaveBeenCalledWith(scrolledWith('smooth'));
     expect(onScrollStateChange).toHaveBeenCalledWith({ atBottom: true, frozen: false });
     expect(screen.queryByRole('button', { name: /Resume/i })).toBeNull();
   });
@@ -177,7 +220,7 @@ describe('MessageList — freeze on user scroll', () => {
     );
     scrollTo(screen.getByRole('log'), SCROLLED_AWAY_TOP);
     expect(screen.getByRole('button', { name: /Resume/i })).toBeTruthy();
-    scrollIntoView.mockClear();
+    scrollToSpy.mockClear();
 
     // The user sends: lastFromUser flips true as the timeline changes.
     rerender(
@@ -187,7 +230,7 @@ describe('MessageList — freeze on user scroll', () => {
       </MessageList>,
     );
 
-    expect(scrollIntoView).toHaveBeenCalledWith({ behavior: 'smooth' });
+    expect(scrollToSpy).toHaveBeenCalledWith(scrolledWith('smooth'));
     expect(screen.queryByRole('button', { name: /Resume/i })).toBeNull();
   });
 

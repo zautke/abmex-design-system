@@ -54,7 +54,6 @@ export function MessageList({
   label = 'Chat history',
   className,
 }: MessageListProps) {
-  const bottomRef = useRef<HTMLDivElement>(null);
   const scrollRef = useRef<HTMLUListElement>(null);
   const userFrozen = useRef(false);
   const [showResume, setShowResume] = useState(false);
@@ -66,15 +65,21 @@ export function MessageList({
   streamingRef.current = streaming;
   lastFromUserRef.current = lastFromUser;
 
+  // Scroll the log itself, never `scrollIntoView`: that walks and scrolls every
+  // scrollable ancestor, overflow:hidden ones included, so any overflow in the
+  // host's layout chain would shove the whole log out of the host viewport.
+  const scrollToTail = (behavior: ScrollBehavior) => {
+    const el = scrollRef.current;
+    el?.scrollTo({ top: el.scrollHeight, behavior });
+  };
+
   useEffect(() => {
     if (lastFromUserRef.current) {
       userFrozen.current = false;
       setShowResume(false);
     }
     if (userFrozen.current) return;
-    bottomRef.current?.scrollIntoView({
-      behavior: streamingRef.current ? 'instant' : 'smooth',
-    });
+    scrollToTail(streamingRef.current ? 'instant' : 'smooth');
   }, [scrollKey]);
 
   const handleScroll = () => {
@@ -94,7 +99,7 @@ export function MessageList({
     userFrozen.current = false;
     setShowResume(false);
     onScrollStateChange?.({ atBottom: true, frozen: false });
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+    scrollToTail('smooth');
   };
 
   return (
@@ -105,10 +110,14 @@ export function MessageList({
         role="log"
         aria-label={label}
         aria-live="polite"
-        className="flex min-w-0 flex-1 flex-col gap-2 overflow-y-auto overflow-x-hidden px-3 py-4"
+        // `relative`: the scroller must be the containing block of absolutely
+        // positioned descendants (e.g. TaskList's `sr-only` status labels).
+        // Unpositioned, they resolve against the wrapper above, escape this
+        // clip at their static y and inflate every overflow:hidden ancestor
+        // (Merlyn sidepanel, 2026-10-12).
+        className="relative flex min-w-0 flex-1 flex-col gap-2 overflow-y-auto overflow-x-hidden px-3 py-4"
       >
         {children}
-        <div ref={bottomRef} aria-hidden />
       </ul>
       {showResumeButton && showResume && <ScrollResumeButton onPress={resumeScroll} />}
     </div>
