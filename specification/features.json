@@ -2,49 +2,359 @@
   "$schema": "./features.schema.json",
   "version": "1.0.0",
   "ruledFinal": "2026-10-10",
-  "source": "kb: projects/design-system/ssot-component-spec/features/SSoT Component Spec — Common Feature List",
+  "source": "kb: projects/design-system/ssot-component-spec/features/SSoT Component Spec \u2014 Common Feature List",
   "prototype": "Disclosure",
   "features": [
-    { "id": "CF-01", "name": "Kind manifest", "scope": "common", "status": "final", "check": "checks/cf01-manifest.test.ts", "landedLayer": 1 },
-    { "id": "CF-02", "name": "Anatomy before code (data-slot)", "scope": "common", "status": "final", "check": "checks/cf02-anatomy.test.tsx", "landedLayer": 1 },
-    { "id": "CF-03", "name": "Acyclic, directional packages", "scope": "common", "status": "final", "check": "checks/cf03-depcruise.mjs", "landedLayer": null },
-    { "id": "CF-04", "name": "No rank vocabulary / no subtype", "scope": "common", "status": "final", "check": "checks/cf04-vocabulary.test.ts", "landedLayer": 1 },
-    { "id": "CF-05", "name": "Dot-notation parts only", "scope": "common", "status": "final", "check": "checks/cf05-exports.test.ts", "landedLayer": 1 },
-    { "id": "CF-06", "name": "Dual styling: import-level unstyled", "scope": "common", "status": "final", "check": "checks/cf06-unstyled.test.tsx", "landedLayer": null },
-    { "id": "CF-07", "name": "Styling surface", "scope": "common", "status": "final", "check": "checks/cf07-styling-surface.test.tsx", "landedLayer": null },
-    { "id": "CF-08", "name": "State vocabulary (aria truth, data mirror)", "scope": "common", "status": "final", "check": "checks/cf08-state-vocab.test.tsx", "landedLayer": null },
-    { "id": "CF-09", "name": "Variants at Root via tv, fanned by slots", "scope": "common", "status": "final", "check": "checks/cf09-variants.test.tsx", "landedLayer": null },
-    { "id": "CF-10", "name": "Tokens only, with lifecycle", "scope": "common", "status": "final", "check": "checks/cf10-tokens.mjs", "landedLayer": null },
-    { "id": "CF-11", "name": "Polymorphism = render only", "scope": "common", "status": "final", "check": "checks/cf11-render.test.tsx", "landedLayer": null },
-    { "id": "CF-12", "name": "Refs", "scope": "common", "status": "final", "check": "checks/cf12-refs.test.tsx", "landedLayer": null },
-    { "id": "CF-13", "name": "Controllable state with details", "scope": "common", "status": "final", "check": "checks/cf13-controllable.test.tsx", "landedLayer": null },
-    { "id": "CF-14", "name": "Root provider escape hatch", "scope": "common", "status": "final", "check": "checks/cf14-root-provider.test.tsx", "landedLayer": null },
-    { "id": "CF-15", "name": "Orphan-part error", "scope": "common", "status": "final", "check": "checks/cf15-orphan.test.tsx", "landedLayer": null },
-    { "id": "CF-16", "name": "A11y floor", "scope": "common", "status": "final", "check": "checks/cf16-a11y.test.tsx", "landedLayer": null },
-    { "id": "CF-17", "name": "Lifecycle status with gates", "scope": "common", "status": "final", "check": "checks/cf17-lifecycle.mjs", "landedLayer": null },
-    { "id": "CF-18", "name": "Per-component test + story floor", "scope": "common", "status": "final", "check": "checks/cf18-spec-matrix.mjs", "landedLayer": null },
-    { "id": "CF-19", "name": "Docs generated + agent instructions", "scope": "common", "status": "final", "check": "checks/cf19-docs-drift.mjs", "landedLayer": null },
-    { "id": "CF-20", "name": "Placement gate (ui vs ai)", "scope": "common", "status": "final", "check": "checks/cf20-boundary-vocab.mjs", "landedLayer": null },
-    { "id": "CF-21", "name": "ai plumbing seam", "scope": "ai", "status": "final", "check": "checks/cf21-ai-seam.test.tsx", "landedLayer": null },
-    { "id": "CF-22", "name": "Motion + popup hooks", "scope": "common", "status": "final", "check": "checks/cf22-motion.test.tsx", "landedLayer": null },
-    { "id": "CF-23", "name": "Cross-platform parity declared", "scope": "common", "status": "final", "check": "checks/cf23-parity.mjs", "landedLayer": null },
-    { "id": "CF-24", "name": "Declared state machine", "scope": "common", "flag": "states", "status": "final", "check": "checks/cf24-state-machine.test.tsx", "landedLayer": null },
-    { "id": "CF-25", "name": "SSR & id determinism", "scope": "common", "status": "final", "check": "checks/cf25-ssr.test.tsx", "landedLayer": null },
-    { "id": "CF-26", "name": "Form participation", "scope": "flag", "flag": "formParticipation", "status": "final", "check": "checks/cf26-form.test.tsx", "landedLayer": null },
-    { "id": "CF-27", "name": "Provider-free ui", "scope": "ui", "status": "final", "check": "checks/cf27-provider-free.test.tsx", "landedLayer": 1 },
-    { "id": "CF-28", "name": "Event composition order", "scope": "common", "flag": "events", "status": "final", "check": "checks/cf28-event-order.test.tsx", "landedLayer": null },
-    { "id": "CF-29", "name": "Field & error wiring", "scope": "flag", "flag": "field", "status": "final", "check": "checks/cf29-field.test.tsx", "landedLayer": null },
-    { "id": "CF-30", "name": "RTL & locale", "scope": "common", "status": "final", "check": "checks/cf30-rtl.mjs", "landedLayer": null },
-    { "id": "CF-31", "name": "Theme application & namespace", "scope": "themes", "status": "final", "check": "checks/cf31-theme-entry.test.tsx", "landedLayer": null },
-    { "id": "CF-32", "name": "Per-component entry & budget", "scope": "common", "status": "final", "check": "checks/cf32-entry-budget.test.ts", "landedLayer": 1 }
+    {
+      "id": "CF-01",
+      "name": "Kind manifest",
+      "scope": "common",
+      "status": "final",
+      "check": "checks/cf01-manifest.test.ts",
+      "landedLayer": 1
+    },
+    {
+      "id": "CF-02",
+      "name": "Anatomy before code (data-slot)",
+      "scope": "common",
+      "status": "final",
+      "check": "checks/cf02-anatomy.test.tsx",
+      "landedLayer": 1
+    },
+    {
+      "id": "CF-03",
+      "name": "Acyclic, directional packages",
+      "scope": "common",
+      "status": "final",
+      "check": "checks/cf03-depcruise.mjs",
+      "landedLayer": null
+    },
+    {
+      "id": "CF-04",
+      "name": "No rank vocabulary / no subtype",
+      "scope": "common",
+      "status": "final",
+      "check": "checks/cf04-vocabulary.test.ts",
+      "landedLayer": 1
+    },
+    {
+      "id": "CF-05",
+      "name": "Dot-notation parts only",
+      "scope": "common",
+      "status": "final",
+      "check": "checks/cf05-exports.test.ts",
+      "landedLayer": 1
+    },
+    {
+      "id": "CF-06",
+      "name": "Dual styling: import-level unstyled",
+      "scope": "common",
+      "status": "final",
+      "check": "checks/cf06-unstyled.test.tsx",
+      "landedLayer": null
+    },
+    {
+      "id": "CF-07",
+      "name": "Styling surface",
+      "scope": "common",
+      "status": "final",
+      "check": "checks/cf07-styling-surface.test.tsx",
+      "landedLayer": null
+    },
+    {
+      "id": "CF-08",
+      "name": "State vocabulary (aria truth, data mirror)",
+      "scope": "common",
+      "status": "final",
+      "check": "checks/cf08-state-vocab.test.tsx",
+      "landedLayer": null
+    },
+    {
+      "id": "CF-09",
+      "name": "Variants at Root via tv, fanned by slots",
+      "scope": "common",
+      "status": "final",
+      "check": "checks/cf09-variants.test.tsx",
+      "landedLayer": null
+    },
+    {
+      "id": "CF-10",
+      "name": "Tokens only, with lifecycle",
+      "scope": "common",
+      "status": "final",
+      "check": "checks/cf10-tokens.mjs",
+      "landedLayer": null
+    },
+    {
+      "id": "CF-11",
+      "name": "Polymorphism = render only",
+      "scope": "common",
+      "status": "final",
+      "check": "checks/cf11-render.test.tsx",
+      "landedLayer": null
+    },
+    {
+      "id": "CF-12",
+      "name": "Refs",
+      "scope": "common",
+      "status": "final",
+      "check": "checks/cf12-refs.test.tsx",
+      "landedLayer": null
+    },
+    {
+      "id": "CF-13",
+      "name": "Controllable state with details",
+      "scope": "common",
+      "status": "final",
+      "check": "checks/cf13-controllable.test.tsx",
+      "landedLayer": null
+    },
+    {
+      "id": "CF-14",
+      "name": "Root provider escape hatch",
+      "scope": "common",
+      "status": "final",
+      "check": "checks/cf14-root-provider.test.tsx",
+      "landedLayer": null
+    },
+    {
+      "id": "CF-15",
+      "name": "Orphan-part error",
+      "scope": "common",
+      "status": "final",
+      "check": "checks/cf15-orphan.test.tsx",
+      "landedLayer": 2
+    },
+    {
+      "id": "CF-16",
+      "name": "A11y floor",
+      "scope": "common",
+      "status": "final",
+      "check": "checks/cf16-a11y.test.tsx",
+      "landedLayer": null
+    },
+    {
+      "id": "CF-17",
+      "name": "Lifecycle status with gates",
+      "scope": "common",
+      "status": "final",
+      "check": "checks/cf17-lifecycle.mjs",
+      "landedLayer": null
+    },
+    {
+      "id": "CF-18",
+      "name": "Per-component test + story floor",
+      "scope": "common",
+      "status": "final",
+      "check": "checks/cf18-spec-matrix.mjs",
+      "landedLayer": null
+    },
+    {
+      "id": "CF-19",
+      "name": "Docs generated + agent instructions",
+      "scope": "common",
+      "status": "final",
+      "check": "checks/cf19-docs-drift.mjs",
+      "landedLayer": null
+    },
+    {
+      "id": "CF-20",
+      "name": "Placement gate (ui vs ai)",
+      "scope": "common",
+      "status": "final",
+      "check": "checks/cf20-boundary-vocab.mjs",
+      "landedLayer": null
+    },
+    {
+      "id": "CF-21",
+      "name": "ai plumbing seam",
+      "scope": "ai",
+      "status": "final",
+      "check": "checks/cf21-ai-seam.test.tsx",
+      "landedLayer": null
+    },
+    {
+      "id": "CF-22",
+      "name": "Motion + popup hooks",
+      "scope": "common",
+      "status": "final",
+      "check": "checks/cf22-motion.test.tsx",
+      "landedLayer": null
+    },
+    {
+      "id": "CF-23",
+      "name": "Cross-platform parity declared",
+      "scope": "common",
+      "status": "final",
+      "check": "checks/cf23-parity.mjs",
+      "landedLayer": null
+    },
+    {
+      "id": "CF-24",
+      "name": "Declared state machine",
+      "scope": "common",
+      "flag": "states",
+      "status": "final",
+      "check": "checks/cf24-state-machine.test.tsx",
+      "landedLayer": null
+    },
+    {
+      "id": "CF-25",
+      "name": "SSR & id determinism",
+      "scope": "common",
+      "status": "final",
+      "check": "checks/cf25-ssr.test.tsx",
+      "landedLayer": 2
+    },
+    {
+      "id": "CF-26",
+      "name": "Form participation",
+      "scope": "flag",
+      "flag": "formParticipation",
+      "status": "final",
+      "check": "checks/cf26-form.test.tsx",
+      "landedLayer": null
+    },
+    {
+      "id": "CF-27",
+      "name": "Provider-free ui",
+      "scope": "ui",
+      "status": "final",
+      "check": "checks/cf27-provider-free.test.tsx",
+      "landedLayer": 1
+    },
+    {
+      "id": "CF-28",
+      "name": "Event composition order",
+      "scope": "common",
+      "flag": "events",
+      "status": "final",
+      "check": "checks/cf28-event-order.test.tsx",
+      "landedLayer": null
+    },
+    {
+      "id": "CF-29",
+      "name": "Field & error wiring",
+      "scope": "flag",
+      "flag": "field",
+      "status": "final",
+      "check": "checks/cf29-field.test.tsx",
+      "landedLayer": null
+    },
+    {
+      "id": "CF-30",
+      "name": "RTL & locale",
+      "scope": "common",
+      "status": "final",
+      "check": "checks/cf30-rtl.mjs",
+      "landedLayer": null
+    },
+    {
+      "id": "CF-31",
+      "name": "Theme application & namespace",
+      "scope": "themes",
+      "status": "final",
+      "check": "checks/cf31-theme-entry.test.tsx",
+      "landedLayer": null
+    },
+    {
+      "id": "CF-32",
+      "name": "Per-component entry & budget",
+      "scope": "common",
+      "status": "final",
+      "check": "checks/cf32-entry-budget.test.ts",
+      "landedLayer": 1
+    }
   ],
   "layers": [
-    { "n": 1, "title": "structure + data-slot", "features": ["CF-01", "CF-02", "CF-04", "CF-05", "CF-27", "CF-32"], "constraints": ["CF-25 useId for every aria pair"] },
-    { "n": 2, "title": "context + orphan errors", "features": ["CF-15", "CF-25"] },
-    { "n": 3, "title": "controlled state + details", "features": ["CF-13", "CF-24", "CF-28"] },
-    { "n": 4, "title": "render prop", "features": ["CF-11", "CF-12"], "regression": ["CF-24", "CF-25", "CF-28"] },
-    { "n": 5, "title": "styling surface", "features": ["CF-06", "CF-07", "CF-08", "CF-09", "CF-10", "CF-30", "CF-31"] },
-    { "n": 6, "title": "motion", "features": ["CF-22"] },
-    { "n": 7, "title": "final gates", "features": ["CF-14", "CF-16", "CF-17", "CF-18", "CF-19", "CF-20", "CF-23", "CF-03"], "regression": ["CF-24", "CF-25", "CF-32"], "exempt": ["CF-26", "CF-29", "CF-21"] }
+    {
+      "n": 1,
+      "title": "structure + data-slot",
+      "features": [
+        "CF-01",
+        "CF-02",
+        "CF-04",
+        "CF-05",
+        "CF-27",
+        "CF-32"
+      ],
+      "constraints": [
+        "CF-25 useId for every aria pair"
+      ]
+    },
+    {
+      "n": 2,
+      "title": "context + orphan errors",
+      "features": [
+        "CF-15",
+        "CF-25"
+      ]
+    },
+    {
+      "n": 3,
+      "title": "controlled state + details",
+      "features": [
+        "CF-13",
+        "CF-24",
+        "CF-28"
+      ]
+    },
+    {
+      "n": 4,
+      "title": "render prop",
+      "features": [
+        "CF-11",
+        "CF-12"
+      ],
+      "regression": [
+        "CF-24",
+        "CF-25",
+        "CF-28"
+      ]
+    },
+    {
+      "n": 5,
+      "title": "styling surface",
+      "features": [
+        "CF-06",
+        "CF-07",
+        "CF-08",
+        "CF-09",
+        "CF-10",
+        "CF-30",
+        "CF-31"
+      ]
+    },
+    {
+      "n": 6,
+      "title": "motion",
+      "features": [
+        "CF-22"
+      ]
+    },
+    {
+      "n": 7,
+      "title": "final gates",
+      "features": [
+        "CF-14",
+        "CF-16",
+        "CF-17",
+        "CF-18",
+        "CF-19",
+        "CF-20",
+        "CF-23",
+        "CF-03"
+      ],
+      "regression": [
+        "CF-24",
+        "CF-25",
+        "CF-32"
+      ],
+      "exempt": [
+        "CF-26",
+        "CF-29",
+        "CF-21"
+      ]
+    }
   ]
 }

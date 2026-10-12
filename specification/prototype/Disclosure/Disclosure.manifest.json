@@ -4,8 +4,19 @@
   "package": "@abmex/ui",
   "entry": "@abmex/ui/Disclosure",
   "kind": "compound",
-  "engine": { "library": "@heroui/react", "export": "Disclosure", "underlying": "react-aria-components/Disclosure" },
-  "parts": ["disclosure", "disclosure-heading", "disclosure-trigger", "disclosure-content", "disclosure-body", "disclosure-indicator"],
+  "engine": {
+    "library": "@heroui/react",
+    "export": "Disclosure",
+    "underlying": "react-aria-components/Disclosure"
+  },
+  "parts": [
+    "disclosure",
+    "disclosure-heading",
+    "disclosure-trigger",
+    "disclosure-content",
+    "disclosure-body",
+    "disclosure-indicator"
+  ],
   "partMap": {
     "Root": "disclosure",
     "Heading": "disclosure-heading",
@@ -16,10 +27,31 @@
   },
   "focusable": "Trigger",
   "options": [
-    { "prop": "isExpanded", "values": "boolean", "default": "undefined (uncontrolled)", "part": "Root" },
-    { "prop": "defaultExpanded", "values": "boolean", "default": "false", "part": "Root" },
-    { "prop": "onExpandedChange", "values": "(isExpanded: boolean) => void", "default": "undefined", "part": "Root", "note": "details argument lands at layer 3 (CF-13)" },
-    { "prop": "isDisabled", "values": "boolean", "default": "false", "part": "Root" }
+    {
+      "prop": "isExpanded",
+      "values": "boolean",
+      "default": "undefined (uncontrolled)",
+      "part": "Root"
+    },
+    {
+      "prop": "defaultExpanded",
+      "values": "boolean",
+      "default": "false",
+      "part": "Root"
+    },
+    {
+      "prop": "onExpandedChange",
+      "values": "(isExpanded: boolean) => void",
+      "default": "undefined",
+      "part": "Root",
+      "note": "details argument lands at layer 3 (CF-13)"
+    },
+    {
+      "prop": "isDisabled",
+      "values": "boolean",
+      "default": "false",
+      "part": "Root"
+    }
   ],
   "states": {
     "declared": false,
@@ -27,14 +59,63 @@
   },
   "formParticipation": false,
   "field": false,
-  "events": { "declared": false, "note": "eventOrder per part authored at layer 3 (CF-28)" },
-  "lifecycle": { "status": "draft", "a11yReviewed": null },
-  "budget": { "gzipBytes": 4096 },
+  "events": {
+    "declared": false,
+    "note": "eventOrder per part authored at layer 3 (CF-28)"
+  },
+  "lifecycle": {
+    "status": "draft",
+    "a11yReviewed": null
+  },
+  "budget": {
+    "gzipBytes": 4096
+  },
   "tokens": [],
   "stories": [],
-  "native": { "swiftui": "pending" },
+  "native": {
+    "swiftui": "pending"
+  },
   "coverage": {
-    "exercises": ["CF-01", "CF-02", "CF-04", "CF-05", "CF-27", "CF-32"],
-    "exempt": { "CF-26": "formParticipation=false", "CF-29": "field=false", "CF-21": "ui package" }
+    "exercises": [
+      "CF-01",
+      "CF-02",
+      "CF-04",
+      "CF-05",
+      "CF-15",
+      "CF-25",
+      "CF-27",
+      "CF-32"
+    ],
+    "exempt": {
+      "CF-26": "formParticipation=false",
+      "CF-29": "field=false",
+      "CF-21": "ui package"
+    }
+  },
+  "errors": [
+    {
+      "code": "ABMEX_ORPHAN_PART",
+      "name": "OrphanPartError",
+      "when": "any part rendered outside Root"
+    }
+  ],
+  "fixtures": [
+    "collapsed",
+    "expanded",
+    "disabled"
+  ],
+  "ssr": {
+    "postHydrationMutations": [
+      {
+        "selector": "[data-slot=\"disclosure-content\"]",
+        "attr": "hidden",
+        "reason": "RAC sets hidden=\"until-found\" in a layout effect; the value cannot be server-rendered. Static HTML carries hidden=\"\" (same a11y/visual result)."
+      },
+      {
+        "selector": "[data-slot=\"disclosure-content\"]",
+        "attr": "style",
+        "reason": "HeroUI measures the panel and writes --disclosure-panel-width/height for height animation (CF-22 motion). Re-evaluated at layer 6."
+      }
+    ]
   }
 }

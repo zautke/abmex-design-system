@@ -26,6 +26,10 @@ export interface ComponentManifest {
   stories: string[];
   native: Record<string, string>;
   coverage: { exercises: string[]; exempt: Record<string, string> };
+  errors?: Array<{ code: string; name: string; when: string }>;
+  fixtures?: string[];
+  /** CF-25: engine mutations after hydration that are declared, not silent. Each must actually occur. */
+  ssr?: { postHydrationMutations: Array<{ selector: string; attr: string; reason: string }> };
 }
 
 export const RANK_WORDS = ['atoms', 'molecules', 'organisms', 'primitives', 'core', 'patterns'];

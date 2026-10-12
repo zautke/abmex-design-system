@@ -184,8 +184,10 @@ One commit per layer: `spec(<layer-lead-id>): …`. Each commit contains the lay
 **Contract.** A part rendered outside its Root throws a **named error with a code** (dev and prod). Parts render in JSX order and are individually removable.
 **Scope.** common.
 **Check.** `checks/cf15-orphan.test.tsx` — orphan render expects the named error; shuffled/omitted parts render in JSX order.
-**Status on prototype.** pending layer 2.
-**Instructions for consuming agents.** The error code is a docs lookup key; do not catch and swallow it.
+**Status on prototype.** landed layer 2.
+**Worked code.** `prototype/errors.ts` defines `OrphanPartError` (`name: 'OrphanPartError'`, `code: 'ABMEX_ORPHAN_PART'`, `component`, `part`). `prototype/Disclosure/Disclosure.tsx` creates its own `DisclosureContext` (a presence flag, nothing else); `Root` provides it, every other part calls `usePart('<Part>')` which throws when the flag is absent. The engine's context is deliberately not reused for this: its failure mode is silent or cryptic, which is what this row forbids. The manifest lists the error under `errors[]`.
+**Check result.** `cf15-orphan.test.tsx`: each of the five non-root parts rendered alone throws an `OrphanPartError` whose `name`, `code`, `component`, `part` and message are asserted; `Content` before `Heading` serialises Content-first (JSX order); a composition without `Indicator`/`Body` renders.
+**Instructions for consuming agents.** The error code is a docs lookup key; do not catch and swallow it. Every component owns one presence context; the hook is `usePart(name)` and it is the first statement of every non-root part. Do not put layout or state in this context — that is layer 3's job and lives in the engine. Add each thrown code to the manifest `errors[]`.
 
 ### CF-16 A11y floor
 
@@ -261,7 +263,10 @@ One commit per layer: `spec(<layer-lead-id>): …`. Each commit contains the lay
 **Contract.** All generated ids via `useId`; *amended R2:* **static HTML ≡ hydrated DOM before any interaction (full serialisation diff)** including initial `data-*`; aria id pairs (`aria-controls`, `aria-labelledby`, `aria-owns`) resolve in static HTML. The "no client-only effects in first paint" intent is covered by this gate.
 **Scope.** common.
 **Check.** `checks/cf25-ssr.test.tsx` — hydration diff per story; static-HTML aria-pair lint.
-**Status on prototype.** constraint applied layer 1 (no authored ids); gate lands layer 2; re-run post-motion (layer 7).
+**Status on prototype.** gate landed layer 2; re-run after layer 6 (motion) and at layer 7.
+**Worked code.** `prototype/Disclosure/Disclosure.fixtures.tsx` exports `fixtures` (`collapsed`, `expanded`, `disabled`), full compositions in distinct initial states; stories (CF-18) will import these. `cf25-ssr.test.tsx` runs per fixture: `renderToString` → (1) every `aria-controls|labelledby|owns|describedby|errormessage` reference resolves by id inside the static HTML; (2) `hydrateRoot` into that HTML under `act` with `console.error` captured → zero hydration warnings; (3) full `innerHTML` equality static vs hydrated.
+**Finding (engine).** Hydration is warning-free and every id/aria/`data-*` value is identical, but the engine rewrites two attributes on `disclosure-content` in layout effects after hydration: RAC sets `hidden="until-found"` (not server-renderable; static carries `hidden=""`), and HeroUI writes inline `--disclosure-panel-width/height` for its height animation. These are **declared** in the manifest under `ssr.postHydrationMutations` (selector, attr, reason) and stripped before the diff. The check also counts each declared mutation and fails if one never occurs in any fixture, so the list cannot go stale. The `style` entry is motion territory and is re-evaluated at layer 6.
+**Instructions for consuming agents.** Never author an id; take it from `useId`/the engine. Add a fixture for every distinct initial state. If the hydration diff fails: first look for a client-only effect you introduced (that is a bug, fix it); only an engine effect you cannot avoid goes into `ssr.postHydrationMutations`, with a reason, and it must change the attribute in at least one fixture or the check fails.
 
 ### CF-26 Form participation
 
@@ -325,3 +330,11 @@ One commit per layer: `spec(<layer-lead-id>): …`. Each commit contains the lay
 - Engine: `@heroui/react` `Disclosure.{Root,Heading,Trigger,Content,Body,Indicator}` (RAC Disclosure underneath). HeroUI already emits the six `data-slot` values and the `aria-controls`/`aria-expanded` pair via `useId`; layer 1 pins the public shape (compound only) and the anatomy to the manifest.
 - Deliberately absent (later layers): own context, orphan errors, `onValueChange(details)`, `render`, refs policy, styling surface, motion.
 - Run: `pnpm spec:check`.
+
+### Layer 2 — context + orphan errors (landed)
+
+- Files: `prototype/errors.ts`, `prototype/Disclosure/{Disclosure.tsx,Disclosure.fixtures.tsx,Disclosure.manifest.json}`, `checks/{cf15-orphan.test.tsx,cf25-ssr.test.tsx,manifest.ts}`.
+- Own presence context + `usePart` per part → `OrphanPartError` (`ABMEX_ORPHAN_PART`). Manifest gains `errors[]`, `fixtures[]`, `ssr.postHydrationMutations[]`.
+- CF-25 gate found two engine post-hydration mutations on the content panel (`hidden` → `until-found`; motion CSS vars); declared, not silenced; `style` entry revisited at layer 6.
+- Deliberately absent (later layers): controlled state + `details` (3), `render` + refs (4), styling surface (5), motion (6).
+- Run: `pnpm spec:check` — 9 files / 36 tests.
