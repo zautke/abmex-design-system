@@ -17,6 +17,10 @@ export default defineConfig({
   },
   test: {
     maxWorkers: 2,
-    include: ['tests/**/*.test.{ts,tsx}', 'packages/*/tests/**/*.test.{ts,tsx}'],
+    include: [
+      'tests/**/*.test.{ts,tsx}',
+      'packages/*/tests/**/*.test.{ts,tsx}',
+      'specification/checks/**/*.test.{ts,tsx}',
+    ],
   },
 });
