@@ -5,7 +5,23 @@ import type { EventEnvelope } from './events.js';
  * tag so Node and the browser agree. Used for event hashes and import parity hashes.
  */
 export function canonical(value: unknown): string {
-  return JSON.stringify(normalize(value));
+  return JSON.stringify(toWireValue(value));
+}
+
+/** Wire form of a payload: plain JSON, keys sorted, `Uint8Array` as `{ $bytes: base64 }`. Both the client and the gateway hash this form, so hashes agree across the wire. */
+export function toWireValue(value: unknown): unknown {
+  return normalize(value);
+}
+
+/** Inverse of `toWireValue` for `{ $bytes }` markers (everything else is already plain JSON). */
+export function fromWireValue(value: unknown): unknown {
+  if (value === null || typeof value !== 'object') return value;
+  if (Array.isArray(value)) return value.map(fromWireValue);
+  const rec = value as Record<string, unknown>;
+  if (typeof rec.$bytes === 'string' && Object.keys(rec).length === 1) return fromBase64(rec.$bytes);
+  const out: Record<string, unknown> = {};
+  for (const [k, v] of Object.entries(rec)) out[k] = fromWireValue(v);
+  return out;
 }
 
 function normalize(value: unknown): unknown {
