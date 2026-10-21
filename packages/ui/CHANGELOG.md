@@ -1,5 +1,12 @@
 # @abmex/ui
 
+## 0.7.0-next.8
+
+### Changed
+
+- `@abmex/themes`: Phosphor tokens gain a Layer 1 identity palette. Every distinct color has one name (`--mint`, `--bone`, …) declared per theme between `theme-editor: identities` markers, and every role (`--bg`, `--primary`, …) now aliases its identity with `var()`. Resolved colors are unchanged (contrast audit 200 pairs, 0 failing). The generator fails when a color has no identity or a name is bound to two hexes.
+- Theme editor (`parseSemanticVariables`): a role aliasing an identity resolves to the identity's literal, so pickers keep showing colors; identities are never listed. Components consume roles only.
+
 ## 0.7.0-next.7
 
 ### Fixed

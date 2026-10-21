@@ -15,6 +15,89 @@
     "name": "Light (Bone paper)"
    }
   ],
+  "identities": {
+   "dark": {
+    "pitch": "#111c18",
+    "tar": "#0b1512",
+    "peat": "#1a2520",
+    "fern": "#23372b",
+    "moss": "#2b4134",
+    "loam": "#202e27",
+    "lichen": "#2e3a34",
+    "pewter": "#718078",
+    "khaki": "#c1c497",
+    "cream": "#dfe0b8",
+    "sage": "#a8bfae",
+    "eucalyptus": "#8ca194",
+    "thicket": "#4d6054",
+    "mint": "#2ed5b7",
+    "spearmint": "#45e4c5",
+    "kelp": "#213e37",
+    "brick": "#df8379",
+    "terracotta": "#ee9186",
+    "umber": "#3a3231",
+    "salmon": "#e0847a",
+    "clover": "#63b07a",
+    "basil": "#71be88",
+    "forest": "#27382b",
+    "shamrock": "#64b17b",
+    "ochre": "#dfad73",
+    "amber": "#eebb81",
+    "bronze": "#3e352c",
+    "slate": "#7bb4ce",
+    "steel": "#89c2dd",
+    "denim": "#29383f",
+    "mauve": "#b58bc0",
+    "lilac": "#c499cf",
+    "plum": "#353236",
+    "orchid": "#b88ec3",
+    "cobalt": "#6b9fc6",
+    "cinnamon": "#ce816e"
+   },
+   "light": {
+    "bone": "#f2f3ea",
+    "parchment": "#e9ebdf",
+    "cardstock": "#fafbf5",
+    "linen": "#ebeee3",
+    "oat": "#dfe5d9",
+    "chalk": "#fcfdf9",
+    "eggshell": "#fcfdfa",
+    "straw": "#d2dacf",
+    "taupe": "#7f8e86",
+    "olive": "#37371b",
+    "loden": "#1d1d08",
+    "pine": "#354e3f",
+    "verdigris": "#646551",
+    "pebble": "#9aa198",
+    "manila": "#efeae2",
+    "ivory": "#fcfaf2",
+    "sand": "#e2ddd7",
+    "vellum": "#f5f4ef",
+    "jade": "#037663",
+    "malachite": "#016757",
+    "pistachio": "#dbe9e5",
+    "viridian": "#057361",
+    "madder": "#a34942",
+    "maroon": "#943c35",
+    "blush": "#f1e2e0",
+    "evergreen": "#376f44",
+    "hunter": "#296238",
+    "celery": "#dde8df",
+    "saffron": "#d9a767",
+    "mustard": "#ca9959",
+    "wheat": "#f8efe4",
+    "caramel": "#8e601d",
+    "marine": "#2f6b86",
+    "navy": "#205e78",
+    "mist": "#e0e6ea",
+    "aubergine": "#795284",
+    "grape": "#6c4576",
+    "lavender": "#e7e4e8",
+    "copper": "#a67537",
+    "indigo": "#336288",
+    "sienna": "#ab5a46"
+   }
+  },
   "tokens": [
    {
     "name": "bg",
@@ -22,7 +105,11 @@
      "dark": "#111c18",
      "light": "#f2f3ea"
     },
-    "usage": "App background (deep phosphor-black / bone paper). Ground for `fg`, `fg-strong`, `fg-muted`."
+    "usage": "App background (deep phosphor-black / bone paper). Ground for `fg`, `fg-strong`, `fg-muted`.",
+    "identity": {
+     "dark": "pitch",
+     "light": "bone"
+    }
    },
    {
     "name": "bg-sunken",
@@ -30,7 +117,11 @@
      "dark": "#0b1512",
      "light": "#e9ebdf"
     },
-    "usage": "Recessed wells below the app ground: code blocks, terminal output, inset sidebars."
+    "usage": "Recessed wells below the app ground: code blocks, terminal output, inset sidebars.",
+    "identity": {
+     "dark": "tar",
+     "light": "parchment"
+    }
    },
    {
     "name": "surface",
@@ -38,7 +129,11 @@
      "dark": "#1a2520",
      "light": "#fafbf5"
     },
-    "usage": "The muted surface: sidebar, inspector, Questions block, cards (shadcn `card`, HeroUI `surface`). Ground for every text token."
+    "usage": "The muted surface: sidebar, inspector, Questions block, cards (shadcn `card`, HeroUI `surface`). Ground for every text token.",
+    "identity": {
+     "dark": "peat",
+     "light": "cardstock"
+    }
    },
    {
     "name": "surface-2",
@@ -46,7 +141,11 @@
      "dark": "#23372b",
      "light": "#ebeee3"
     },
-    "usage": "Raised fill: the prompt/input block, active tab, hovered rows, secondary buttons."
+    "usage": "Raised fill: the prompt/input block, active tab, hovered rows, secondary buttons.",
+    "identity": {
+     "dark": "fern",
+     "light": "linen"
+    }
    },
    {
     "name": "surface-3",
@@ -54,7 +153,11 @@
      "dark": "#2b4134",
      "light": "#dfe5d9"
     },
-    "usage": "Pressed / selected neutral fill, segmented-control thumb."
+    "usage": "Pressed / selected neutral fill, segmented-control thumb.",
+    "identity": {
+     "dark": "moss",
+     "light": "oat"
+    }
    },
    {
     "name": "overlay",
@@ -62,7 +165,11 @@
      "dark": "#202e27",
      "light": "#fcfdf9"
     },
-    "usage": "Floating layers: popover, menu, tooltip, dialog. One step above `surface`."
+    "usage": "Floating layers: popover, menu, tooltip, dialog. One step above `surface`.",
+    "identity": {
+     "dark": "loam",
+     "light": "chalk"
+    }
    },
    {
     "name": "field",
@@ -70,7 +177,11 @@
      "dark": "#23372b",
      "light": "#fcfdfa"
     },
-    "usage": "Input, textarea and select background (the raised green of the prompt block)."
+    "usage": "Input, textarea and select background (the raised green of the prompt block).",
+    "identity": {
+     "dark": "fern",
+     "light": "eggshell"
+    }
    },
    {
     "name": "border",
@@ -78,7 +189,11 @@
      "dark": "#2e3a34",
      "light": "#d2dacf"
     },
-    "usage": "Hairline: card edges, dividers, table rules. Decorative only (below 3:1 by design)."
+    "usage": "Hairline: card edges, dividers, table rules. Decorative only (below 3:1 by design).",
+    "identity": {
+     "dark": "lichen",
+     "light": "straw"
+    }
    },
    {
     "name": "border-strong",
@@ -86,7 +201,11 @@
      "dark": "#718078",
      "light": "#7f8e86"
     },
-    "usage": "Control boundary: input, checkbox and select outlines; 3:1 on `field`, `surface`, `bg`."
+    "usage": "Control boundary: input, checkbox and select outlines; 3:1 on `field`, `surface`, `bg`.",
+    "identity": {
+     "dark": "pewter",
+     "light": "taupe"
+    }
    },
    {
     "name": "fg",
@@ -94,7 +213,11 @@
      "dark": "#c1c497",
      "light": "#37371b"
     },
-    "usage": "Body text: golden khaki (dark) / olive ink (light) on every ground, including the muted `surface`."
+    "usage": "Body text: golden khaki (dark) / olive ink (light) on every ground, including the muted `surface`.",
+    "identity": {
+     "dark": "khaki",
+     "light": "olive"
+    }
    },
    {
     "name": "fg-strong",
@@ -102,7 +225,11 @@
      "dark": "#dfe0b8",
      "light": "#1d1d08"
     },
-    "usage": "Headings, active labels, values on every ground."
+    "usage": "Headings, active labels, values on every ground.",
+    "identity": {
+     "dark": "cream",
+     "light": "loden"
+    }
    },
    {
     "name": "fg-sage",
@@ -110,7 +237,11 @@
      "dark": "#a8bfae",
      "light": "#354e3f"
     },
-    "usage": "Secondary text role: sage (dark) / forest ink (light). Inactive tabs, neutral values, table body in dense data."
+    "usage": "Secondary text role: sage (dark) / forest ink (light). Inactive tabs, neutral values, table body in dense data.",
+    "identity": {
+     "dark": "sage",
+     "light": "pine"
+    }
    },
    {
     "name": "fg-muted",
@@ -118,7 +249,11 @@
      "dark": "#8ca194",
      "light": "#646551"
     },
-    "usage": "Secondary text, captions, placeholders: 4.5:1 on every ground up to `surface-2`."
+    "usage": "Secondary text, captions, placeholders: 4.5:1 on every ground up to `surface-2`.",
+    "identity": {
+     "dark": "eucalyptus",
+     "light": "verdigris"
+    }
    },
    {
     "name": "fg-disabled",
@@ -126,7 +261,11 @@
      "dark": "#4d6054",
      "light": "#9aa198"
     },
-    "usage": "Disabled labels only (WCAG-exempt)."
+    "usage": "Disabled labels only (WCAG-exempt).",
+    "identity": {
+     "dark": "thicket",
+     "light": "pebble"
+    }
    },
    {
     "name": "folder",
@@ -134,7 +273,11 @@
      "dark": "#1a2520",
      "light": "#efeae2"
     },
-    "usage": "Manila folder: tab strip, inactive tabs and the frame that wraps the paper pane."
+    "usage": "Manila folder: tab strip, inactive tabs and the frame that wraps the paper pane.",
+    "identity": {
+     "dark": "peat",
+     "light": "manila"
+    }
    },
    {
     "name": "paper",
@@ -142,7 +285,11 @@
      "dark": "#23372b",
      "light": "#fcfaf2"
     },
-    "usage": "Paper lying on the folder: the active tab and the pane it opens (ivory in light)."
+    "usage": "Paper lying on the folder: the active tab and the pane it opens (ivory in light).",
+    "identity": {
+     "dark": "fern",
+     "light": "ivory"
+    }
    },
    {
     "name": "folder-edge",
@@ -150,7 +297,11 @@
      "dark": "#2e3a34",
      "light": "#e2ddd7"
     },
-    "usage": "Hairline dividers between folder tabs. Decorative only."
+    "usage": "Hairline dividers between folder tabs. Decorative only.",
+    "identity": {
+     "dark": "lichen",
+     "light": "sand"
+    }
    },
    {
     "name": "page",
@@ -158,7 +309,11 @@
      "dark": "#111c18",
      "light": "#f5f4ef"
     },
-    "usage": "Ground the folder sits on (app page behind the frame)."
+    "usage": "Ground the folder sits on (app page behind the frame).",
+    "identity": {
+     "dark": "pitch",
+     "light": "vellum"
+    }
    },
    {
     "name": "primary",
@@ -166,7 +321,11 @@
      "dark": "#2ed5b7",
      "light": "#037663"
     },
-    "usage": "Mint / deep jade: the one saturated color; the brand signal. Primary buttons, active nav, toggles on, progress. As text it holds 4.5:1 on `bg`/`surface`."
+    "usage": "Mint / deep jade: the one saturated color; the brand signal. Primary buttons, active nav, toggles on, progress. As text it holds 4.5:1 on `bg`/`surface`.",
+    "identity": {
+     "dark": "mint",
+     "light": "jade"
+    }
    },
    {
     "name": "primary-fg",
@@ -174,7 +333,11 @@
      "dark": "#111c18",
      "light": "#fafbf5"
     },
-    "usage": "Text and icons on a `primary` or `primary-hover` fill."
+    "usage": "Text and icons on a `primary` or `primary-hover` fill.",
+    "identity": {
+     "dark": "pitch",
+     "light": "cardstock"
+    }
    },
    {
     "name": "primary-hover",
@@ -182,7 +345,11 @@
      "dark": "#45e4c5",
      "light": "#016757"
     },
-    "usage": "Hover / pressed state of a `primary` fill."
+    "usage": "Hover / pressed state of a `primary` fill.",
+    "identity": {
+     "dark": "spearmint",
+     "light": "malachite"
+    }
    },
    {
     "name": "primary-soft",
@@ -190,7 +357,11 @@
      "dark": "#213e37",
      "light": "#dbe9e5"
     },
-    "usage": "Tinted background for primary badges, alerts and selected rows."
+    "usage": "Tinted background for primary badges, alerts and selected rows.",
+    "identity": {
+     "dark": "kelp",
+     "light": "pistachio"
+    }
    },
    {
     "name": "primary-soft-fg",
@@ -198,7 +369,11 @@
      "dark": "#2ed5b7",
      "light": "#057361"
     },
-    "usage": "Primary text that reads on `primary-soft`, `bg`, `surface` and `surface-2` (4.5:1)."
+    "usage": "Primary text that reads on `primary-soft`, `bg`, `surface` and `surface-2` (4.5:1).",
+    "identity": {
+     "dark": "mint",
+     "light": "viridian"
+    }
    },
    {
     "name": "danger",
@@ -206,7 +381,11 @@
      "dark": "#df8379",
      "light": "#a34942"
     },
-    "usage": "Matte brick: destructive actions, invalid fields, error text. As text it holds 4.5:1 on `bg`/`surface`."
+    "usage": "Matte brick: destructive actions, invalid fields, error text. As text it holds 4.5:1 on `bg`/`surface`.",
+    "identity": {
+     "dark": "brick",
+     "light": "madder"
+    }
    },
    {
     "name": "danger-fg",
@@ -214,7 +393,11 @@
      "dark": "#111c18",
      "light": "#fafbf5"
     },
-    "usage": "Text and icons on a `danger` or `danger-hover` fill."
+    "usage": "Text and icons on a `danger` or `danger-hover` fill.",
+    "identity": {
+     "dark": "pitch",
+     "light": "cardstock"
+    }
    },
    {
     "name": "danger-hover",
@@ -222,7 +405,11 @@
      "dark": "#ee9186",
      "light": "#943c35"
     },
-    "usage": "Hover / pressed state of a `danger` fill."
+    "usage": "Hover / pressed state of a `danger` fill.",
+    "identity": {
+     "dark": "terracotta",
+     "light": "maroon"
+    }
    },
    {
     "name": "danger-soft",
@@ -230,7 +417,11 @@
      "dark": "#3a3231",
      "light": "#f1e2e0"
     },
-    "usage": "Tinted background for danger badges, alerts and selected rows."
+    "usage": "Tinted background for danger badges, alerts and selected rows.",
+    "identity": {
+     "dark": "umber",
+     "light": "blush"
+    }
    },
    {
     "name": "danger-soft-fg",
@@ -238,7 +429,11 @@
      "dark": "#e0847a",
      "light": "#a34942"
     },
-    "usage": "Danger text that reads on `danger-soft`, `bg`, `surface` and `surface-2` (4.5:1)."
+    "usage": "Danger text that reads on `danger-soft`, `bg`, `surface` and `surface-2` (4.5:1).",
+    "identity": {
+     "dark": "salmon",
+     "light": "madder"
+    }
    },
    {
     "name": "success",
@@ -246,7 +441,11 @@
      "dark": "#63b07a",
      "light": "#376f44"
     },
-    "usage": "Code green: completed, connected, passing. As text it holds 4.5:1 on `bg`/`surface`."
+    "usage": "Code green: completed, connected, passing. As text it holds 4.5:1 on `bg`/`surface`.",
+    "identity": {
+     "dark": "clover",
+     "light": "evergreen"
+    }
    },
    {
     "name": "success-fg",
@@ -254,7 +453,11 @@
      "dark": "#111c18",
      "light": "#fafbf5"
     },
-    "usage": "Text and icons on a `success` or `success-hover` fill."
+    "usage": "Text and icons on a `success` or `success-hover` fill.",
+    "identity": {
+     "dark": "pitch",
+     "light": "cardstock"
+    }
    },
    {
     "name": "success-hover",
@@ -262,7 +465,11 @@
      "dark": "#71be88",
      "light": "#296238"
     },
-    "usage": "Hover / pressed state of a `success` fill."
+    "usage": "Hover / pressed state of a `success` fill.",
+    "identity": {
+     "dark": "basil",
+     "light": "hunter"
+    }
    },
    {
     "name": "success-soft",
@@ -270,7 +477,11 @@
      "dark": "#27382b",
      "light": "#dde8df"
     },
-    "usage": "Tinted background for success badges, alerts and selected rows."
+    "usage": "Tinted background for success badges, alerts and selected rows.",
+    "identity": {
+     "dark": "forest",
+     "light": "celery"
+    }
    },
    {
     "name": "success-soft-fg",
@@ -278,7 +489,11 @@
      "dark": "#64b17b",
      "light": "#376f44"
     },
-    "usage": "Success text that reads on `success-soft`, `bg`, `surface` and `surface-2` (4.5:1)."
+    "usage": "Success text that reads on `success-soft`, `bg`, `surface` and `surface-2` (4.5:1).",
+    "identity": {
+     "dark": "shamrock",
+     "light": "evergreen"
+    }
    },
    {
     "name": "warning",
@@ -286,7 +501,11 @@
      "dark": "#dfad73",
      "light": "#d9a767"
     },
-    "usage": "Matte ochre (oranger than the gold text): degraded, pending attention. Always dark text on the fill."
+    "usage": "Matte ochre (oranger than the gold text): degraded, pending attention. Always dark text on the fill.",
+    "identity": {
+     "dark": "ochre",
+     "light": "saffron"
+    }
    },
    {
     "name": "warning-fg",
@@ -294,7 +513,11 @@
      "dark": "#111c18",
      "light": "#1d1d08"
     },
-    "usage": "Text and icons on a `warning` or `warning-hover` fill."
+    "usage": "Text and icons on a `warning` or `warning-hover` fill.",
+    "identity": {
+     "dark": "pitch",
+     "light": "loden"
+    }
    },
    {
     "name": "warning-hover",
@@ -302,7 +525,11 @@
      "dark": "#eebb81",
      "light": "#ca9959"
     },
-    "usage": "Hover / pressed state of a `warning` fill."
+    "usage": "Hover / pressed state of a `warning` fill.",
+    "identity": {
+     "dark": "amber",
+     "light": "mustard"
+    }
    },
    {
     "name": "warning-soft",
@@ -310,7 +537,11 @@
      "dark": "#3e352c",
      "light": "#f8efe4"
     },
-    "usage": "Tinted background for warning badges, alerts and selected rows."
+    "usage": "Tinted background for warning badges, alerts and selected rows.",
+    "identity": {
+     "dark": "bronze",
+     "light": "wheat"
+    }
    },
    {
     "name": "warning-soft-fg",
@@ -318,7 +549,11 @@
      "dark": "#dfad73",
      "light": "#8e601d"
     },
-    "usage": "Warning text that reads on `warning-soft`, `bg`, `surface` and `surface-2` (4.5:1)."
+    "usage": "Warning text that reads on `warning-soft`, `bg`, `surface` and `surface-2` (4.5:1).",
+    "identity": {
+     "dark": "ochre",
+     "light": "caramel"
+    }
    },
    {
     "name": "info",
@@ -326,7 +561,11 @@
      "dark": "#7bb4ce",
      "light": "#2f6b86"
     },
-    "usage": "Matte slate-cyan: neutral notices, help, links to docs. As text it holds 4.5:1 on `bg`/`surface`."
+    "usage": "Matte slate-cyan: neutral notices, help, links to docs. As text it holds 4.5:1 on `bg`/`surface`.",
+    "identity": {
+     "dark": "slate",
+     "light": "marine"
+    }
    },
    {
     "name": "info-fg",
@@ -334,7 +573,11 @@
      "dark": "#111c18",
      "light": "#fafbf5"
     },
-    "usage": "Text and icons on a `info` or `info-hover` fill."
+    "usage": "Text and icons on a `info` or `info-hover` fill.",
+    "identity": {
+     "dark": "pitch",
+     "light": "cardstock"
+    }
    },
    {
     "name": "info-hover",
@@ -342,7 +585,11 @@
      "dark": "#89c2dd",
      "light": "#205e78"
     },
-    "usage": "Hover / pressed state of a `info` fill."
+    "usage": "Hover / pressed state of a `info` fill.",
+    "identity": {
+     "dark": "steel",
+     "light": "navy"
+    }
    },
    {
     "name": "info-soft",
@@ -350,7 +597,11 @@
      "dark": "#29383f",
      "light": "#e0e6ea"
     },
-    "usage": "Tinted background for info badges, alerts and selected rows."
+    "usage": "Tinted background for info badges, alerts and selected rows.",
+    "identity": {
+     "dark": "denim",
+     "light": "mist"
+    }
    },
    {
     "name": "info-soft-fg",
@@ -358,7 +609,11 @@
      "dark": "#7bb4ce",
      "light": "#2f6b86"
     },
-    "usage": "Info text that reads on `info-soft`, `bg`, `surface` and `surface-2` (4.5:1)."
+    "usage": "Info text that reads on `info-soft`, `bg`, `surface` and `surface-2` (4.5:1).",
+    "identity": {
+     "dark": "slate",
+     "light": "marine"
+    }
    },
    {
     "name": "emphasis",
@@ -366,7 +621,11 @@
      "dark": "#b58bc0",
      "light": "#795284"
     },
-    "usage": "Mauve: italic emphasis, highlights in prose, a fourth category hue. As text it holds 4.5:1 on `bg`/`surface`."
+    "usage": "Mauve: italic emphasis, highlights in prose, a fourth category hue. As text it holds 4.5:1 on `bg`/`surface`.",
+    "identity": {
+     "dark": "mauve",
+     "light": "aubergine"
+    }
    },
    {
     "name": "emphasis-fg",
@@ -374,7 +633,11 @@
      "dark": "#111c18",
      "light": "#fafbf5"
     },
-    "usage": "Text and icons on a `emphasis` or `emphasis-hover` fill."
+    "usage": "Text and icons on a `emphasis` or `emphasis-hover` fill.",
+    "identity": {
+     "dark": "pitch",
+     "light": "cardstock"
+    }
    },
    {
     "name": "emphasis-hover",
@@ -382,7 +645,11 @@
      "dark": "#c499cf",
      "light": "#6c4576"
     },
-    "usage": "Hover / pressed state of a `emphasis` fill."
+    "usage": "Hover / pressed state of a `emphasis` fill.",
+    "identity": {
+     "dark": "lilac",
+     "light": "grape"
+    }
    },
    {
     "name": "emphasis-soft",
@@ -390,7 +657,11 @@
      "dark": "#353236",
      "light": "#e7e4e8"
     },
-    "usage": "Tinted background for emphasis badges, alerts and selected rows."
+    "usage": "Tinted background for emphasis badges, alerts and selected rows.",
+    "identity": {
+     "dark": "plum",
+     "light": "lavender"
+    }
    },
    {
     "name": "emphasis-soft-fg",
@@ -398,7 +669,11 @@
      "dark": "#b88ec3",
      "light": "#795284"
     },
-    "usage": "Emphasis text that reads on `emphasis-soft`, `bg`, `surface` and `surface-2` (4.5:1)."
+    "usage": "Emphasis text that reads on `emphasis-soft`, `bg`, `surface` and `surface-2` (4.5:1).",
+    "identity": {
+     "dark": "orchid",
+     "light": "aubergine"
+    }
    },
    {
     "name": "focus",
@@ -406,7 +681,11 @@
      "dark": "#2ed5b7",
      "light": "#037663"
     },
-    "usage": "Focus ring, 2px solid with 2px offset; 3:1 on every ground."
+    "usage": "Focus ring, 2px solid with 2px offset; 3:1 on every ground.",
+    "identity": {
+     "dark": "mint",
+     "light": "jade"
+    }
    },
    {
     "name": "link",
@@ -414,7 +693,11 @@
      "dark": "#2ed5b7",
      "light": "#057361"
     },
-    "usage": "Inline links on any ground."
+    "usage": "Inline links on any ground.",
+    "identity": {
+     "dark": "mint",
+     "light": "viridian"
+    }
    },
    {
     "name": "selection",
@@ -422,7 +705,11 @@
      "dark": "#213e37",
      "light": "#dbe9e5"
     },
-    "usage": "Text selection and highlighted search matches."
+    "usage": "Text selection and highlighted search matches.",
+    "identity": {
+     "dark": "kelp",
+     "light": "pistachio"
+    }
    },
    {
     "name": "code-bg",
@@ -430,7 +717,11 @@
      "dark": "#0b1512",
      "light": "#e9ebdf"
     },
-    "usage": "Code surface: blends toward app bg, bordered by `border`."
+    "usage": "Code surface: blends toward app bg, bordered by `border`.",
+    "identity": {
+     "dark": "tar",
+     "light": "parchment"
+    }
    },
    {
     "name": "scrollbar",
@@ -438,7 +729,11 @@
      "dark": "#718078",
      "light": "#7f8e86"
     },
-    "usage": "Scrollbar thumb."
+    "usage": "Scrollbar thumb.",
+    "identity": {
+     "dark": "pewter",
+     "light": "taupe"
+    }
    },
    {
     "name": "chart-1",
@@ -446,7 +741,11 @@
      "dark": "#2ed5b7",
      "light": "#037663"
     },
-    "usage": "Categorical series 1; 3:1 on `surface` in both themes."
+    "usage": "Categorical series 1; 3:1 on `surface` in both themes.",
+    "identity": {
+     "dark": "mint",
+     "light": "jade"
+    }
    },
    {
     "name": "chart-2",
@@ -454,7 +753,11 @@
      "dark": "#b58bc0",
      "light": "#795284"
     },
-    "usage": "Categorical series 2; 3:1 on `surface` in both themes."
+    "usage": "Categorical series 2; 3:1 on `surface` in both themes.",
+    "identity": {
+     "dark": "mauve",
+     "light": "aubergine"
+    }
    },
    {
     "name": "chart-3",
@@ -462,7 +765,11 @@
      "dark": "#dfad73",
      "light": "#a67537"
     },
-    "usage": "Categorical series 3; 3:1 on `surface` in both themes."
+    "usage": "Categorical series 3; 3:1 on `surface` in both themes.",
+    "identity": {
+     "dark": "ochre",
+     "light": "copper"
+    }
    },
    {
     "name": "chart-4",
@@ -470,7 +777,11 @@
      "dark": "#6b9fc6",
      "light": "#336288"
     },
-    "usage": "Categorical series 4; 3:1 on `surface` in both themes."
+    "usage": "Categorical series 4; 3:1 on `surface` in both themes.",
+    "identity": {
+     "dark": "cobalt",
+     "light": "indigo"
+    }
    },
    {
     "name": "chart-5",
@@ -478,7 +789,11 @@
      "dark": "#ce816e",
      "light": "#ab5a46"
     },
-    "usage": "Categorical series 5; 3:1 on `surface` in both themes."
+    "usage": "Categorical series 5; 3:1 on `surface` in both themes.",
+    "identity": {
+     "dark": "cinnamon",
+     "light": "sienna"
+    }
    },
    {
     "name": "backdrop",

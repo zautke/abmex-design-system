@@ -4,7 +4,8 @@
 // @abmex/ui public export surface.
 
 import { describe, expect, it } from 'vitest';
-import { HEROUI_BRIDGE_END_MARKER, HEROUI_BRIDGE_MARKER, ROLES_END_MARKER, ROLES_MARKER, parseSemanticVariables } from '@/packages/ui/src/internal/parseSemanticVariables';
+import { readFileSync } from 'node:fs';
+import { HEROUI_BRIDGE_END_MARKER, HEROUI_BRIDGE_MARKER, IDENTITIES_END_MARKER, IDENTITIES_MARKER, ROLES_END_MARKER, ROLES_MARKER, parseSemanticVariables } from '@/packages/ui/src/internal/parseSemanticVariables';
 
 describe('parseSemanticVariables', () => {
   it('extracts a semantic --color-* variable with its default value', () => {
@@ -98,6 +99,44 @@ describe('parseSemanticVariables', () => {
       `/* ${ROLES_END_MARKER} */`,
     ].join('\n');
     expect(parseSemanticVariables(css).map((v) => v.name)).toEqual(['--color-header-bg', '--surface-2', '--fg']);
+  });
+
+  it('resolves a role aliasing a Layer 1 identity to the identity literal; identities are never listed', () => {
+    const css = [
+      `/* ${IDENTITIES_MARKER} */`,
+      ':root {',
+      '  --mint: oklch(0.7848 0.1370 176.88);',
+      '  --pitch: oklch(0.2143 0.0177 170.07);',
+      '}',
+      `/* ${IDENTITIES_END_MARKER} */`,
+      `/* ${ROLES_MARKER} */`,
+      ':root {',
+      '  --primary: var(--mint);',
+      '  --primary-fg: var(--pitch);',
+      '  --radius: 0.25rem;',
+      '}',
+      `/* ${ROLES_END_MARKER} */`,
+      '--accent: var(--primary);',
+    ].join('\n');
+    expect(parseSemanticVariables(css)).toEqual([
+      { name: '--primary', defaultVal: 'oklch(0.7848 0.1370 176.88)', group: 'phosphor', isColor: true },
+      { name: '--primary-fg', defaultVal: 'oklch(0.2143 0.0177 170.07)', group: 'phosphor', isColor: true },
+      { name: '--radius', defaultVal: '0.25rem', group: 'phosphor', isColor: false },
+    ]);
+  });
+
+  it('parses the generated phosphor.tokens.css: every color role resolves to a literal, no identity leaks', () => {
+    const css = readFileSync(new URL('../../packages/themes/src/phosphor/phosphor.tokens.css', import.meta.url), 'utf8');
+    const vars = parseSemanticVariables(css);
+    const byName = new Map(vars.map((v) => [v.name, v]));
+    expect(byName.get('--primary')).toMatchObject({ isColor: true, group: 'phosphor' });
+    expect(byName.get('--primary')!.defaultVal).toMatch(/^oklch\(/);
+    expect(byName.get('--bg')!.defaultVal).toMatch(/^oklch\(/);
+    expect(byName.has('--mint')).toBe(false);
+    expect(byName.has('--bone')).toBe(false);
+    const phosphorColors = vars.filter((v) => v.group === 'phosphor' && v.isColor);
+    expect(phosphorColors.length).toBeGreaterThan(50);
+    for (const v of phosphorColors) expect(v.defaultVal, v.name).not.toMatch(/^var\(/);
   });
 
   it('a prefix-free custom property outside the role markers is not a theme role', () => {
