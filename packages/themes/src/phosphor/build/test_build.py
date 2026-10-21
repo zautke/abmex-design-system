@@ -23,6 +23,20 @@ class GeneratorTest(unittest.TestCase):
             self.assertIn('--folder:', css)
             self.assertIn('--tab-flare:', css)
             self.assertNotIn('--ph-', css)
+            # Layer 1 identities, Layer 2 roles alias them; no raw color on a role
+            self.assertIn('theme-editor: identities', css)
+            self.assertIn('--mint: oklch(', css)
+            self.assertIn('--primary: var(--mint);', css)
+            self.assertIn('--bg: var(--bone);', css)
+            roles = css.split('theme-editor: roles', 1)[1].split('theme-editor: roles-end')[0]
+            self.assertNotRegex(roles, r'--[a-z0-9-]+: oklch\(')
+            # an unnamed color fails the build
+            palette = build / 'palette.py'
+            palette.write_text(palette.read_text().replace("'fg': 'khaki', ", ''))
+            unnamed = subprocess.run(command, cwd=directory, capture_output=True, text=True)
+            self.assertNotEqual(unnamed.returncode, 0)
+            self.assertIn('has no identity', unnamed.stdout + unnamed.stderr)
+            shutil.copyfile(pathlib.Path(__file__).with_name('palette.py'), palette)
             generator = build / 'build.py'
             generator.write_text(generator.read_text().replace(
                 'fails=[]; rows=[]', 'wcag = lambda a, b: 1\nfails=[]; rows=[]'))
