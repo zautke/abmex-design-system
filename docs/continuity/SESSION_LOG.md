@@ -1,5 +1,14 @@
 # Session log
 
+## 2026-10-21 — donor extraction and base contract
+
+- Captured user-approved Maximum Flexibility Axiom, replaceable defaults, token authority, additive-only extensions, named public parts, independent instances, persistence capabilities, and two-composition verification.
+- Created `projects/design-system/donor-component-extraction-parent` and child `base-component-contract` in the singular kb.
+- Added [BASE_COMPONENT_CONTRACT.md](BASE_COMPONENT_CONTRACT.md) with a provisional React/TypeScript proto-component code block. No production component changes.
+- User requested comparison with MUI and other popular systems; research and final interface decisions remain open.
+- Follow-up: official docs, Context7, and GitHub research recorded in contract revision 0.2. Final interface decisions remain open. Prototype strict TypeScript check passed with zero diagnostics; no runtime test claimed.
+- Prior migration test results below are historical, not rerun. Current browser work must respect the no-Playwright instruction.
+
 ## 2026-10-07
 
 - Added scoped transition CSS so theme transitions apply to any controller target, not only `html`.
