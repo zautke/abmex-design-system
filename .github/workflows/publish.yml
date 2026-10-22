@@ -138,31 +138,3 @@ jobs:
         run: pnpm ci:postpublish:github
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      # Completion webhook. Fires on success, failure and cancel so the
-      # agent that triggered the publish learns the outcome. Skips when
-      # PUBLISH_WEBHOOK_URL is unset. Body is {"text": ...} — the shape a
-      # Claude Code routine API trigger (/fire) accepts; any receiver can
-      # parse the same JSON. Consumer wiring: see CLAUDE.md "Publish".
-      - name: Notify publish webhook
-        if: always()
-        env:
-          PUBLISH_WEBHOOK_URL: ${{ secrets.PUBLISH_WEBHOOK_URL }}
-          PUBLISH_WEBHOOK_TOKEN: ${{ secrets.PUBLISH_WEBHOOK_TOKEN }}
-          JOB_STATUS: ${{ job.status }}
-          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-        run: |
-          if [ -z "$PUBLISH_WEBHOOK_URL" ]; then
-            echo "PUBLISH_WEBHOOK_URL unset; skipping notify"; exit 0
-          fi
-          VERSION=$(node -p "require('./packages/ui/package.json').version")
-          PUBLISHED=$(node -e "try{console.log(require('./pnpm-publish-summary.json').publishedPackages.map(p=>p.name+'@'+p.version).join(', '))}catch{console.log('none')}")
-          TEXT="abmex publish $JOB_STATUS: version=$VERSION dist_tag=${DIST_TAG:-unknown} published=[$PUBLISHED] sha=$GITHUB_SHA run=$RUN_URL"
-          BODY=$(node -e "console.log(JSON.stringify({text:process.argv[1],status:process.env.JOB_STATUS,version:process.argv[2],dist_tag:process.env.DIST_TAG||null,published:process.argv[3],sha:process.env.GITHUB_SHA,run_url:process.env.RUN_URL}))" "$TEXT" "$VERSION" "$PUBLISHED")
-          curl --silent --show-error --fail-with-body --max-time 20 -X POST "$PUBLISH_WEBHOOK_URL" \
-            -H "content-type: application/json" \
-            -H "anthropic-beta: experimental-cc-routine-2026-04-01" \
-            ${PUBLISH_WEBHOOK_TOKEN:+-H "authorization: Bearer $PUBLISH_WEBHOOK_TOKEN"} \
-            --data "$BODY"
-          echo; echo "notified $PUBLISH_WEBHOOK_URL with status=$JOB_STATUS"
-        shell: bash
