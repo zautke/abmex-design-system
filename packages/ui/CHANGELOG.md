@@ -1,5 +1,12 @@
 # @abmex/ui
 
+## 0.7.0-next.9
+
+### Added
+
+- `SettingsFields`: settings sections described as data. Each section is `{ title, description?, fields }` and each field is a controlled spec: `{ kind: 'segmented', options, value, onChange }`, `{ kind: 'toggle', checked, onChange, stateLabels?, hint? }` or `{ kind: 'text', value, onChange, placeholder?, type?, onBlur? }`, all with optional `label`, `ariaLabel`, `description`, `disabled`. It renders the same `SettingsSection` / `SettingsField` / `SegmentedControl` / `Switch` composition as the hand-written panels, so a consumer passes only values and persistence callbacks.
+- `ToolsPanel` accepts `sections` (`ToolsPanelSectionsProps`) and renders them through `SettingsFields`, for apps whose tool settings differ from the fixed set. The fixed `values` / `onChange` shape is unchanged (now named `ToolsPanelValuesProps`; `ToolsPanelProps` is the union of both).
+
 ## 0.7.0-next.8
 
 ### Changed

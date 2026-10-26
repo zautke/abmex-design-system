@@ -15,6 +15,7 @@ import { Switch } from '@heroui/react';
 import { SecretKeyInput } from './SecretKeyInput';
 import { SettingsField, SettingsSection } from './SettingsLayout';
 import { SegmentedControl } from '../status/SegmentedControl';
+import { SettingsFields, type SettingsSectionSpec } from './SettingsFields';
 import { cn } from '../../utils/cn';
 
 export type WebSearchProvider = 'auto' | 'tavily' | 'brave' | 'duckduckgo';
@@ -45,7 +46,8 @@ export interface ToolsPanelValues {
   shellEnabled: boolean;
 }
 
-export interface ToolsPanelProps {
+/** The original fixed field set: web-search keys, provider, quota, shell. */
+export interface ToolsPanelValuesProps {
   values: ToolsPanelValues;
   /**
    * WIRING: a patch of changed fields. The consumer persists them — the storage
@@ -68,14 +70,33 @@ export interface ToolsPanelProps {
   className?: string;
 }
 
-export function ToolsPanel({
+/**
+ * Fields as data: the consumer describes each section and field (segmented
+ * choice, toggle, text) with its value and onChange, and the panel renders them.
+ * Use this when the app's tool settings differ from the fixed set above.
+ */
+export interface ToolsPanelSectionsProps {
+  sections: ReadonlyArray<SettingsSectionSpec>;
+  className?: string;
+}
+
+export type ToolsPanelProps = ToolsPanelValuesProps | ToolsPanelSectionsProps;
+
+export function ToolsPanel(props: ToolsPanelProps) {
+  if ('sections' in props) {
+    return <SettingsFields sections={props.sections} className={props.className} />;
+  }
+  return <FixedToolsPanel {...props} />;
+}
+
+function FixedToolsPanel({
   values,
   onChange,
   revealed,
   onToggleReveal,
   shellDescription,
   className,
-}: ToolsPanelProps) {
+}: ToolsPanelValuesProps) {
   // Reveal is uncontrolled unless the consumer opts in — it is pure porcelain
   // and most consumers do not want to own it.
   const [localReveal, setLocalReveal] = useState<{ tavily: boolean; brave: boolean }>({
