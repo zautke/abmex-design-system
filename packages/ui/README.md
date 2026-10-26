@@ -60,12 +60,71 @@ Everything is driven by props and callbacks, so a consumer with no database, no 
 | `conversations` | `ConversationsDrawer`, `ConversationListItem`, `ConversationSearchField`, `ConversationEmptyState` |
 | `settings` | `SettingsModal`, `ScrollableTabStrip`, `ProviderSettingsPanel`, `SecretKeyInput`, `JsonConfigEditor`, `McpServerList`, `SecretsList`, `ToolsPanel`, `SettingsSection`/`Field`/`Row`/`List`, `CopyCommandCallout` |
 | `theme` | `ThemeEditorPanel`, `ColorSystem`, `ThemeEditorButton` |
-| primitives | `StatusDot`, `CopyButton`, `cn` |
+| primitives | `Text`, `Icon`, `Button`, `IconButton`, `BaseLayoutContainer`, `LayoutContainer`, `StatusDot`, `CopyButton`, `cn` |
 | hooks | `useStreamingRate`, `useChatPaneController`, `useInputBarController`, `useReadlineKeys`, `useTabIndent` |
+
+## Foundation primitives
+
+All six foundation components and their named props types are exported from
+`@abmex/ui`. Import `@abmex/ui/styles.css` once, or use the Tailwind compilation
+alternative above. Defaults use ABMEX semantic tokens.
+
+```tsx
+import { Button, Text, BaseLayoutContainer, ComponentDefaultsProvider } from '@abmex/ui';
+import type { LayoutContainerProps } from '@abmex/ui';
+
+<ComponentDefaultsProvider defaults={{ Button: { options: { size: 'sm' } } }}>
+  <BaseLayoutContainer as="section" options={{ display: 'flex', gap: 12 }}>
+    <Text options={{ tone: 'muted' }}>Draft document</Text>
+    <Button onAction={() => saveDocument()} options={{ variant: 'outline' }}>
+      Save
+    </Button>
+  </BaseLayoutContainer>
+</ComponentDefaultsProvider>;
+```
+
+`Text` defaults to `span` (tone/truncation options); `Icon` wraps supplied graphics
+with size options and is decorative unless named. `Button` defaults to a native
+`button` with `type="button"`; `IconButton` requires `label` and composes Button
+with an independently replaceable `icon` part. Supply the desired SVG or icon
+component as children. Buttons support size and solid/outline/ghost variants.
+
+`BaseLayoutContainer` supplies configurable structural display, direction, gap,
+overflow and containment. `LayoutContainer` preserves its existing clipping and
+containment defaults; its optional `region` accepts application-specific names.
+Both default to `div`.
+
+Use `as` for target-sensitive native props and React 19 refs. `slots.root` replaces
+the renderer and receives `as`; custom renderers must honor it and forward props
+and refs. Custom interactive renderers own their semantics; `useButtonBehavior`
+is available for independent cancellation/disabled/keyboard behavior.
+
+`slotProps.root`, `classNames.root` and `styles.root` accept static values or
+typed-state callbacks. IconButton additionally supports `slots.icon` and the
+matching icon configuration/styling channels. Nested provider defaults merge
+with explicit instance overrides: later recognized Tailwind utilities win,
+styles merge by property, refs compose, and later event handlers run first and
+can cancel earlier/default actions with `preventDefault()`.
+
+Set disabled state on the component or static root props. Dynamic root callbacks
+consume that state and cannot redefine `disabled`/`aria-disabled`: types reject
+those keys and runtime ignores them from JavaScript/casts. `onAction` follows
+uncancelled consumer click handlers; disabled controls suppress actions.
+
+`unstyled` removes visual defaults while retaining semantics and interaction.
+Layout min-size/display/flow structure and LayoutContainer's compatibility
+containment/clipping remain structural defaults. These primitives own no durable
+state and do not persist application state.
+
+`@abmex/ui/primitive-manifest.json` and `@abmex/ui/primitive-options.schema.json`
+describe the six components. The schema covers serializable finite options;
+React values, callbacks, refs and CSS-valued options remain TypeScript-owned.
+The repository's `packages/ui/demo/main.tsx` shows toolbar and navigation/content
+compositions using the public package imports.
 
 ## Theming
 
-The stylesheet ships a **HeroUI semantic token bridge**: ~15 variables map HeroUI's surface onto this kit's palette, so a bare `<Button variant="primary">` already looks like the chat skin.
+The stylesheet ships a **HeroUI semantic token bridge** for existing component families. Foundation primitives use ABMEX roles such as `--primary`, `--primary-fg`, `--fg`, `--border` and `--focus`; use `<Button options={{ variant: 'solid' }}>` for the default action appearance.
 
 To reskin the library, override those:
 

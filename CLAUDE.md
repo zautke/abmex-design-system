@@ -1,5 +1,23 @@
 # abmex-design-system — agent instructions
 
+## ⛔ NON-NEGOTIABLE — release-branch version exceptions (user correction 2026-10-26)
+
+**Read this before every version bump, commit, merge, tag or publish. These exceptions override the generic four-number rule and all older bump tables.**
+
+| Destination branch | Exact release version | Merge bump | Reset | Example |
+|---|---|---|---|---|
+| `development` | **`MAJOR.MINOR.PATCH` — exactly THREE numbers** | **MINOR + 1** | PATCH → 0 | `1.4.2` → `1.5.0` |
+| `main` (promotion from `development`) | **`MAJOR.MINOR.PATCH` — exactly THREE numbers** | **MAJOR + 1** | MINOR → 0; PATCH → 0 | `1.5.0` → `2.0.0` |
+
+**Neither release branch ever adds BUILD, a fourth number, or a branch suffix.** `package.json` and the released/published artifact use that same three-number version. Release tags must not reintroduce a fourth numeric component; retain the repository/ecosystem tag convention.
+
+Other internal branches retain `MAJOR.MINOR.PATCH.BUILD-<branch>` and increment BUILD per commit where applicable. **Externally constrained version fields (including npm packages) always obey their ecosystem's accepted format; never put a four-number stamp into an npm package version, even on a feature branch.** The existing external-format exemption was already recorded on 2026-10-16.
+
+A merge into `development` gets the `changeset.md` entry; promotion to `main` does not. Existing worktree, pull-request, review-bot, build/live-verification and publication gates still apply. Do not invent separate release metadata or block for a three-versus-four-number decision already settled by these exceptions.
+
+Canonical protocol: `protocols/release/protocol-org-wide-branch-and-version-policy-development-and-main`.
+
+
 ## Publish
 
 - Publishing runs on push to `main` and on `release: published` via `.github/workflows/publish.yml`. Both packages are versioned in lockstep; bump `packages/ui/package.json` and `packages/themes/package.json` together or only one ships.

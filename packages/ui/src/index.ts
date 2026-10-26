@@ -21,6 +21,11 @@ export * from './components/button-group';
 export * from './components/theme-toggle';
 
 // ── Primitives ─────────────────────────────────────────────────────────────
+export { Text, Icon, Button, IconButton, BaseLayoutContainer, ComponentDefaultsProvider } from './primitives/foundation';
+export type { TextProps, IconProps, ButtonProps, IconButtonProps, BaseLayoutContainerProps, ComponentDefaults, PrimitiveProps, PrimitiveComponent } from './primitives/foundation';
+export { useButtonBehavior } from './primitives/foundation';
+export { primitiveDescriptors, primitiveConfigurationSchema } from './primitives/foundation';
+export type { ButtonBehaviorInput } from './primitives/foundation';
 export { StatusDot } from './primitives/StatusDot';
 export type { StatusDotProps, StatusTone } from './primitives/StatusDot';
 
@@ -130,6 +135,7 @@ export {
   themeStylesheet,
 } from './utils/themePalette';
 export type { Twin } from './utils/themePalette';
+export type { LayoutContainerProps } from './components/layout/LayoutContainer';
 
 export type {
   JsonValue,
