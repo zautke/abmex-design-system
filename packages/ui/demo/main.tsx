@@ -1,7 +1,26 @@
-import { useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { Text, Icon, Button, IconButton, BaseLayoutContainer, LayoutContainer, ComponentDefaultsProvider } from '@abmex/ui';
 import '@abmex/ui/styles.css';
+
+function RefLifecycleProbe() {
+  const [events, setEvents] = useState({ attached: 0, cleaned: 0 });
+  const [actions, setActions] = useState(0);
+  const [visible, setVisible] = useState(true);
+  const instanceRef = useRef<HTMLButtonElement>(null);
+  const providerRef = useCallback((node: HTMLButtonElement | null) => {
+    if (!node) return;
+    setEvents(value => ({ ...value, attached: value.attached + 1 }));
+    return () => setEvents(value => ({ ...value, cleaned: value.cleaned + 1 }));
+  }, []);
+  return <BaseLayoutContainer as="section" aria-label="Ref lifecycle probe" options={{ display: 'flex', direction: 'column', gap: 8 }}>
+    <Text aria-live="polite">Ref attached {events.attached}; cleaned {events.cleaned}; actions {actions}</Text>
+    <Button onAction={() => setVisible(value => !value)}>{visible ? 'Hide ref target' : 'Show ref target'}</Button>
+    <ComponentDefaultsProvider defaults={{ Button: { ref: providerRef } }}>
+      {visible && <Button ref={instanceRef} onAction={() => setActions(value => value + 1)}>Update ref probe</Button>}
+    </ComponentDefaultsProvider>
+  </BaseLayoutContainer>;
+}
 
 function Demo() {
   const [mode, setMode] = useState<'dark' | 'light'>('dark');
@@ -37,6 +56,7 @@ function Demo() {
         </LayoutContainer>
       </BaseLayoutContainer>
     </ComponentDefaultsProvider>
+    <RefLifecycleProbe />
   </BaseLayoutContainer>;
 }
 createRoot(document.getElementById('root')!).render(<Demo />);
