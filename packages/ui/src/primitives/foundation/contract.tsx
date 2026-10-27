@@ -59,8 +59,19 @@ export function mergePartProps(...layers: Array<PropBag | undefined>): PropBag {
 }
 
 /** Supports object refs, legacy callbacks, and React 19 callback cleanup. */
+interface RefCacheNode { children: WeakMap<object, RefCacheNode>; callback?: RefCallback<unknown> }
+const EMPTY_REF = {};
+const refCache: RefCacheNode = { children: new WeakMap() };
 export function composeRefs<T>(...refs: Array<Ref<T> | undefined>): RefCallback<T> {
-  return node => {
+  let cache = refCache;
+  for (const ref of refs) {
+    const key = (ref ?? EMPTY_REF) as object;
+    let next = cache.children.get(key);
+    if (!next) cache.children.set(key, next = { children: new WeakMap() });
+    cache = next;
+  }
+  if (cache.callback) return cache.callback as RefCallback<T>;
+  const callback: RefCallback<T> = node => {
     const cleanups = refs.map(ref => {
       if (typeof ref === 'function') {
         const cleanup = ref(node);
@@ -71,6 +82,8 @@ export function composeRefs<T>(...refs: Array<Ref<T> | undefined>): RefCallback<
     });
     return () => { for (const cleanup of cleanups) cleanup(); };
   };
+  cache.callback = callback as RefCallback<unknown>;
+  return callback;
 }
 
 export interface ComponentDefaultOptions {

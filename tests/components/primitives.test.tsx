@@ -157,6 +157,75 @@ describe('foundation public contract', () => {
     expect(ref.current).toBeNull();
   });
 
+  it('keeps merged top-level React 19 refs stable across rerenders', () => {
+    const providerCleanup = vi.fn();
+    const instanceCleanup = vi.fn();
+    const providerRef = vi.fn(() => providerCleanup);
+    const instanceRef = vi.fn(() => instanceCleanup);
+    const defaults = { Button: { ref: providerRef } };
+    const { rerender, unmount } = render(<primitives.ComponentDefaultsProvider defaults={defaults}>
+      <primitives.Button ref={instanceRef}>Save</primitives.Button>
+    </primitives.ComponentDefaultsProvider>);
+    rerender(<primitives.ComponentDefaultsProvider defaults={defaults}>
+      <primitives.Button ref={instanceRef}>Save</primitives.Button>
+    </primitives.ComponentDefaultsProvider>);
+    expect(providerRef).toHaveBeenCalledOnce();
+    expect(instanceRef).toHaveBeenCalledOnce();
+    expect(providerCleanup).not.toHaveBeenCalled();
+    expect(instanceCleanup).not.toHaveBeenCalled();
+    unmount();
+    expect(providerCleanup).toHaveBeenCalledOnce();
+    expect(instanceCleanup).toHaveBeenCalledOnce();
+  });
+
+  it('keeps merged slot root React 19 refs stable across rerenders', () => {
+    const providerCleanup = vi.fn();
+    const instanceCleanup = vi.fn();
+    const providerRef = vi.fn(() => providerCleanup);
+    const instanceRef = vi.fn(() => instanceCleanup);
+    const defaults = { Button: { slotProps: { root: { ref: providerRef } } } };
+    const slotProps = { root: { ref: instanceRef } };
+    const { rerender, unmount } = render(<primitives.ComponentDefaultsProvider defaults={defaults}>
+      <primitives.Button slotProps={slotProps}>Save</primitives.Button>
+    </primitives.ComponentDefaultsProvider>);
+    rerender(<primitives.ComponentDefaultsProvider defaults={defaults}>
+      <primitives.Button slotProps={slotProps}>Save</primitives.Button>
+    </primitives.ComponentDefaultsProvider>);
+    expect(providerRef).toHaveBeenCalledOnce();
+    expect(instanceRef).toHaveBeenCalledOnce();
+    expect(providerCleanup).not.toHaveBeenCalled();
+    expect(instanceCleanup).not.toHaveBeenCalled();
+    unmount();
+    expect(providerCleanup).toHaveBeenCalledOnce();
+    expect(instanceCleanup).toHaveBeenCalledOnce();
+  });
+
+  it('cleans replaced refs once and preserves the object ref on the existing node', () => {
+    const objectRef = createRef<HTMLButtonElement>();
+    const oldCleanup = vi.fn();
+    const nextCleanup = vi.fn();
+    const oldRef = vi.fn(() => oldCleanup);
+    const nextRef = vi.fn(() => nextCleanup);
+    const defaults = { Button: { ref: objectRef } };
+    const { rerender, unmount } = render(<primitives.ComponentDefaultsProvider defaults={defaults}>
+      <primitives.Button ref={oldRef}>Replace ref</primitives.Button>
+    </primitives.ComponentDefaultsProvider>);
+    const node = screen.getByRole('button', { name: 'Replace ref' });
+    expect(objectRef.current).toBe(node);
+    rerender(<primitives.ComponentDefaultsProvider defaults={defaults}>
+      <primitives.Button ref={nextRef}>Replace ref</primitives.Button>
+    </primitives.ComponentDefaultsProvider>);
+    expect(oldRef).toHaveBeenCalledOnce();
+    expect(oldCleanup).toHaveBeenCalledOnce();
+    expect(nextRef).toHaveBeenCalledOnce();
+    expect(nextCleanup).not.toHaveBeenCalled();
+    expect(objectRef.current).toBe(node);
+    unmount();
+    expect(oldCleanup).toHaveBeenCalledOnce();
+    expect(nextCleanup).toHaveBeenCalledOnce();
+    expect(objectRef.current).toBeNull();
+  });
+
   it('supports state callbacks and unstyled while preserving action semantics', () => {
     render(<primitives.Button unstyled disabled classNames={{ root: state => state.disabled ? 'custom-disabled' : '' }}>Save</primitives.Button>);
     const button = screen.getByRole('button') as HTMLButtonElement;
