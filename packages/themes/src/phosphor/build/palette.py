@@ -78,23 +78,25 @@ FOLDER = ['folder', 'paper', 'folder-edge', 'page']
 MUTED_HUE = {'dark': 157.8, 'light': 110}
 INTENTS = ['primary','danger','success','warning','info','emphasis']
 
-def resolve():
+def resolve(dark_spec=DARK, light_spec=LIGHT):
+    """Roles left None in a spec are fitted for contrast; given roles are kept as-is."""
     out = {}
-    for name, spec, dark in (('dark', DARK, True), ('light', LIGHT, False)):
+    for name, spec, dark in (('dark', dark_spec, True), ('light', light_spec, False)):
         t = dict(spec)
         hx = lambda k: hexof(t[k])
         # muted text: 4.5:1 on the worst ground it lands on (surface-2 dark / bg-sunken light)
         worst = 'surface-2' if dark else 'surface-3'
         mh = MUTED_HUE[name]
-        t['fg-muted'] = (fit_L(0.030, mh, hx(worst), 4.6, dark), 0.030, mh)
+        if t['fg-muted'] is None: t['fg-muted'] = (fit_L(0.030, mh, hx(worst), 4.6, dark), 0.030, mh)
         # control boundary 3:1 vs field AND surface
-        g = [hx('field'), hx('surface'), hx('bg')]
-        L = None
-        for cand in [i/400 for i in range(400)] if dark else [1-i/400 for i in range(400)]:
-            h = hexof((cand, 0.022, N))
-            if all(wcag(h, x) >= 3.05 for x in g): L = cand; break
-        t['border-strong'] = (round(L,3), 0.022, N)
-        if dark:
+        if t['border-strong'] is None:
+            g = [hx('field'), hx('surface'), hx('bg')]
+            L = None
+            for cand in [i/400 for i in range(400)] if dark else [1-i/400 for i in range(400)]:
+                h = hexof((cand, 0.022, N))
+                if all(wcag(h, x) >= 3.05 for x in g): L = cand; break
+            t['border-strong'] = (round(L,3), 0.022, N)
+        if dark and t['danger'] is None:
             # brick lifted until it reads as text on panel (shadcn uses text-destructive for errors)
             t['danger'] = (fit_L(0.115, 27, hx('surface-2'), 4.6, True, 0.55, 0.9), 0.115, 27)
         res = {k: hexof(v) for k, v in t.items()}
@@ -135,3 +137,39 @@ def mix_lc(a, b, amt):
     A, B = lab(a), lab(b)
     m = [A[k]*(1-amt)+B[k]*amt for k in range(3)]
     return m[0], math.hypot(m[1], m[2])
+
+# ---------------------------------------------------------------- identity layer
+# Layer 1 (kb concept/two-layer-design-token-architecture): one name per distinct
+# color, named for what the color IS. Roles (Layer 2) alias these with var().
+# Only anchors are listed; every derived role (-fg, -hover, -soft, -soft-fg,
+# focus, link, selection, code-bg, scrollbar, chart-*) must resolve to the same
+# hex as a named identity or name one here — build.py fails otherwise, so a new
+# color can never ship without an identity.
+IDENTITY = {
+ 'dark': {
+  'bg': 'pitch', 'bg-sunken': 'tar', 'surface': 'peat', 'surface-2': 'fern',
+  'surface-3': 'moss', 'overlay': 'loam', 'border': 'lichen', 'border-strong': 'pewter',
+  'fg': 'khaki', 'fg-strong': 'cream', 'fg-sage': 'sage', 'fg-muted': 'eucalyptus',
+  'fg-disabled': 'thicket',
+  'primary': 'mint', 'primary-hover': 'spearmint', 'primary-soft': 'kelp', 'primary-soft-fg': 'mint',
+  'danger': 'brick', 'danger-hover': 'terracotta', 'danger-soft': 'umber', 'danger-soft-fg': 'salmon',
+  'success': 'clover', 'success-hover': 'basil', 'success-soft': 'forest', 'success-soft-fg': 'shamrock',
+  'warning': 'ochre', 'warning-hover': 'amber', 'warning-soft': 'bronze',
+  'info': 'slate', 'info-hover': 'steel', 'info-soft': 'denim',
+  'emphasis': 'mauve', 'emphasis-hover': 'lilac', 'emphasis-soft': 'plum', 'emphasis-soft-fg': 'orchid',
+  'chart-4': 'cobalt', 'chart-5': 'cinnamon',
+ },
+ 'light': {
+  'bg': 'bone', 'bg-sunken': 'parchment', 'surface': 'cardstock', 'surface-2': 'linen',
+  'surface-3': 'oat', 'overlay': 'chalk', 'field': 'eggshell', 'border': 'straw', 'border-strong': 'taupe',
+  'fg': 'olive', 'fg-strong': 'loden', 'fg-sage': 'pine', 'fg-muted': 'verdigris', 'fg-disabled': 'pebble',
+  'folder': 'manila', 'paper': 'ivory', 'folder-edge': 'sand', 'page': 'vellum',
+  'primary': 'jade', 'primary-hover': 'malachite', 'primary-soft': 'pistachio', 'primary-soft-fg': 'viridian',
+  'danger': 'madder', 'danger-hover': 'maroon', 'danger-soft': 'blush',
+  'success': 'evergreen', 'success-hover': 'hunter', 'success-soft': 'celery',
+  'warning': 'saffron', 'warning-hover': 'mustard', 'warning-soft': 'wheat', 'warning-soft-fg': 'caramel',
+  'info': 'marine', 'info-hover': 'navy', 'info-soft': 'mist',
+  'emphasis': 'aubergine', 'emphasis-hover': 'grape', 'emphasis-soft': 'lavender',
+  'chart-3': 'copper', 'chart-4': 'indigo', 'chart-5': 'sienna',
+ },
+}

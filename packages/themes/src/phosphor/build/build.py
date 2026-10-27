@@ -1,25 +1,43 @@
 #!/usr/bin/env python3
 """Phosphor theme generator — one source (palette.py) → every artifact.
-Outputs: ../*.css (drop-in), build/tokens.generated.json (seed for ../tokens.json, which is hand-curated after generation), build/contrast.json."""
-import json, os, math
+Outputs: ../*.css (drop-in), build/tokens.generated.json (seed for ../tokens.json, which is hand-curated after generation), build/contrast.json.
+Other families (-f/--family <name>, palette_<name>.py) emit only <name>.tokens.css plus json into src/<name>/; they reuse the phosphor Tailwind bridge."""
+import json, os, math, argparse, importlib
 from color import *
-from palette import resolve, hexof, INTENTS, FOLDER
 
-OUT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-os.makedirs(f'{OUT}/adapters', exist_ok=True)
+def Usage():
+    ap = argparse.ArgumentParser(description='Generate theme tokens for one theme family.')
+    ap.add_argument('-f', '--family', default='phosphor', help='theme family: phosphor (default) or a palette_<family>.py module')
+    return ap
+FAMILY = Usage().parse_args().family
+PHOSPHOR = FAMILY == 'phosphor'
+P = importlib.import_module('palette' if PHOSPHOR else f'palette_{FAMILY}')
+from palette import hexof, INTENTS, FOLDER
+resolve, IDENTITY = P.resolve, P.IDENTITY
+def fam(name, phosphor_value):
+    """Phosphor keeps its in-file values; every other family must define its own (no silent phosphor leak)."""
+    return phosphor_value if PHOSPHOR else getattr(P, name)
+
+HERE = os.path.dirname(__file__)
+OUT = os.path.abspath(os.path.join(HERE, '..') if PHOSPHOR else os.path.join(HERE, '..', '..', FAMILY))
+BUILD = HERE if PHOSPHOR else os.path.join(OUT, 'build')
+os.makedirs(f'{OUT}/adapters' if PHOSPHOR else BUILD, exist_ok=True)
+def emit(path, text):
+    """Tailwind bridge and adapters are family-agnostic: only phosphor writes them."""
+    if PHOSPHOR: open(path,'w',encoding='utf-8',newline=chr(10)).write(text)
 R = resolve()
-CHARTS = {  # matte: only series 1 (mint) is saturated
+CHARTS = fam('CHARTS', {  # matte: only series 1 (mint) is saturated
  'dark':  [(0.785,0.137,176.9),(0.695,0.089,319.2),(0.780,0.095,70),(0.680,0.080,242),(0.680,0.100,35)],
  'light': [(0.505,0.095,176.9),(0.500,0.090,319),(0.600,0.100,70),(0.480,0.080,245),(0.560,0.110,35)],
-}
+})
 for th in R:
     for i, c in enumerate(CHARTS[th], 1): R[th][0][f'chart-{i}'] = hexof(c)
 
-ALPHA = {  # non-opaque tokens
+ALPHA = fam('ALPHA', {  # non-opaque tokens
  'dark':  {'backdrop': 'rgba(3, 8, 5, 0.72)'},
  'light': {'backdrop': 'rgba(9, 27, 19, 0.32)'},
-}
-SHADOW = {
+})
+SHADOW = fam('SHADOW', {
  'dark': {
    'shadow-surface': 'none',
    'shadow-field':   'none',
@@ -30,7 +48,7 @@ SHADOW = {
    'shadow-field':   '0 1px 2px 0 rgba(9, 27, 19, 0.05)',
    'shadow-overlay': '0 2px 8px 0 rgba(9, 27, 19, 0.08), 0 14px 32px -6px rgba(9, 27, 19, 0.14)',
  },
-}
+})
 ORDER = (['bg','bg-sunken','surface','surface-2','surface-3','overlay','field','border','border-strong',
           'fg','fg-strong','fg-sage','fg-muted','fg-disabled'] + FOLDER +
          [f'{i}{s}' for i in INTENTS for s in ('','-fg','-hover','-soft','-soft-fg')] +
@@ -78,6 +96,33 @@ for i, n in INTENT_NOTE.items():
     USAGE[f'{i}-soft-fg'] = f'{i.capitalize()} text that reads on `{i}-soft`, `bg`, `surface` and `surface-2` (4.5:1).'
 for i in range(1,6): USAGE[f'chart-{i}'] = f'Categorical series {i}; 3:1 on `surface` in both themes.'
 
+# ---------------------------------------------------------------- identity layer (Layer 1)
+def identities(th):
+    """role → identity name; identity name → hex. Fails on an unnamed color or a
+    name bound to two hexes (also across themes: a name means one color)."""
+    res = R[th][0]; named = IDENTITY[th]
+    by_hex = {}
+    for role, name in named.items():
+        h = res[role]
+        if by_hex.setdefault(h, name) != name:
+            raise SystemExit(f'{th}: identities {by_hex[h]!r} and {name!r} share {h} — one color, one name')
+    role_id = {}
+    for role in ORDER:
+        h = res[role]
+        if h not in by_hex:
+            raise SystemExit(f'{th}: role --{role} ({h}) has no identity; name it in palette.IDENTITY')
+        role_id[role] = by_hex[h]
+    name_hex = {}
+    for h, n in by_hex.items():
+        if n in name_hex: raise SystemExit(f'{th}: identity {n!r} bound to {name_hex[n]} and {h}')
+        name_hex[n] = h
+    return role_id, name_hex
+ID = {th: identities(th) for th in R}
+_all = {}
+for th in ID:
+    for n, h in ID[th][1].items():
+        if _all.setdefault(n, h) != h: raise SystemExit(f'identity {n!r} differs across themes: {_all[n]} vs {h}')
+
 def oklch_str(h):
     L,C,H = hex_to_oklch(h)
     if C < 0.0005: return f'oklch({L:.4f} 0 0)'
@@ -90,44 +135,39 @@ def block(th):
              [('Utility', ['focus','link','selection','code-bg','scrollbar']), ('Charts', [f'chart-{i}' for i in range(1,6)])]
     for g, keys in groups:
         lines.append(f'  /* {g} */')
-        for k in keys: lines.append(f'  --{k}: {oklch_str(res[k])}; /* {res[k]} */')
+        for k in keys: lines.append(f'  --{k}: var(--{ID[th][0][k]}); /* {res[k]} */')
     lines.append('  /* Effects */')
     for k,v in ALPHA[th].items(): lines.append(f'  --{k}: {v};')
     for k,v in SHADOW[th].items(): lines.append(f'  --{k}: {v};')
     return '\n'.join(lines)
 
-HEADER = '''/* ============================================================================
- * Phosphor — {title}
- * Generated by build/build.py from build/palette.py. Do not hand-edit values;
+def identity_block(th):
+    name_hex = ID[th][1]
+    order = sorted(name_hex, key=lambda n: hex_to_oklch(name_hex[n])[0], reverse=(th == 'dark'))
+    return '\n'.join(f'  --{n}: {oklch_str(name_hex[n])}; /* {name_hex[n]} */' for n in order)
+
+NAME = fam('NAME', 'Phosphor')
+_HEADER = '''/* ============================================================================
+ * {name} — {title}
+ * Generated by build/build.py from build/{palette}.py. Do not hand-edit values;
  * change the palette and re-run `python3 build/build.py`.
  * Requires: Tailwind CSS >= 4.2 (verified on 4.2.x and 4.3.x) where noted.
  * ========================================================================== */
 '''
-tokens_css = HEADER.format(title='tokens (Layer 1: the role interface)') + '''
-@import "./motion.css";
-/* Theme scoping
+class _Header(str):
+    def format(self, **kw): return str.format(self, name=NAME, palette=P.__name__, **kw)
+HEADER = _Header(_HEADER)
+PHOS_DARK = ':root,\n.dark:not([data-mode]),\n[data-theme="dark"]:not([data-mode]),\n[data-mode="dark"]'
+PHOS_LIGHT = '.light:not([data-mode]),\n[data-theme="light"]:not([data-mode]),\n[data-mode="light"]'
+DARK_SEL, LIGHT_SEL = fam('DARK_SEL', PHOS_DARK), fam('LIGHT_SEL', PHOS_LIGHT)
+SCOPE_NOTE = fam('SCOPE_NOTE', '''/* Theme scoping
  *   default (no class)            → dark
  *   .dark  | [data-theme="dark"]  → dark   (works on any element, nests)
  *   .light | [data-theme="light"] → light  (works on any element, nests)
  * Every adapter re-declares its variables on these same selectors, so a
  * nested scope re-resolves var() chains instead of inheriting stale values.
- */
-:root,
-.dark:not([data-mode]),
-[data-theme="dark"]:not([data-mode]),
-[data-mode="dark"] {
-  color-scheme: dark;
-''' + block('dark') + '''
-}
-
-.light:not([data-mode]),
-[data-theme="light"]:not([data-mode]),
-[data-mode="light"] {
-  color-scheme: light;
-''' + block('light') + '''
-}
-
-/* Non-color tokens (theme-independent) */
+ */''')
+ROOT_BLOCK = fam('ROOT_BLOCK', '''/* Non-color tokens (theme-independent) */
 :root {
   --theme-attribute: class;      /* how this theme is scoped; read by createThemeController */
   --radius: 0.25rem;          /* crisp instrument corners; every radius derives from this */
@@ -140,11 +180,41 @@ tokens_css = HEADER.format(title='tokens (Layer 1: the role interface)') + '''
   --font-mono: "Victor Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
   --display-weight: 600;
   --display-tracking: -0.02em;
+}''')
+tokens_css = HEADER.format(title='tokens (Layer 1 identities → Layer 2 roles, the interface)') + fam('PREAMBLE', '''
+@import "./motion.css";''') + '''
+/* Layer 1 — identities. One name per distinct color, named for what it IS.
+ * Components never reference these; they consume the roles below, which
+ * alias them with var(). Both themes are declared so a nested scope
+ * re-resolves. */
+/* theme-editor: identities */
+''' + DARK_SEL + ''' {
+''' + identity_block('dark') + '''
 }
+
+''' + LIGHT_SEL + ''' {
+''' + identity_block('light') + '''
+}
+/* theme-editor: identities-end */
+
+/* Layer 2 — roles. The interface adapters and components consume. */
+''' + SCOPE_NOTE + '''
+''' + DARK_SEL + ''' {
+  color-scheme: dark;
+''' + block('dark') + '''
+}
+
+''' + LIGHT_SEL + ''' {
+  color-scheme: light;
+''' + block('light') + '''
+}
+
+''' + ROOT_BLOCK + '''
 '''
 ROLES_MARKER = '/* theme-editor: roles — parseSemanticVariables lists every declaration between\n * this marker and the end marker as the theme\'s role group. */\n'
-tokens_css = tokens_css.replace('/* Theme scoping', ROLES_MARKER + '\n/* Theme scoping', 1) + '/* theme-editor: roles-end */\n'
-open(f'{OUT}/phosphor.tokens.css','w',encoding='utf-8',newline=chr(10)).write(tokens_css)
+_scope = SCOPE_NOTE.split(chr(10))[0]
+tokens_css = tokens_css.replace(_scope, ROLES_MARKER + '\n' + _scope, 1) + '/* theme-editor: roles-end */\n'
+open(f'{OUT}/{FAMILY}.tokens.css','w',encoding='utf-8',newline=chr(10)).write(tokens_css)
 
 # ---------------------------------------------------------------- tailwind layer
 SEL = ':root,\n.dark,\n[data-theme="dark"],\n.light,\n[data-theme="light"],\n[data-mode]'
@@ -206,7 +276,7 @@ tw = HEADER.format(title='Tailwind v4 layer') + '''
   }
 }
 '''
-open(f'{OUT}/phosphor.tailwind.css','w',encoding='utf-8',newline=chr(10)).write(tw)
+emit(f'{OUT}/phosphor.tailwind.css', tw)
 
 # ---------------------------------------------------------------- adapters
 def adapter(name, desc, mapping, theme_inline=None, extra_root=''):
@@ -269,7 +339,7 @@ shadcn_css = HEADER.format(title='shadcn/ui adapter (CLI v4, Radix or Base UI)')
  * is the muted text.
  */
 ''' + f'{SEL} {{\n' + render_map(shadcn_map) + '\n}\n\n@theme inline {\n' + '\n'.join('  '+l for l in shadcn_inline) + '\n}\n'
-open(f'{OUT}/adapters/shadcn.css','w',encoding='utf-8',newline=chr(10)).write(shadcn_css)
+emit(f'{OUT}/adapters/shadcn.css', shadcn_css)
 
 hero_map = [
  ('radius', v('radius')), ('field-radius', 'calc(var(--radius) * 1.5)'),
@@ -321,7 +391,7 @@ hero_css = HEADER.format(title='HeroUI v3 adapter (@heroui/react >= 3.0.5)') + '
  * Phosphor-only intents (info, emphasis) are available as bg-info etc.
  */
 ''' + f'{SEL} {{\n' + render_map(hero_map) + '\n}\n'
-open(f'{OUT}/adapters/heroui.css','w',encoding='utf-8',newline=chr(10)).write(hero_css)
+emit(f'{OUT}/adapters/heroui.css', hero_css)
 
 tmpl = HEADER.format(title='adapter template (the interface contract)') + '''
 /* Any component system can consume Phosphor by mapping ITS variable names to the
@@ -354,16 +424,19 @@ tmpl = HEADER.format(title='adapter template (the interface contract)') + '''
   /* --library-primary-text: var(--primary-fg); */
 }
 '''
-open(f'{OUT}/adapters/_template.css','w',encoding='utf-8',newline=chr(10)).write(tmpl)
+emit(f'{OUT}/adapters/_template.css', tmpl)
 
 # ---------------------------------------------------------------- tokens.json for the design system
 ctoks = []
 for k in colors:
-    ctoks.append({'name': f'{k}', 'value': {'dark': R['dark'][0].get(k) or ALPHA['dark'][k], 'light': R['light'][0].get(k) or ALPHA['light'][k]}, 'usage': USAGE[k]})
+    tok = {'name': f'{k}', 'value': {'dark': R['dark'][0].get(k) or ALPHA['dark'][k], 'light': R['light'][0].get(k) or ALPHA['light'][k]}, 'usage': USAGE[k]}
+    if k in ID['dark'][0]: tok['identity'] = {'dark': ID['dark'][0][k], 'light': ID['light'][0][k]}
+    ctoks.append(tok)
 tokens = {
- 'name': 'Phosphor', 'version': 1,
- 'meta': {'source': 'Rendered pixels of the wxt-prompt screenshot (Oct 2026), matte; light theme derived; build/palette.py'},
- 'color': {'themes': [{'id':'dark','name':'Dark (Phosphor)'},{'id':'light','name':'Light (Bone paper)'}], 'tokens': ctoks},
+ 'name': NAME, 'version': 1,
+ 'meta': {'source': fam('SOURCE', 'Rendered pixels of the wxt-prompt screenshot (Oct 2026), matte; light theme derived; build/palette.py')},
+ 'color': {'themes': fam('THEMES', [{'id':'dark','name':'Dark (Phosphor)'},{'id':'light','name':'Light (Bone paper)'}]),
+           'identities': {th: ID[th][1] for th in ID}, 'tokens': ctoks},
  'type': {
    'fonts': [],
    'families': {'sans': '"Rethink Sans", ui-sans-serif, system-ui, sans-serif',
@@ -395,7 +468,7 @@ tokens = {
    'usage': {'shadow-surface':'Cards: none in dark (hairline does the work), a faint lift on paper.',
              'shadow-field':'Inputs.','shadow-overlay':'Popovers, menus, dialogs.'}[k]} for k in SHADOW['dark']]},
 }
-json.dump(tokens, open(os.path.join(os.path.dirname(__file__), 'tokens.generated.json'),'w',encoding='utf-8',newline=chr(10)), indent=1, ensure_ascii=False)
+json.dump(tokens, open(os.path.join(BUILD, 'tokens.generated.json'),'w',encoding='utf-8',newline=chr(10)), indent=1, ensure_ascii=False)
 
 # ---------------------------------------------------------------- contrast audit
 PAIRS = []
@@ -419,7 +492,7 @@ for th,t,g,need in PAIRS:
     a,b = R[th][0][t], R[th][0][g]; c = wcag(a,b); ap = abs(apca(a,b))
     rows.append((th,t,g,round(c,2),round(ap),need, c>=need))
     if c < need: fails.append((th,t,g,c,need))
-json.dump(rows, open(os.path.join(os.path.dirname(__file__), 'contrast.json'),'w',encoding='utf-8',newline=chr(10)))
+json.dump(rows, open(os.path.join(BUILD, 'contrast.json'),'w',encoding='utf-8',newline=chr(10)))
 print(f'{len(rows)} pairs checked, {len(fails)} failing')
 for f in fails: print('  FAIL', f)
 print('min per theme:', {th: min(r[3] for r in rows if r[0]==th and r[5]==4.5) for th in R})

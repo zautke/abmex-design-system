@@ -23,3 +23,12 @@ test('shipped CSS works without a consumer Tailwind compiler', async () => {
     if (!url.startsWith('data:')) await access(resolve(dirname(stylesheet), url));
   }
 });
+
+test('themes ships the cev family and the MUI adapter', async () => {
+  const manifest = JSON.parse(await readFile('packages/themes/package.json', 'utf8'));
+  await access(resolve('packages/themes', manifest.exports['./mui'].import));
+  await access(resolve('packages/themes', manifest.exports['./mui'].types));
+  const css = await readFile(resolve('packages/themes/dist/cev/cev.tokens.css'), 'utf8');
+  assert.match(css, /\[data-theme="cev"\]\[data-mode="light"\]/);
+  await assert.rejects(access(resolve('packages/themes/dist/cev/build')));
+});
