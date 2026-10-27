@@ -78,23 +78,25 @@ FOLDER = ['folder', 'paper', 'folder-edge', 'page']
 MUTED_HUE = {'dark': 157.8, 'light': 110}
 INTENTS = ['primary','danger','success','warning','info','emphasis']
 
-def resolve():
+def resolve(dark_spec=DARK, light_spec=LIGHT):
+    """Roles left None in a spec are fitted for contrast; given roles are kept as-is."""
     out = {}
-    for name, spec, dark in (('dark', DARK, True), ('light', LIGHT, False)):
+    for name, spec, dark in (('dark', dark_spec, True), ('light', light_spec, False)):
         t = dict(spec)
         hx = lambda k: hexof(t[k])
         # muted text: 4.5:1 on the worst ground it lands on (surface-2 dark / bg-sunken light)
         worst = 'surface-2' if dark else 'surface-3'
         mh = MUTED_HUE[name]
-        t['fg-muted'] = (fit_L(0.030, mh, hx(worst), 4.6, dark), 0.030, mh)
+        if t['fg-muted'] is None: t['fg-muted'] = (fit_L(0.030, mh, hx(worst), 4.6, dark), 0.030, mh)
         # control boundary 3:1 vs field AND surface
-        g = [hx('field'), hx('surface'), hx('bg')]
-        L = None
-        for cand in [i/400 for i in range(400)] if dark else [1-i/400 for i in range(400)]:
-            h = hexof((cand, 0.022, N))
-            if all(wcag(h, x) >= 3.05 for x in g): L = cand; break
-        t['border-strong'] = (round(L,3), 0.022, N)
-        if dark:
+        if t['border-strong'] is None:
+            g = [hx('field'), hx('surface'), hx('bg')]
+            L = None
+            for cand in [i/400 for i in range(400)] if dark else [1-i/400 for i in range(400)]:
+                h = hexof((cand, 0.022, N))
+                if all(wcag(h, x) >= 3.05 for x in g): L = cand; break
+            t['border-strong'] = (round(L,3), 0.022, N)
+        if dark and t['danger'] is None:
             # brick lifted until it reads as text on panel (shadcn uses text-destructive for errors)
             t['danger'] = (fit_L(0.115, 27, hx('surface-2'), 4.6, True, 0.55, 0.9), 0.115, 27)
         res = {k: hexof(v) for k, v in t.items()}

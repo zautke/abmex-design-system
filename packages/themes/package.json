@@ -1,6 +1,6 @@
 {
   "name": "@abmex/themes",
-  "version": "0.7.0-next.9",
+  "version": "0.7.0-next.10",
   "description": "Framework-neutral ABMEX themes, tokens and motion",
   "type": "module",
   "license": "MIT",
@@ -22,10 +22,15 @@
     "./styles.css": "./dist/phosphor/phosphor.tokens.css",
     "./fonts.css": "./dist/phosphor/phosphor.fonts.css",
     "./phosphor/*": "./dist/phosphor/*",
+    "./cev/*": "./dist/cev/*",
+    "./mui": {
+      "types": "./dist/mui.d.ts",
+      "import": "./dist/mui.js"
+    },
     "./package.json": "./package.json"
   },
   "scripts": {
-    "build": "python3 src/phosphor/build/build.py && node scripts/generate-platforms.mjs && tsc -p tsconfig.json && node scripts/copy-styles.mjs",
+    "build": "python3 src/phosphor/build/build.py && python3 src/phosphor/build/build.py -f cev && node scripts/generate-platforms.mjs && tsc -p tsconfig.json && node scripts/copy-styles.mjs",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "prepack": "pnpm build"
   },

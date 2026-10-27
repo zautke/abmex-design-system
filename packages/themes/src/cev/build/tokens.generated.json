@@ -1,0 +1,991 @@
+{
+ "name": "CEV",
+ "version": 1,
+ "meta": {
+  "source": "claude-export-viewer v0.2.0 identity.css (dark pre-token app, light Phase 1); build/palette_cev.py"
+ },
+ "color": {
+  "themes": [
+   {
+    "id": "dark",
+    "name": "Dark (CEV)"
+   },
+   {
+    "id": "light",
+    "name": "Light (CEV linen)"
+   }
+  ],
+  "identities": {
+   "dark": {
+    "cev-onyx": "#0a0a0a",
+    "cev-ink": "#1a1a1a",
+    "cev-graphite": "#2a2a2a",
+    "cev-charcoal": "#333333",
+    "cev-iron": "#404040",
+    "cev-pewter": "#a0a0a0",
+    "cev-mist": "#ededed",
+    "cev-white": "#ffffff",
+    "cev-ash": "#666666",
+    "cev-ember": "#ff6b35",
+    "cev-scarlet": "#f44336",
+    "cev-clover": "#66bb6a",
+    "cev-amber": "#ffa726",
+    "cev-cyan": "#29b6f6",
+    "cev-slate": "#718096",
+    "cev-primary-hover-dark": "#fe8860",
+    "cev-primary-soft-dark": "#3a2821",
+    "cev-primary-soft-fg-dark": "#fe6c37",
+    "cev-danger-hover-dark": "#ff5b4c",
+    "cev-danger-soft-dark": "#3a2420",
+    "cev-danger-soft-fg-dark": "#fe5748",
+    "cev-success-hover-dark": "#74ca78",
+    "cev-success-soft-dark": "#263026",
+    "cev-warning-hover-dark": "#febd6f",
+    "cev-warning-soft-dark": "#392e22",
+    "cev-info-hover-dark": "#53c4fe",
+    "cev-info-soft-dark": "#233038",
+    "cev-info-soft-fg-dark": "#2ab6f6",
+    "cev-emphasis-hover-dark": "#7e8da4",
+    "cev-emphasis-soft-dark": "#27292b",
+    "cev-emphasis-soft-fg-dark": "#8493aa"
+   },
+   "light": {
+    "cev-white": "#ffffff",
+    "cev-linen": "#f7f6f3",
+    "cev-bone": "#efede8",
+    "cev-sand": "#e4e1da",
+    "cev-stone": "#cfcbc2",
+    "cev-taupe": "#5c5a55",
+    "cev-soot": "#2a2926",
+    "cev-ink": "#1a1a1a",
+    "cev-khaki": "#8a877f",
+    "cev-rust": "#c54303",
+    "cev-crimson": "#d32f2f",
+    "cev-forest": "#2e7d32",
+    "cev-tangerine": "#ed6c02",
+    "cev-cerulean": "#0676b5",
+    "cev-slate-deep": "#4a5568",
+    "cev-primary-hover-light": "#b03b02",
+    "cev-primary-soft-light": "#f5dfd8",
+    "cev-primary-soft-fg-light": "#b33c02",
+    "cev-danger-hover-light": "#c31920",
+    "cev-danger-soft-light": "#f7dedb",
+    "cev-danger-soft-fg-light": "#c41c22",
+    "cev-success-hover-light": "#1e7024",
+    "cev-success-soft-light": "#dbe6db",
+    "cev-success-soft-fg-light": "#227328",
+    "cev-warning-hover-light": "#d86201",
+    "cev-warning-soft-light": "#f9e5da",
+    "cev-warning-soft-fg-light": "#aa4b00",
+    "cev-info-hover-light": "#0368a1",
+    "cev-info-soft-light": "#dbe5ee",
+    "cev-info-soft-fg-light": "#0569a3",
+    "cev-emphasis-hover-light": "#3e495b",
+    "cev-emphasis-soft-light": "#dfdfe0",
+    "cev-copper": "#e56800"
+   }
+  },
+  "tokens": [
+   {
+    "name": "bg",
+    "value": {
+     "dark": "#0a0a0a",
+     "light": "#ffffff"
+    },
+    "usage": "App background (deep phosphor-black / bone paper). Ground for `fg`, `fg-strong`, `fg-muted`.",
+    "identity": {
+     "dark": "cev-onyx",
+     "light": "cev-white"
+    }
+   },
+   {
+    "name": "bg-sunken",
+    "value": {
+     "dark": "#0a0a0a",
+     "light": "#ffffff"
+    },
+    "usage": "Recessed wells below the app ground: code blocks, terminal output, inset sidebars.",
+    "identity": {
+     "dark": "cev-onyx",
+     "light": "cev-white"
+    }
+   },
+   {
+    "name": "surface",
+    "value": {
+     "dark": "#1a1a1a",
+     "light": "#f7f6f3"
+    },
+    "usage": "The muted surface: sidebar, inspector, Questions block, cards (shadcn `card`, HeroUI `surface`). Ground for every text token.",
+    "identity": {
+     "dark": "cev-ink",
+     "light": "cev-linen"
+    }
+   },
+   {
+    "name": "surface-2",
+    "value": {
+     "dark": "#2a2a2a",
+     "light": "#efede8"
+    },
+    "usage": "Raised fill: the prompt/input block, active tab, hovered rows, secondary buttons.",
+    "identity": {
+     "dark": "cev-graphite",
+     "light": "cev-bone"
+    }
+   },
+   {
+    "name": "surface-3",
+    "value": {
+     "dark": "#333333",
+     "light": "#e4e1da"
+    },
+    "usage": "Pressed / selected neutral fill, segmented-control thumb.",
+    "identity": {
+     "dark": "cev-charcoal",
+     "light": "cev-sand"
+    }
+   },
+   {
+    "name": "overlay",
+    "value": {
+     "dark": "#2a2a2a",
+     "light": "#efede8"
+    },
+    "usage": "Floating layers: popover, menu, tooltip, dialog. One step above `surface`.",
+    "identity": {
+     "dark": "cev-graphite",
+     "light": "cev-bone"
+    }
+   },
+   {
+    "name": "field",
+    "value": {
+     "dark": "#1a1a1a",
+     "light": "#f7f6f3"
+    },
+    "usage": "Input, textarea and select background (the raised green of the prompt block).",
+    "identity": {
+     "dark": "cev-ink",
+     "light": "cev-linen"
+    }
+   },
+   {
+    "name": "border",
+    "value": {
+     "dark": "#404040",
+     "light": "#cfcbc2"
+    },
+    "usage": "Hairline: card edges, dividers, table rules. Decorative only (below 3:1 by design).",
+    "identity": {
+     "dark": "cev-iron",
+     "light": "cev-stone"
+    }
+   },
+   {
+    "name": "border-strong",
+    "value": {
+     "dark": "#a0a0a0",
+     "light": "#5c5a55"
+    },
+    "usage": "Control boundary: input, checkbox and select outlines; 3:1 on `field`, `surface`, `bg`.",
+    "identity": {
+     "dark": "cev-pewter",
+     "light": "cev-taupe"
+    }
+   },
+   {
+    "name": "fg",
+    "value": {
+     "dark": "#ededed",
+     "light": "#2a2926"
+    },
+    "usage": "Body text: golden khaki (dark) / olive ink (light) on every ground, including the muted `surface`.",
+    "identity": {
+     "dark": "cev-mist",
+     "light": "cev-soot"
+    }
+   },
+   {
+    "name": "fg-strong",
+    "value": {
+     "dark": "#ffffff",
+     "light": "#1a1a1a"
+    },
+    "usage": "Headings, active labels, values on every ground.",
+    "identity": {
+     "dark": "cev-white",
+     "light": "cev-ink"
+    }
+   },
+   {
+    "name": "fg-sage",
+    "value": {
+     "dark": "#ededed",
+     "light": "#2a2926"
+    },
+    "usage": "Secondary text role: sage (dark) / forest ink (light). Inactive tabs, neutral values, table body in dense data.",
+    "identity": {
+     "dark": "cev-mist",
+     "light": "cev-soot"
+    }
+   },
+   {
+    "name": "fg-muted",
+    "value": {
+     "dark": "#a0a0a0",
+     "light": "#5c5a55"
+    },
+    "usage": "Secondary text, captions, placeholders: 4.5:1 on every ground up to `surface-2`.",
+    "identity": {
+     "dark": "cev-pewter",
+     "light": "cev-taupe"
+    }
+   },
+   {
+    "name": "fg-disabled",
+    "value": {
+     "dark": "#666666",
+     "light": "#8a877f"
+    },
+    "usage": "Disabled labels only (WCAG-exempt).",
+    "identity": {
+     "dark": "cev-ash",
+     "light": "cev-khaki"
+    }
+   },
+   {
+    "name": "folder",
+    "value": {
+     "dark": "#1a1a1a",
+     "light": "#f7f6f3"
+    },
+    "usage": "Manila folder: tab strip, inactive tabs and the frame that wraps the paper pane.",
+    "identity": {
+     "dark": "cev-ink",
+     "light": "cev-linen"
+    }
+   },
+   {
+    "name": "paper",
+    "value": {
+     "dark": "#2a2a2a",
+     "light": "#efede8"
+    },
+    "usage": "Paper lying on the folder: the active tab and the pane it opens (ivory in light).",
+    "identity": {
+     "dark": "cev-graphite",
+     "light": "cev-bone"
+    }
+   },
+   {
+    "name": "folder-edge",
+    "value": {
+     "dark": "#404040",
+     "light": "#cfcbc2"
+    },
+    "usage": "Hairline dividers between folder tabs. Decorative only.",
+    "identity": {
+     "dark": "cev-iron",
+     "light": "cev-stone"
+    }
+   },
+   {
+    "name": "page",
+    "value": {
+     "dark": "#0a0a0a",
+     "light": "#ffffff"
+    },
+    "usage": "Ground the folder sits on (app page behind the frame).",
+    "identity": {
+     "dark": "cev-onyx",
+     "light": "cev-white"
+    }
+   },
+   {
+    "name": "primary",
+    "value": {
+     "dark": "#ff6b35",
+     "light": "#c54303"
+    },
+    "usage": "Mint / deep jade: the one saturated color; the brand signal. Primary buttons, active nav, toggles on, progress. As text it holds 4.5:1 on `bg`/`surface`.",
+    "identity": {
+     "dark": "cev-ember",
+     "light": "cev-rust"
+    }
+   },
+   {
+    "name": "primary-fg",
+    "value": {
+     "dark": "#0a0a0a",
+     "light": "#f7f6f3"
+    },
+    "usage": "Text and icons on a `primary` or `primary-hover` fill.",
+    "identity": {
+     "dark": "cev-onyx",
+     "light": "cev-linen"
+    }
+   },
+   {
+    "name": "primary-hover",
+    "value": {
+     "dark": "#fe8860",
+     "light": "#b03b02"
+    },
+    "usage": "Hover / pressed state of a `primary` fill.",
+    "identity": {
+     "dark": "cev-primary-hover-dark",
+     "light": "cev-primary-hover-light"
+    }
+   },
+   {
+    "name": "primary-soft",
+    "value": {
+     "dark": "#3a2821",
+     "light": "#f5dfd8"
+    },
+    "usage": "Tinted background for primary badges, alerts and selected rows.",
+    "identity": {
+     "dark": "cev-primary-soft-dark",
+     "light": "cev-primary-soft-light"
+    }
+   },
+   {
+    "name": "primary-soft-fg",
+    "value": {
+     "dark": "#fe6c37",
+     "light": "#b33c02"
+    },
+    "usage": "Primary text that reads on `primary-soft`, `bg`, `surface` and `surface-2` (4.5:1).",
+    "identity": {
+     "dark": "cev-primary-soft-fg-dark",
+     "light": "cev-primary-soft-fg-light"
+    }
+   },
+   {
+    "name": "danger",
+    "value": {
+     "dark": "#f44336",
+     "light": "#d32f2f"
+    },
+    "usage": "Matte brick: destructive actions, invalid fields, error text. As text it holds 4.5:1 on `bg`/`surface`.",
+    "identity": {
+     "dark": "cev-scarlet",
+     "light": "cev-crimson"
+    }
+   },
+   {
+    "name": "danger-fg",
+    "value": {
+     "dark": "#0a0a0a",
+     "light": "#f7f6f3"
+    },
+    "usage": "Text and icons on a `danger` or `danger-hover` fill.",
+    "identity": {
+     "dark": "cev-onyx",
+     "light": "cev-linen"
+    }
+   },
+   {
+    "name": "danger-hover",
+    "value": {
+     "dark": "#ff5b4c",
+     "light": "#c31920"
+    },
+    "usage": "Hover / pressed state of a `danger` fill.",
+    "identity": {
+     "dark": "cev-danger-hover-dark",
+     "light": "cev-danger-hover-light"
+    }
+   },
+   {
+    "name": "danger-soft",
+    "value": {
+     "dark": "#3a2420",
+     "light": "#f7dedb"
+    },
+    "usage": "Tinted background for danger badges, alerts and selected rows.",
+    "identity": {
+     "dark": "cev-danger-soft-dark",
+     "light": "cev-danger-soft-light"
+    }
+   },
+   {
+    "name": "danger-soft-fg",
+    "value": {
+     "dark": "#fe5748",
+     "light": "#c41c22"
+    },
+    "usage": "Danger text that reads on `danger-soft`, `bg`, `surface` and `surface-2` (4.5:1).",
+    "identity": {
+     "dark": "cev-danger-soft-fg-dark",
+     "light": "cev-danger-soft-fg-light"
+    }
+   },
+   {
+    "name": "success",
+    "value": {
+     "dark": "#66bb6a",
+     "light": "#2e7d32"
+    },
+    "usage": "Code green: completed, connected, passing. As text it holds 4.5:1 on `bg`/`surface`.",
+    "identity": {
+     "dark": "cev-clover",
+     "light": "cev-forest"
+    }
+   },
+   {
+    "name": "success-fg",
+    "value": {
+     "dark": "#0a0a0a",
+     "light": "#f7f6f3"
+    },
+    "usage": "Text and icons on a `success` or `success-hover` fill.",
+    "identity": {
+     "dark": "cev-onyx",
+     "light": "cev-linen"
+    }
+   },
+   {
+    "name": "success-hover",
+    "value": {
+     "dark": "#74ca78",
+     "light": "#1e7024"
+    },
+    "usage": "Hover / pressed state of a `success` fill.",
+    "identity": {
+     "dark": "cev-success-hover-dark",
+     "light": "cev-success-hover-light"
+    }
+   },
+   {
+    "name": "success-soft",
+    "value": {
+     "dark": "#263026",
+     "light": "#dbe6db"
+    },
+    "usage": "Tinted background for success badges, alerts and selected rows.",
+    "identity": {
+     "dark": "cev-success-soft-dark",
+     "light": "cev-success-soft-light"
+    }
+   },
+   {
+    "name": "success-soft-fg",
+    "value": {
+     "dark": "#66bb6a",
+     "light": "#227328"
+    },
+    "usage": "Success text that reads on `success-soft`, `bg`, `surface` and `surface-2` (4.5:1).",
+    "identity": {
+     "dark": "cev-clover",
+     "light": "cev-success-soft-fg-light"
+    }
+   },
+   {
+    "name": "warning",
+    "value": {
+     "dark": "#ffa726",
+     "light": "#ed6c02"
+    },
+    "usage": "Matte ochre (oranger than the gold text): degraded, pending attention. Always dark text on the fill.",
+    "identity": {
+     "dark": "cev-amber",
+     "light": "cev-tangerine"
+    }
+   },
+   {
+    "name": "warning-fg",
+    "value": {
+     "dark": "#0a0a0a",
+     "light": "#1a1a1a"
+    },
+    "usage": "Text and icons on a `warning` or `warning-hover` fill.",
+    "identity": {
+     "dark": "cev-onyx",
+     "light": "cev-ink"
+    }
+   },
+   {
+    "name": "warning-hover",
+    "value": {
+     "dark": "#febd6f",
+     "light": "#d86201"
+    },
+    "usage": "Hover / pressed state of a `warning` fill.",
+    "identity": {
+     "dark": "cev-warning-hover-dark",
+     "light": "cev-warning-hover-light"
+    }
+   },
+   {
+    "name": "warning-soft",
+    "value": {
+     "dark": "#392e22",
+     "light": "#f9e5da"
+    },
+    "usage": "Tinted background for warning badges, alerts and selected rows.",
+    "identity": {
+     "dark": "cev-warning-soft-dark",
+     "light": "cev-warning-soft-light"
+    }
+   },
+   {
+    "name": "warning-soft-fg",
+    "value": {
+     "dark": "#ffa726",
+     "light": "#aa4b00"
+    },
+    "usage": "Warning text that reads on `warning-soft`, `bg`, `surface` and `surface-2` (4.5:1).",
+    "identity": {
+     "dark": "cev-amber",
+     "light": "cev-warning-soft-fg-light"
+    }
+   },
+   {
+    "name": "info",
+    "value": {
+     "dark": "#29b6f6",
+     "light": "#0676b5"
+    },
+    "usage": "Matte slate-cyan: neutral notices, help, links to docs. As text it holds 4.5:1 on `bg`/`surface`.",
+    "identity": {
+     "dark": "cev-cyan",
+     "light": "cev-cerulean"
+    }
+   },
+   {
+    "name": "info-fg",
+    "value": {
+     "dark": "#0a0a0a",
+     "light": "#f7f6f3"
+    },
+    "usage": "Text and icons on a `info` or `info-hover` fill.",
+    "identity": {
+     "dark": "cev-onyx",
+     "light": "cev-linen"
+    }
+   },
+   {
+    "name": "info-hover",
+    "value": {
+     "dark": "#53c4fe",
+     "light": "#0368a1"
+    },
+    "usage": "Hover / pressed state of a `info` fill.",
+    "identity": {
+     "dark": "cev-info-hover-dark",
+     "light": "cev-info-hover-light"
+    }
+   },
+   {
+    "name": "info-soft",
+    "value": {
+     "dark": "#233038",
+     "light": "#dbe5ee"
+    },
+    "usage": "Tinted background for info badges, alerts and selected rows.",
+    "identity": {
+     "dark": "cev-info-soft-dark",
+     "light": "cev-info-soft-light"
+    }
+   },
+   {
+    "name": "info-soft-fg",
+    "value": {
+     "dark": "#2ab6f6",
+     "light": "#0569a3"
+    },
+    "usage": "Info text that reads on `info-soft`, `bg`, `surface` and `surface-2` (4.5:1).",
+    "identity": {
+     "dark": "cev-info-soft-fg-dark",
+     "light": "cev-info-soft-fg-light"
+    }
+   },
+   {
+    "name": "emphasis",
+    "value": {
+     "dark": "#718096",
+     "light": "#4a5568"
+    },
+    "usage": "Mauve: italic emphasis, highlights in prose, a fourth category hue. As text it holds 4.5:1 on `bg`/`surface`.",
+    "identity": {
+     "dark": "cev-slate",
+     "light": "cev-slate-deep"
+    }
+   },
+   {
+    "name": "emphasis-fg",
+    "value": {
+     "dark": "#0a0a0a",
+     "light": "#f7f6f3"
+    },
+    "usage": "Text and icons on a `emphasis` or `emphasis-hover` fill.",
+    "identity": {
+     "dark": "cev-onyx",
+     "light": "cev-linen"
+    }
+   },
+   {
+    "name": "emphasis-hover",
+    "value": {
+     "dark": "#7e8da4",
+     "light": "#3e495b"
+    },
+    "usage": "Hover / pressed state of a `emphasis` fill.",
+    "identity": {
+     "dark": "cev-emphasis-hover-dark",
+     "light": "cev-emphasis-hover-light"
+    }
+   },
+   {
+    "name": "emphasis-soft",
+    "value": {
+     "dark": "#27292b",
+     "light": "#dfdfe0"
+    },
+    "usage": "Tinted background for emphasis badges, alerts and selected rows.",
+    "identity": {
+     "dark": "cev-emphasis-soft-dark",
+     "light": "cev-emphasis-soft-light"
+    }
+   },
+   {
+    "name": "emphasis-soft-fg",
+    "value": {
+     "dark": "#8493aa",
+     "light": "#4a5568"
+    },
+    "usage": "Emphasis text that reads on `emphasis-soft`, `bg`, `surface` and `surface-2` (4.5:1).",
+    "identity": {
+     "dark": "cev-emphasis-soft-fg-dark",
+     "light": "cev-slate-deep"
+    }
+   },
+   {
+    "name": "focus",
+    "value": {
+     "dark": "#ff6b35",
+     "light": "#c54303"
+    },
+    "usage": "Focus ring, 2px solid with 2px offset; 3:1 on every ground.",
+    "identity": {
+     "dark": "cev-ember",
+     "light": "cev-rust"
+    }
+   },
+   {
+    "name": "link",
+    "value": {
+     "dark": "#fe6c37",
+     "light": "#b33c02"
+    },
+    "usage": "Inline links on any ground.",
+    "identity": {
+     "dark": "cev-primary-soft-fg-dark",
+     "light": "cev-primary-soft-fg-light"
+    }
+   },
+   {
+    "name": "selection",
+    "value": {
+     "dark": "#3a2821",
+     "light": "#f5dfd8"
+    },
+    "usage": "Text selection and highlighted search matches.",
+    "identity": {
+     "dark": "cev-primary-soft-dark",
+     "light": "cev-primary-soft-light"
+    }
+   },
+   {
+    "name": "code-bg",
+    "value": {
+     "dark": "#0a0a0a",
+     "light": "#ffffff"
+    },
+    "usage": "Code surface: blends toward app bg, bordered by `border`.",
+    "identity": {
+     "dark": "cev-onyx",
+     "light": "cev-white"
+    }
+   },
+   {
+    "name": "scrollbar",
+    "value": {
+     "dark": "#a0a0a0",
+     "light": "#5c5a55"
+    },
+    "usage": "Scrollbar thumb.",
+    "identity": {
+     "dark": "cev-pewter",
+     "light": "cev-taupe"
+    }
+   },
+   {
+    "name": "chart-1",
+    "value": {
+     "dark": "#ff6b35",
+     "light": "#c54303"
+    },
+    "usage": "Categorical series 1; 3:1 on `surface` in both themes.",
+    "identity": {
+     "dark": "cev-ember",
+     "light": "cev-rust"
+    }
+   },
+   {
+    "name": "chart-2",
+    "value": {
+     "dark": "#29b6f6",
+     "light": "#0676b5"
+    },
+    "usage": "Categorical series 2; 3:1 on `surface` in both themes.",
+    "identity": {
+     "dark": "cev-cyan",
+     "light": "cev-cerulean"
+    }
+   },
+   {
+    "name": "chart-3",
+    "value": {
+     "dark": "#66bb6a",
+     "light": "#2e7d32"
+    },
+    "usage": "Categorical series 3; 3:1 on `surface` in both themes.",
+    "identity": {
+     "dark": "cev-clover",
+     "light": "cev-forest"
+    }
+   },
+   {
+    "name": "chart-4",
+    "value": {
+     "dark": "#ffa726",
+     "light": "#e56800"
+    },
+    "usage": "Categorical series 4; 3:1 on `surface` in both themes.",
+    "identity": {
+     "dark": "cev-amber",
+     "light": "cev-copper"
+    }
+   },
+   {
+    "name": "chart-5",
+    "value": {
+     "dark": "#f44336",
+     "light": "#d32f2f"
+    },
+    "usage": "Categorical series 5; 3:1 on `surface` in both themes.",
+    "identity": {
+     "dark": "cev-scarlet",
+     "light": "cev-crimson"
+    }
+   },
+   {
+    "name": "backdrop",
+    "value": {
+     "dark": "rgba(0, 0, 0, 0.6)",
+     "light": "rgba(0, 0, 0, 0.32)"
+    },
+    "usage": "Modal scrim behind dialogs and sheets."
+   }
+  ]
+ },
+ "type": {
+  "fonts": [],
+  "families": {
+   "sans": "\"Rethink Sans\", ui-sans-serif, system-ui, sans-serif",
+   "display": "\"Rethink Sans\", ui-sans-serif, system-ui, sans-serif",
+   "mono": "\"Victor Mono\", ui-monospace, SFMono-Regular, Menlo, monospace"
+  },
+  "groups": [
+   {
+    "name": "Display",
+    "family": "display",
+    "styles": [
+     {
+      "name": "display-xl",
+      "fontSize": "40px",
+      "lineHeight": "44px",
+      "fontWeight": 600,
+      "letterSpacing": "-0.025em",
+      "usage": "Page and hero titles, one per view.",
+      "sample": "Conversation initiation"
+     },
+     {
+      "name": "display-lg",
+      "fontSize": "28px",
+      "lineHeight": "34px",
+      "fontWeight": 600,
+      "letterSpacing": "-0.02em",
+      "usage": "Section titles."
+     },
+     {
+      "name": "display-md",
+      "fontSize": "20px",
+      "lineHeight": "26px",
+      "fontWeight": 600,
+      "letterSpacing": "-0.015em",
+      "usage": "Panel and dialog titles."
+     }
+    ]
+   },
+   {
+    "name": "Text",
+    "family": "sans",
+    "styles": [
+     {
+      "name": "title",
+      "fontSize": "16px",
+      "lineHeight": "24px",
+      "fontWeight": 600,
+      "usage": "Card titles, table headers in prose layouts."
+     },
+     {
+      "name": "body",
+      "fontSize": "15px",
+      "lineHeight": "22px",
+      "fontWeight": 400,
+      "usage": "Default UI and prose text in `fg`."
+     },
+     {
+      "name": "body-sm",
+      "fontSize": "13px",
+      "lineHeight": "20px",
+      "fontWeight": 400,
+      "usage": "Dense UI, helper text in `fg-muted`."
+     },
+     {
+      "name": "label",
+      "fontSize": "12px",
+      "lineHeight": "16px",
+      "fontWeight": 500,
+      "letterSpacing": "0.01em",
+      "usage": "Form labels, badges, button text at sm size."
+     }
+    ]
+   },
+   {
+    "name": "Data",
+    "family": "mono",
+    "styles": [
+     {
+      "name": "mono",
+      "fontSize": "13px",
+      "lineHeight": "20px",
+      "fontWeight": 400,
+      "usage": "Code, terminal output, token counts, hex values, IDs.",
+      "sample": "158,029 tokens · 15% used"
+     },
+     {
+      "name": "mono-sm",
+      "fontSize": "12px",
+      "lineHeight": "18px",
+      "fontWeight": 400,
+      "usage": "Status lines, key hints (ctrl+p), table numerics."
+     },
+     {
+      "name": "mono-emphasis",
+      "fontSize": "13px",
+      "lineHeight": "20px",
+      "fontWeight": 400,
+      "fontStyle": "italic",
+      "usage": "Victor Mono cursive italic in `emphasis-soft-fg` for emphasis inside data."
+     }
+    ]
+   }
+  ]
+ },
+ "spacing": {
+  "tokens": [
+   {
+    "name": "space-1",
+    "value": "4px",
+    "usage": "Icon-to-label gap, badge padding-y."
+   },
+   {
+    "name": "space-2",
+    "value": "8px",
+    "usage": "Control padding-y, tight stacks."
+   },
+   {
+    "name": "space-3",
+    "value": "12px",
+    "usage": "Control padding-x, table cell padding."
+   },
+   {
+    "name": "space-4",
+    "value": "16px",
+    "usage": "Card padding (dense), form row gap."
+   },
+   {
+    "name": "space-6",
+    "value": "24px",
+    "usage": "Card padding, section gap inside panels."
+   },
+   {
+    "name": "space-8",
+    "value": "32px",
+    "usage": "Panel gutters."
+   },
+   {
+    "name": "space-12",
+    "value": "48px",
+    "usage": "Page section spacing."
+   }
+  ]
+ },
+ "radius": {
+  "tokens": [
+   {
+    "name": "radius-sm",
+    "value": "2px",
+    "usage": "Badges, kbd, checkboxes (shadcn radius-sm ≈ 0.6×)."
+   },
+   {
+    "name": "radius",
+    "value": "4px",
+    "usage": "Base: buttons, cards, menus (--radius, shadcn radius-lg)."
+   },
+   {
+    "name": "radius-field",
+    "value": "6px",
+    "usage": "Inputs and selects (HeroUI field-radius = 1.5×)."
+   },
+   {
+    "name": "radius-full",
+    "value": "9999px",
+    "usage": "Status dots, avatars, switches."
+   }
+  ]
+ },
+ "shadow": {
+  "tokens": [
+   {
+    "name": "shadow-surface",
+    "value": {
+     "dark": "none",
+     "light": "0 1px 3px rgba(0, 0, 0, 0.08)"
+    },
+    "usage": "Cards: none in dark (hairline does the work), a faint lift on paper."
+   },
+   {
+    "name": "shadow-field",
+    "value": {
+     "dark": "none",
+     "light": "0 1px 2px rgba(0, 0, 0, 0.05)"
+    },
+    "usage": "Inputs."
+   },
+   {
+    "name": "shadow-overlay",
+    "value": {
+     "dark": "0 24px 56px rgba(0, 0, 0, 0.15)",
+     "light": "0 24px 56px rgba(0, 0, 0, 0.15)"
+    },
+    "usage": "Popovers, menus, dialogs."
+   }
+  ]
+ }
+}
