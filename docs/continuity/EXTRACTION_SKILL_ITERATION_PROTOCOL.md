@@ -30,6 +30,8 @@ After every terminal outcome, freeze the evidence packet and run `learn-extract-
 
 All skill edits belong in the canonical `~/.agents` repository via an isolated branch, with Codex paths remaining symlinks. Runtime facilities belong in ABMEX packages, not copied skill assets or demo-only glue.
 
+Track every actual extraction/composition/learn companion/evolution-method file update in KB `projects/design-system/donor-component-extraction-parent/extraction-skill-file-changelog-ledger`: exact before/after file/version/hash/commit where known, rationale, originating run, review/promotion and validation. Keep proposed candidates and no-change decisions separate from actual updates; preserve unknown historical identities. User-assigned curator created and verified this ledger on 2026-10-27.
+
 ## First observed attempt and next operational trial
 
 ESI-20261027-001 failed discovery acceptance: full dependency closure, exact target-branch reuse proof and token mapping incomplete. Source-backed findings and independent critique live on `feat/extraction-skill-iteration-001`, draft PR17; integration protocol is draft PR15. No component implementation or release accepted.
