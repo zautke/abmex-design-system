@@ -65,3 +65,7 @@ Execution terminal FAIL/partial; bounded recording and retrospective present; in
 No product build/test/browser/package acceptance ran. No runtime code changed, servers/browser tabs/dependencies started, app data writes, donor deletions, merges or publishing. Original dirty checkouts preserved.
 
 Before another broad extraction attempt: establish approved normal package/tool bootstrap, complete current-source/style/license provenance, correct proposal against all mandatory target capabilities, then review decomposition and implement bottom-up. Replay the tool-reference trial on a materially different conflict and a negative case before promotion.
+
+## Validation addendum
+
+Skill-creator quick_validate.py was attempted using current Python and existing native CPython3.13.13. Both failed before validation with ModuleNotFoundError: yaml. No dependency installed; that validator is NOT RUN/unavailable, not passed. Exact source hashes, one-file diff/content assertions, receipt-script help/representative invocation, two independent reviews and final artifact-manifest checks remain passed. This reference-only trial changes no SKILL.md frontmatter. Curator appended/read back the limitation in the canonical CHANGELOG.

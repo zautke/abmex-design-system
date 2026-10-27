@@ -1,9 +1,9 @@
 {
   "run": "ESI-20261027-002",
   "algorithm": "sha256",
-  "scope": "final artifacts; original input separately preserved in0f2afaa; post-freeze EOF formatting only in supplement/script",
+  "scope": "final artifacts; original input in0f2afaa; formatting/validation addenda explicit",
   "artifacts": {
-    "REPORT.md": "ffc260d8bfc307a6792b96f8ce7a41636231c045a06f658be9111f28779bbd8b",
+    "REPORT.md": "c55125c2f54fae28f9761ec8bd8b5d2cdff0add033f9b3d9403ea2d84e1cca35",
     "TEAM_CONTEXT.md": "1084b7dcbefd50213c692beb169d1dde69fe83ac2c5c61ea858f7fbd509d22cc",
     "amended-candidate.md": "c05ee2e6ba5298e6e7b0e7a75cec854a76a4612130fe50ce91c61374d0280f2a",
     "candidate.diff": "2f08f87687bc3576effb0ededf96e82ea9508c2faab778b31d0c95508011d078",
@@ -28,7 +28,7 @@
     "style-dispatch.txt": "3b75155c8521cae39a4de7a289ee77273f8860e306f557861b7e49cf371dbc57",
     "token-events.md": "33d68824a59cf5cc6e1abcc60ed272938560e4ce6b642888197cf744cb3e5d34",
     "token-map.md": "08e4bf5bf9ecc331134e72a992127e72101174aa46a2387ce7d7ea52549b1ef5",
-    "tool-pr-body.md": "6256f0de1fcfd0687773f845fbd5b47a724347390d5c31ad2bb304c3f4e8d8e4",
+    "tool-pr-body.md": "2f8c4faea99ca65497d6f1430f0b8c45892d79bb0a7c0743c6d50e5d99a03acc",
     "verification.json": "8a895049d704c4ef8cfeda854bce55ca625ea308fb1e09028cece253872e7cb3",
     "verification.py": "9e221e50e22cd8e4d28b9341caafb4ec8b6237662e0454093a5fbbf7808e3d9a"
   }
