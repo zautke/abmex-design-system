@@ -29,3 +29,9 @@ Every attempt records observable session actions, supplied/withheld context, too
 After every terminal outcome, freeze the evidence packet and run `learn-extract-abmex-components` through `learn-skill-evolve`. Compare prior episodes and current guidance. Two fresh independent reviewers examine fidelity/requirements and information gain/generalization, including proposed changes to the learning method. Record adopted/trial/deferred/rejected/already-covered dispositions; no edit is valid when supported. User assent is not inferred. Consequential changes require replay and a materially different holdout before effectiveness claims.
 
 All skill edits belong in the canonical `~/.agents` repository via an isolated branch, with Codex paths remaining symlinks. Runtime facilities belong in ABMEX packages, not copied skill assets or demo-only glue.
+
+## First observed attempt and next operational trial
+
+ESI-20261027-001 failed discovery acceptance: full dependency closure, exact target-branch reuse proof and token mapping incomplete. Source-backed findings and independent critique live on `feat/extraction-skill-iteration-001`, draft PR17; integration protocol is draft PR15. No component implementation or release accepted.
+
+For the next attempt, trial an early saved dependency/unknown checkpoint and a budget calibrated from measured tool latency, with branch-local inventory identity established first. Preserve original acceptance; record setup time separately. These are episode-scoped operational hypotheses, not proven extraction-skill improvements or automatic reasons to add generic instructions. Compare coverage and checkpoint-at-deadline, then test a different donor boundary before generalizing. Learning/review disposition is canonical in the run ledger; do not infer user assent.
