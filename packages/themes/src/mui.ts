@@ -1,6 +1,9 @@
 // MUI 7 adapter: ThemeOptions whose palette is ABMEX role variables, so one MUI
 // theme follows every family (phosphor, cev, …) and both modes from CSS alone.
-// Usage: createTheme(muiThemeOptions(), appOverrides) — createTheme deep-merges.
+// Usage: merge app overrides INTO the options, e.g.
+//   const o = muiThemeOptions(); createTheme({ ...o, typography: { ...o.typography, fontSize: 14 } })
+// With cssVariables, createTheme's extra arguments are merged after the CSS
+// variables are generated, so overrides passed that way never reach them.
 // Pair with <InitColorSchemeScript attribute='[data-mode="%s"]' defaultMode="dark" />
 // and import a family's tokens (e.g. "@abmex/themes/phosphor/phosphor.tailwind.css").
 // Requires @mui/material >= 7.3 (nativeColor lets MUI derive tones from var()).
