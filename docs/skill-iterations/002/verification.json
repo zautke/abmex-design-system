@@ -1,0 +1,16 @@
+{
+  "subject": "apps/web/src/app/dashboard/components/AppSidebar.tsx",
+  "symbol_lines": [
+    56,
+    139
+  ],
+  "revision": "c0b0e5f82973b8a5c929d05f58cef48463bc7b73",
+  "working_file_equals_git_blob": true,
+  "tool_cached_symbol_sha256": "b0fb0bfbfa38058b235de86988abacef7c0cb723c7f311e4c84d2b2b31997768",
+  "git_symbol_body_sha256": "b0fb0bfbfa38058b235de86988abacef7c0cb723c7f311e4c84d2b2b31997768",
+  "git_symbol_body_matches_cached_hash": true,
+  "git_slice_prefix_before_cached_symbol": "export ",
+  "git_blob_sha256": "8eb7309531f37703638dda766c398a6520fd26466ccd14600fba90928dda74a9",
+  "tool_reported_git_sha_mismatch": true,
+  "scope": "this declared symbol body only; no other source or runtime guarantee"
+}

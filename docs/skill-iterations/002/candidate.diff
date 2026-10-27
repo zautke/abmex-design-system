@@ -1,0 +1,11 @@
+Candidate (TRIAL; tool profile only; not applied):
+
+--- a/using-codemunch/references/troubleshooting.md
++++ b/using-codemunch/references/troubleshooting.md
+@@
+ | `negative_evidence` | Feature absent — report gap, stop searching |
++| Conflicting verification fields | If `content_verified`/`_freshness` conflicts with `git_sha_verification`, do not treat either field alone as source identity. Compare the exact requested symbol body and returned body hash with that path at the declared Git revision, then compare the working file to that revision's blob. Account only for explicit AST boundary wrappers (for example, an `export` prefix); do not normalize broadly. Record the proof's symbol/file/revision scope. A match anchors only that body, not imports, adjacent symbols, package artifacts or runtime; if reproducible identity cannot be established, keep it unresolved. |
+
+Why trial: ESI-002's Codemunch receipt had `content_verified=true` and `_freshness=fresh` alongside `git_sha_mismatch`. A post-evaluation, independently checkable body-vs-Git comparison resolved the exact `AppSidebar` identity, including its `export ` wrapper; broad source/package/token closure remained FAIL. An initial over-escaped newline comparison falsely returned non-equality before the corrected boundary-aware comparison. Existing tool guidance says to verify freshness but does not explain this contradictory receipt or bounded recovery. One episode establishes concrete utility, not general tool correctness; replay on another mismatch is required before adoption.
+
+Do not append this to the extraction target: it is Codemunch-specific retrieval troubleshooting, not a general decomposition requirement. Do not use it to waive unrelated source freshness, inventory, dependency, license, token, build or runtime checks.
