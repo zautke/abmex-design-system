@@ -1,0 +1,106 @@
+[
+  {
+    "file": "apps/web/src/app/globals.css",
+    "root": "/Volumes/FLOUNDER/dev/labsupapg",
+    "head": "c0b0e5f82973b8a5c929d05f58cef48463bc7b73",
+    "working_sha256": "5c13569723984488649717265ca4676d3fc42ac864004cc6e2bc02f50a9cb883",
+    "cached_sha256": "5c13569723984488649717265ca4676d3fc42ac864004cc6e2bc02f50a9cb883",
+    "cached_exact": true,
+    "cached_plus_final_lf": false,
+    "working_equals_head_blob": true,
+    "head_blob_sha256": "5c13569723984488649717265ca4676d3fc42ac864004cc6e2bc02f50a9cb883"
+  },
+  {
+    "file": "ui/src/components/sidebar/sidebar-variants.ts",
+    "root": "/Volumes/FLOUNDER/dev/design-system",
+    "head": "a899e7051053f791dcb61b417af43c1f68ca307b",
+    "working_sha256": "6b9b805f0f80055b0b531c15e708d3ec1bf3fde519f8c91f8c402829416fe0d8",
+    "cached_sha256": "6b9b805f0f80055b0b531c15e708d3ec1bf3fde519f8c91f8c402829416fe0d8",
+    "cached_exact": true,
+    "cached_plus_final_lf": false,
+    "working_equals_head_blob": true,
+    "head_blob_sha256": "6b9b805f0f80055b0b531c15e708d3ec1bf3fde519f8c91f8c402829416fe0d8"
+  },
+  {
+    "file": "packages/themes/src/phosphor/phosphor.tokens.css",
+    "root": "/Volumes/FLOUNDER/dev/abmex-extraction-skill-iteration-003",
+    "head": "50d05040df3842d1e4d3e9db26a811a6a97a98c1",
+    "working_sha256": "0f6093def9cadccbcefe66394e8783e0844fb30fe61ee5f7671af24270a4abfe",
+    "cached_sha256": "0f6093def9cadccbcefe66394e8783e0844fb30fe61ee5f7671af24270a4abfe",
+    "cached_exact": true,
+    "cached_plus_final_lf": false,
+    "working_equals_head_blob": true,
+    "head_blob_sha256": "0f6093def9cadccbcefe66394e8783e0844fb30fe61ee5f7671af24270a4abfe"
+  },
+  {
+    "file": "packages/themes/src/phosphor/phosphor.tailwind.css",
+    "root": "/Volumes/FLOUNDER/dev/abmex-extraction-skill-iteration-003",
+    "head": "50d05040df3842d1e4d3e9db26a811a6a97a98c1",
+    "working_sha256": "641d3457ddcf088b5eafec3f0dacb9dbfb87fb8eb66617e48c0aa88a4956ae49",
+    "cached_sha256": "641d3457ddcf088b5eafec3f0dacb9dbfb87fb8eb66617e48c0aa88a4956ae49",
+    "cached_exact": true,
+    "cached_plus_final_lf": false,
+    "working_equals_head_blob": true,
+    "head_blob_sha256": "641d3457ddcf088b5eafec3f0dacb9dbfb87fb8eb66617e48c0aa88a4956ae49"
+  },
+  {
+    "file": "ui/src/components/sidebar/Sidebar.tsx",
+    "root": "/Volumes/FLOUNDER/dev/design-system",
+    "head": "a899e7051053f791dcb61b417af43c1f68ca307b",
+    "working_sha256": "147fbe9975c8ef81ee4ce7cfeb1fb38f09ceab0e715020a7b1de1f2527286b74",
+    "cached_sha256": "147fbe9975c8ef81ee4ce7cfeb1fb38f09ceab0e715020a7b1de1f2527286b74",
+    "cached_exact": true,
+    "working_equals_head_blob": true,
+    "head_blob_sha256": "147fbe9975c8ef81ee4ce7cfeb1fb38f09ceab0e715020a7b1de1f2527286b74"
+  },
+  {
+    "file": "ui/src/components/sidebar/SidebarItem.tsx",
+    "root": "/Volumes/FLOUNDER/dev/design-system",
+    "head": "a899e7051053f791dcb61b417af43c1f68ca307b",
+    "working_sha256": "8a10f4555a6475ca57a025aba11f6ff0d861f5d65e7549ab5df8486b1a5e7d1e",
+    "cached_sha256": "8a10f4555a6475ca57a025aba11f6ff0d861f5d65e7549ab5df8486b1a5e7d1e",
+    "cached_exact": true,
+    "working_equals_head_blob": true,
+    "head_blob_sha256": "8a10f4555a6475ca57a025aba11f6ff0d861f5d65e7549ab5df8486b1a5e7d1e"
+  },
+  {
+    "file": "ui/src/components/sidebar/SidebarTrigger.tsx",
+    "root": "/Volumes/FLOUNDER/dev/design-system",
+    "head": "a899e7051053f791dcb61b417af43c1f68ca307b",
+    "working_sha256": "9089c4da0c0921088e1c32940c1854b96514f32c989cec0772699f5598fb8be6",
+    "cached_sha256": "9089c4da0c0921088e1c32940c1854b96514f32c989cec0772699f5598fb8be6",
+    "cached_exact": true,
+    "working_equals_head_blob": true,
+    "head_blob_sha256": "9089c4da0c0921088e1c32940c1854b96514f32c989cec0772699f5598fb8be6"
+  },
+  {
+    "file": "ui/src/components/sidebar/SidebarRail.tsx",
+    "root": "/Volumes/FLOUNDER/dev/design-system",
+    "head": "a899e7051053f791dcb61b417af43c1f68ca307b",
+    "working_sha256": "2128813cbb33e0d4d32f7015fb10df07aedaee583fd0f1ff5368dd1899723363",
+    "cached_sha256": "2128813cbb33e0d4d32f7015fb10df07aedaee583fd0f1ff5368dd1899723363",
+    "cached_exact": true,
+    "working_equals_head_blob": true,
+    "head_blob_sha256": "2128813cbb33e0d4d32f7015fb10df07aedaee583fd0f1ff5368dd1899723363"
+  },
+  {
+    "file": "packages/themes/src/phosphor/phosphor.fonts.css",
+    "root": "/Volumes/FLOUNDER/dev/abmex-extraction-skill-iteration-003",
+    "head": "50d05040df3842d1e4d3e9db26a811a6a97a98c1",
+    "working_sha256": "9aebc8a3a2c36bdd0f693377beaeb714e56dc57c06088164fc499e24620da395",
+    "cached_sha256": "9aebc8a3a2c36bdd0f693377beaeb714e56dc57c06088164fc499e24620da395",
+    "cached_exact": true,
+    "working_equals_head_blob": true,
+    "head_blob_sha256": "9aebc8a3a2c36bdd0f693377beaeb714e56dc57c06088164fc499e24620da395"
+  },
+  {
+    "file": "packages/ui/src/components/theme-toggle/theme-transition.css",
+    "root": "/Volumes/FLOUNDER/dev/abmex-extraction-skill-iteration-003",
+    "head": "50d05040df3842d1e4d3e9db26a811a6a97a98c1",
+    "working_sha256": "95ae38889449907ec9d9856828d1ae53bbd7d7d13444e62741e2cc592f6bce9d",
+    "cached_sha256": "95ae38889449907ec9d9856828d1ae53bbd7d7d13444e62741e2cc592f6bce9d",
+    "cached_exact": true,
+    "working_equals_head_blob": true,
+    "head_blob_sha256": "95ae38889449907ec9d9856828d1ae53bbd7d7d13444e62741e2cc592f6bce9d"
+  }
+]
