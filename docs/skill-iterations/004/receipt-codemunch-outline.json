@@ -1,0 +1,9 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "#MUNCH/1 tool=get_file_outline enc=fo1\n\nrepo=zautke/labsupapg file=apps/web/src/app/layout.tsx language=tsx __tables=s:symbols:id|name|kind|signature|line|end_line|parent|summary\n\ns,apps/web/src/app/layout.tsx::rethinkSans#constant,rethinkSans,constant,\"const rethinkSans = Rethink_Sans({\n  variable: \"\"--font-rethink-sans\"\",\n  subsets: [\"\"latin\"\"],\n  weight: [\"\"400\"\", \"\"500\"\", \"\"600\"\", \"\"700\"\", \"\"800\"\"],\n  display: \"\"swap\"\",\n});\",5,10,,Constant rethinkSans\ns,apps/web/src/app/layout.tsx::metadata#constant,metadata,constant,\"const metadata: Metadata = {\n  title: \"\"Recipe Search Dashboard\"\",\n  description: \"\"Semantic recipe search powered by pgvector and pgai\"\",\n};\",12,15,,Constant metadata\ns,apps/web/src/app/layout.tsx::RootLayout#function,RootLayout,function,\"function RootLayout({\n  children,\n}: Readonly<{\n  children: React.ReactNode;\n}>)\",17,29,,\"function RootLayout({\n  children,\n}: Readonly<{\n  children: React.ReactNode;\n}>)\"\n"
+    }
+  ],
+  "isError": false
+}
