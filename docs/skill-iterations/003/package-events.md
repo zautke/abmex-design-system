@@ -1,0 +1,15 @@
+# Package provenance events — ESI-20261028-003 R2
+
+Append-only work log for package and source identity checks.
+
+| Event | Evidence / result |
+|---|---|
+| 2026-10-28 — CodeMunch navigation | Resolved `/Volumes/FLOUNDER/dev/labsupapg` to `zautke/labsupapg`; `plan_turn` recommended package lock and consumer dependency. Resolved `/Volumes/FLOUNDER/dev/design-system` to `zautke/design-system`; `plan_turn` recommended `ui/package.json`, root package manifest, and build config. Actual query found Labsupapg dependency declaration at `apps/web/package.json`, plus direct consumer import in `AppSidebar.tsx`. |
+| 2026-10-28 — repository identity/status | Labsupapg `HEAD c0b0e5f82973b8a5c929d05f58cef48463bc7b73`, branch `feat/theme-toggle-circular-reveal`; only untracked `.serena/` and `docs/superpowers/`. Design-system `HEAD a899e7051053f791dcb61b417af43c1f68ca307b`, branch `development`; numerous unrelated tracked modifications and untracked files were observed and preserved. |
+| 2026-10-28 — stale-index guard | Design-system CodeMunch index timestamp was 2026-10-03. Current manifest and known source/build files were checked against current working-tree bytes and Git status. Manifest SHA-256 `fd973161eba556d6b1e7541b2dee3793747e06826c5fe798741392eb43635d1a`; its sole observed diff adds dev dependency `@abmex/phosphor`. Current `ui/src/index.ts` and `ui/tsup.config.ts` SHA-256 values are recorded in `package-provenance.md`. |
+| 2026-10-28 — resolution failure classified | Runtime `require.resolve('@braisenly/ui')` from Labsupapg `apps/web` failed `MODULE_NOT_FOUND`; app and root `node_modules` are absent. The declared source directory and all current manifest export target files exist, including `dist` outputs. Classification: ordinary not-yet-bootstrapped dependency state; not missing implementation. |
+| 2026-10-28 — runtime pin check | Labsupapg pins pnpm 8.15.0 and Node >=18; available runtime is Node 24.13.0, pnpm 11.1.3, Corepack 0.34.5. No version switch or install was attempted. Record `corepack pnpm install` from Labsupapg root as the normal next bootstrap step; then resolve-check from `apps/web`. |
+| 2026-10-28 — config comment discrepancy | `pnpm-workspace.yaml` claims the scoped packages are now sourced from GitHub Packages, but `apps/web/package.json` and `pnpm-lock.yaml` still point `@braisenly/ui` at `file:/Volumes/FLOUNDER/dev/design-system/ui` / `file:../design-system/ui`. Recorded the actual dependency inputs and retained the comment as a stale/contradictory note, not an override. Corepack pin behavior cross-checked against its current [usage guidance](https://github.com/nodejs/corepack#when-building-packages). |
+| 2026-10-28 — notice inventory | Package manifest states MIT. Tracked `*LICENSE*` / `*NOTICE*` inventory found only Storybook font `OFL-LICENSES.txt`; no package MIT text or NOTICE was located. Intended transfer file/asset list is not fully specified, so provenance/rights closure remains open; no legal conclusion inferred. |
+
+No packages were installed, source was not built, and no upstream file was changed. This role wrote only `package-provenance.md` and `package-events.md`.

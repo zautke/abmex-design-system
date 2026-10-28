@@ -1,0 +1,48 @@
+{
+  "subject": "apps/web/src/app/layout.tsx",
+  "revision": "c0b0e5f82973b8a5c929d05f58cef48463bc7b73",
+  "symbol_lines": [
+    17,
+    29
+  ],
+  "cached_body_sha256": "dd328f9b03efe55c0ce911ac8728285765709e1e3da02c7c26149e6c3be46e8b",
+  "working_equals_git_blob": true,
+  "explicit_wrapper": "export default ",
+  "git_blob_sha256": "3054bea58c827312fd9491fb0bfcb97972861fe7f645e1a9e74599096273e87e",
+  "checks": [
+    {
+      "case": "actual_default_export_conflict",
+      "kind": "actual",
+      "body_current": true,
+      "public_api_proven": false,
+      "pass": true
+    },
+    {
+      "case": "changed_body_hash",
+      "kind": "in-memory negative",
+      "pass": true,
+      "expected": "reject exact body identity"
+    },
+    {
+      "case": "unavailable_revision",
+      "kind": "executed Git negative",
+      "exit": 128,
+      "pass": true,
+      "expected": "unresolved identity"
+    },
+    {
+      "case": "changed_export_wrapper",
+      "kind": "in-memory negative",
+      "pass": true,
+      "body_can_match": true,
+      "expected": "no public API equivalence"
+    },
+    {
+      "case": "changed_working_file_outside_body",
+      "kind": "in-memory negative",
+      "pass": true,
+      "expected": "no current-working identity from revision body alone"
+    }
+  ],
+  "limits": "primary verifier checks, not fresh-agent/control effectiveness; original agent/evaluator verdict retained; no files mutated"
+}
