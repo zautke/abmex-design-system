@@ -1,31 +1,19 @@
 # ESI005 implementation review
 
-Final source review: 2026-10-28 18:11 local (2026-10-29 00:11 UTC), after Sidebar lane freeze. I reindexed the exact Sidebar, state-hook, foundation-contract, and composition files before review.
+Final review of frozen source at commit `7ac8448`; exact Sidebar and persistence-hook paths refreshed through jCodemunch before checking. Earlier review findings are resolved in this source.
 
-## Findings
+## Resolutions
 
-### P1 — SidebarRail discards consumer inline styles
+| Finding | Resolution verified in source |
+|---|---|
+| SidebarRail discarded consumer inline styles and failed to resolve state callbacks | `SidebarRail` now merges the positional edge default with `partProps` output (`Sidebar.tsx:469-475`). `partProps` resolves `styles.rail`; later slot and direct props retain precedence. |
+| Disabled href items could override `aria-disabled` and `tabIndex` | After native/slot props merge, SidebarItem reapplies `aria-disabled=true` and `tabIndex=-1` for disabled links, or native `disabled=true` for buttons (`Sidebar.tsx:368-372`). Root reports a regression test was added. |
+| Persistent state lacked configurable cross-tab synchronization | `UsePersistentStateOptions.syncAcrossTabs` now opts into browser storage-event synchronization and defaults off (`usePersistentState.ts:59-76, 226-260`). Incoming values are decoded and validated before updating; controlled consumers remain authoritative. |
 
-`packages/ui/src/components/sidebar/Sidebar.tsx:449-453` spreads native `props` into `partProps`, then replaces `style` with the rail offset and `context.styles?.rail`. Since `partProps` applies this final layer after `slotProps.rail`, both `<SidebarRail style={...}>` and `slotProps.rail.style` are lost. The raw `styles.rail` value is also spread directly instead of resolving a state callback. This breaks native prop forwarding and the approved consumer-first style precedence.
+The four earlier API/event findings were also fixed: SidebarRail consumer and slot handlers run before resize behavior and can cancel; IconLabel supports target-specific `as` and refs; href SidebarItems use anchor-ref overloads; and local `slotProps.action` reaches the primary action element.
 
-Minimal fix: resolve `styles.rail` with the current state, then merge it with rail defaults, slot props, and direct props in the documented precedence order.
+## Verification
 
-### P1 — Disabled href items can remain keyboard-focusable
+Source review confirmed the three resolutions above. Root reports 231/231 tests passed, public declaration fixtures compile, and server-side rendering checks pass. I did not rerun tests. Live Chrome behavior was not verified in this review: the browser helper returned `cgWindowNotFound` after restart, which is inconclusive about the feature.
 
-`SidebarItem` creates `aria-disabled` and `tabIndex` defaults for `href` items, then merges native and slot props afterward (`Sidebar.tsx:345-355`). A disabled link can therefore receive `aria-disabled={false}` and `tabIndex={0}` from props or `slotProps.action`; the final click handler prevents navigation but does not restore the disabled accessibility state. The disabled item is still reachable by keyboard and announced as enabled.
-
-Minimal fix: apply the component-owned disabled semantics after consumer layers for href items (`aria-disabled=true`, `tabIndex=-1`), while retaining the click suppression.
-
-### P2 — Persistent state has no configurable cross-tab synchronization
-
-`UsePersistentStateOptions` exposes key, version, storage, migration, validation, and error handling, but no synchronization option (`packages/ui/src/hooks/usePersistentState.ts:59-74`). The hook reads/writes storage without a storage-event listener or equivalent synchronization (`:97-234`). Two tabs using the same persistence key therefore keep divergent in-memory preferences until remount. Revision 0.9 explicitly requires cross-tab synchronization to be configurable.
-
-Minimal fix: add an opt-in synchronization option and update in-memory state from matching, validated storage events; leave controlled state authoritative.
-
-## Fixed from interim review
-
-The frozen source fixes the earlier four candidates: SidebarRail runs consumer and slot handlers before resize behavior and honors cancellation; IconLabel now has target-aware `as` and refs; SidebarItem's href overload targets an anchor ref; and local `slotProps.action` reaches the primary action element. It also preserves pointer listener cleanup on unmount.
-
-## Verification scope
-
-Source review only. Root reports public declaration fixtures compile and the Sidebar suite passes 11/11; I did not rerun them or run browser checks. Composition review found abort checks preventing stale recipe-search responses and theme scope contained by each composition root. Root owns the live browser evidence.
+Residual risk: browser-level interaction evidence remains outstanding; the helper failure is not feature proof.

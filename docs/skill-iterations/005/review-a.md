@@ -1,0 +1,16 @@
+# ESI005 fresh learning review A
+
+**Verdict: ACCEPT.** Learning dispositions are faithful to the frozen packet and preserve the extraction, composition, and learning-method requirements. No actionable omission changes the no-edit decisions. This accepts the analysis, not live acceptance, user assent, or instructional effectiveness.
+
+## Findings
+
+- **Target skill — no edit is supported.** The candidate's proposed donor-journey sentence is materially covered by extraction skill 0.2.2 steps 1 and 6: trace actual consumer behavior, separately prove donor capability and a materially different composition, and invoke composition for coordinated use. Composition skill steps 1–2 additionally require the smallest complete user journey, actual behavior/result, and replaceable host integration. The retrospective says the initially generic demo missed donor-shaped search/modes/actions and was corrected after source tracing (`005/retrospective.md`, `005/events.md`). This is a useful holdout probe, but the record does not show the frozen outcome lacked a required instruction or that the extra sentence would add information (`005/candidate.md`, “Target skill”).
+- **Composition subskill — no edit is supported.** Its stated journey, default behavior, actual destination/result, materially different composition, and user-flow checks cover the candidate concern. Keep real browser proof separate: verification explicitly records screenshots, actions, and console as not run (`005/verification.md`).
+- **Learning companion/method — no edit is supported.** `learn-skill-evolve` requires all-polarity signals, coverage limits, narrow ownership, separate target/method tracks, and review/replay controls. `005/learning.md` records positive, negative, and ancillary signals; distinguishes runtime, tool, environment, and method ownership; states the historical sample and unverified claims; and leaves independent review/user deliberation pending. ESI001–004 sampled records are consistent with its limited history claims; ESI004's recoverable-prerequisite trial is not incorrectly generalized, and the Codemunch trial remains outside this review's owner scope.
+- **Requirement preservation is sound.** Tests/build/SSR and artifact checks are attributed to the frozen packet, not presented as live proof. Native Chrome attachment failure remains unconfirmed as to cause, and the release gate remains open (`005/REPORT.md`, `005/evidence.json`, `005/verification.md`). The temporary KB client leak is correctly treated as a repaired tool-client defect, not an extraction-method lesson (`005/events.md`, `005/learning.md`).
+
+## Limits and small note
+
+The manifest hashes were not recomputed, and the learner reports no independent source/runtime/browser replay. Those limits are disclosed and do not undermine this bounded disposition review. The candidate table could make the “expected benefit / evidence quality / counterevidence” dimensions more explicit per row, as the evolution method requests; here the reasoning is present in the surrounding sections and no missing dimension changes a disposition. No amendment required.
+
+Reviewed only the frozen packet, pinned 0.2.2 skill resources, and sampled ESI001–004 learning/candidate history. No other reviewer output informed this verdict. No source, KB, skill, or product changes made.
