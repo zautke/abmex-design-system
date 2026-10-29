@@ -1,0 +1,48 @@
+{
+  "run_id": "ESI-20261028-005",
+  "skill_version": "0.2.2-trial",
+  "checks": [
+    {
+      "claim": "Public source decomposition and reusable exports",
+      "required": true,
+      "result": "pass",
+      "evidence": "packages/ui/Sidebar.md",
+      "reason": ""
+    },
+    {
+      "claim": "Donor and materially different working compositions",
+      "required": true,
+      "result": "pass",
+      "evidence": "tests/components/sidebar-search.test.tsx; tests/components/sidebar-demo.test.tsx",
+      "reason": ""
+    },
+    {
+      "claim": "Unit/component behavior and deliberate negatives",
+      "required": true,
+      "result": "pass",
+      "evidence": "verification.md:231/231",
+      "reason": ""
+    },
+    {
+      "claim": "Built package and public type consumption",
+      "required": true,
+      "result": "pass",
+      "evidence": "verification.md; tests/sidebar-types.tsx",
+      "reason": ""
+    },
+    {
+      "claim": "Live real-profile user actions with screenshot pairs",
+      "required": true,
+      "result": "not-run",
+      "evidence": "verification.md",
+      "reason": "Native cgWindowNotFound persists after recovery attempts"
+    },
+    {
+      "claim": "Live console has no new errors",
+      "required": true,
+      "result": "not-run",
+      "evidence": "verification.md",
+      "reason": "Cannot attach native Chrome or configured DevTools endpoint"
+    }
+  ]
+}
