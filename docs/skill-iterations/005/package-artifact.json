@@ -1,0 +1,12 @@
+{
+  "artifact": "/tmp/esi005-package/abmex-ui-0.7.0-next.11.tgz",
+  "sha256": "10b1f29ed58ae0503a5416ffcf6131c11b06dfc9db781ae09d43e7d551b8fbcd",
+  "package_json": "version/exports match; workspace:^ normalized to caret version as expected",
+  "matched_files": {
+    "Sidebar.md": "b88a4df610c22a5b511d54e2d9b467097ad32e07ccf0fa2e10d96ff56beb8bdc",
+    "dist/components/sidebar/Sidebar.js": "8d85ae4ba0c2de66f74f28f25ae1b4f5c70102eeb5d2f8e3e5cc941697db615b",
+    "dist/components/sidebar/descriptor.js": "553f5a3ecb442050863e0b4eb6975c03558bde029989066adca41ea607757445",
+    "dist/hooks/usePersistentState.js": "99508d97d46388d9c31e869ccd826f08a457cd48610ca41f77d37bda5fc737aa",
+    "dist/components/sidebar-search/RecipeSearchSidebarDemo.js": "5ea85cd9bfb475c61243a16bf6c4406ca1aef35ecfed6d821fcafd9c19f60b2c"
+  }
+}

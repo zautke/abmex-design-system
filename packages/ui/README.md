@@ -1,8 +1,8 @@
 # @abmex/ui
 
-Reusable React **AI-chat UI** components, built on [HeroUI v3](https://heroui.com) — extracted from [Merlyn](../../README.md), a multi-browser WXT MV3 extension that ships a sidepanel chat UI over multiple LLM providers.
+Reusable React UI components, including AI-chat families built on [HeroUI v3](https://heroui.com) and independent ABMEX primitives and Sidebar parts. Chat families originate in [Merlyn](../../README.md); the [Sidebar guide](./Sidebar.md) covers public parts, working compositions, styling and state ownership.
 
-This is a **presentation kit**. The components render and emit intent; they do not persist, fetch, poll, or talk to a provider. Where a component used to reach for plumbing, its props now carry a `// WIRING:` comment naming exactly what you must supply — those comments are the integration contract.
+Chat components render and emit intent rather than owning provider plumbing. Their `// WIRING:` comments identify host integrations. Sidebar state adds optional durable preferences and replaceable storage; its demos provide explicit local fixtures and accept host search/navigation adapters. No application-specific provider is required by the reusable Sidebar library.
 
 ## Install
 

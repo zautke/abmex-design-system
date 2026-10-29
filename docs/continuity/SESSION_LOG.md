@@ -1,5 +1,12 @@
 # Session log
 
+## 2026-10-28 — ESI005 Sidebar implementation and continuity
+
+- Full implementation7ac8448 and evidenceb61b79e pushed to draft PR21; original dirty checkout untouched. Added public reusable parts/state/compositions and shipped guide; imported selected existing foundation files only.
+- Verified231/231tests, builds/public declarations/negative fixtures/CSS/SSR/package identity. Independent code findings fixed and source-verified. Required learner + two fresh reviews accepted no-edit; no skill version promotion or user consensus inferred.
+- Native live gate remains unrun: cgWindowNotFound after resets/reacquisition/onehelperrestart; DevTools9222refused. No fake screenshot/console proof. Own preview stopped; owned empty Chrome window cleanup cannot be confirmed through failed capture.
+- Canonical KB episode/metric checkpoints written; temporary own KB client session-close omission repaired. Updated full six-file canonical continuity set on user request; no root/legacy duplicates required migration.
+
 ## 2026-10-07
 
 - Added scoped transition CSS so theme transitions apply to any controller target, not only `html`.
