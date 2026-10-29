@@ -1,5 +1,9 @@
 # abmex-design-system — agent instructions
 
+## Extraction skill iteration
+
+For the user-authorized extraction execution force, run branches, recording and mandatory learning cycle, read [EXTRACTION_SKILL_ITERATION_PROTOCOL.md](docs/continuity/EXTRACTION_SKILL_ITERATION_PROTOCOL.md). Canonical KB team: ESI-001; each execution attempt branches from the pinned `feat/extraction-skill-iteration` integration branch in its own worktree.
+
 ## Publish
 
 - Publishing runs on push to `main` and on `release: published` via `.github/workflows/publish.yml`. Both packages are versioned in lockstep; bump `packages/ui/package.json` and `packages/themes/package.json` together or only one ships.
