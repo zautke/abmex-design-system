@@ -51,6 +51,32 @@ describe('ModelPicker renderModelAccessory', () => {
     await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
   });
 
+  it('keyboard: focus starts on the selected model; arrows, End and type-to-find move between models', async () => {
+    render(
+      <ModelPicker
+        models={models}
+        selectedModel={models[1]!}
+        onModelChange={() => {}}
+        renderModelAccessory={(m) => (m.providerId === 'openai' ? <button type="button">acc {m.displayName}</button> : null)}
+      />,
+    );
+    fireEvent.click(screen.getByRole('button', { name: /Select model/ }));
+    await waitFor(() => expect(document.activeElement?.textContent).toBe('gpt-b'));
+
+    fireEvent.keyDown(document.activeElement!, { key: 'ArrowUp' });
+    expect(document.activeElement?.textContent).toBe('gpt-a');
+    fireEvent.keyDown(document.activeElement!, { key: 'End' });
+    expect(document.activeElement?.textContent).toBe('llama');
+    fireEvent.keyDown(document.activeElement!, { key: 'g' });
+    expect(document.activeElement?.textContent).toBe('gpt-a');
+
+    // Keys inside an accessory belong to the accessory.
+    const acc = screen.getByRole('button', { name: 'acc gpt-a' });
+    acc.focus();
+    fireEvent.keyDown(acc, { key: 'ArrowDown' });
+    expect(document.activeElement).toBe(acc);
+  });
+
   it('keeps the listbox Select when no accessory is given', () => {
     render(<ModelPicker models={models} selectedModel={null} onModelChange={() => {}} />);
     expect(screen.queryByRole('button', { name: /— Select model/ })).toBeNull();

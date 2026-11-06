@@ -5,6 +5,7 @@
 ### Added
 
 - `ModelPicker` accepts `renderModelAccessory(model)`: a per-model control placed at the end of that model's row (Merlyn uses it for an OpenAI reasoning-effort `SegmentedControl`). The consumer owns the state and persistence. With an accessory the picker renders as a popover dialog of rows (model button + accessory), because a listbox option must not contain interactive controls; using the accessory neither selects the model nor closes the picker. Without it, the listbox `Select` is unchanged.
+- Keyboard in the accessory mode keeps the listbox model on the model buttons: focus starts on the selected model; ArrowUp/ArrowDown, Home/End and type-to-find move between models; Tab reaches each row's accessory, and keys pressed inside an accessory are left to it.
 
 ## 0.7.0-next.9
 
