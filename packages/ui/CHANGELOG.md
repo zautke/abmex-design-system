@@ -1,5 +1,11 @@
 # @abmex/ui
 
+## 0.7.0-next.11
+
+### Added
+
+- `ModelPicker` accepts `renderModelAccessory(model)`: a per-model control placed at the end of that model's row (Merlyn uses it for an OpenAI reasoning-effort `SegmentedControl`). The consumer owns the state and persistence. With an accessory the picker renders as a popover dialog of rows (model button + accessory), because a listbox option must not contain interactive controls; using the accessory neither selects the model nor closes the picker. Without it, the listbox `Select` is unchanged.
+
 ## 0.7.0-next.9
 
 ### Added
