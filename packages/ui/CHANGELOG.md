@@ -1,5 +1,9 @@
 # @abmex/ui
 
+## 0.8.0
+
+First release under the Merlyn-derived release protocol (`docs/protocols/RELEASE_PROTOCOL.md`): trunk versions are exactly `MAJOR.MINOR.PATCH`, published under `latest`; the `next` dist-tag is retired. `publish.yml` fails a trunk publish whose version is not three numbers and checks that both packages share one version. Contents are the `0.7.0-next.2` to `0.7.0-next.11` prereleases below, unchanged.
+
 ## 0.7.0-next.11
 
 ### Added

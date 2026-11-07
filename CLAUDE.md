@@ -1,5 +1,17 @@
 # abmex-design-system — agent instructions
 
+## ⛔ Versions and dist-tags (user correction 2026-10-26, restated 2026-11-07)
+
+Protocol: `docs/protocols/RELEASE_PROTOCOL.md` (Merlyn-derived). Read it before every bump, commit, merge, tag or publish.
+
+| Branch | Version | npm dist-tag |
+|---|---|---|
+| `development` | exactly `MAJOR.MINOR.PATCH`; merge bumps MINOR | `latest` |
+| `main` | exactly `MAJOR.MINOR.PATCH`; promotion bumps MAJOR | `latest` |
+| other branches | `MAJOR.MINOR.PATCH.BUILD-<branchLabel>` (npm field: `MAJOR.MINOR.PATCH-<branchLabel>.BUILD`) | `<branchLabel>`, release event only |
+
+No `next` dist-tag exists. `publish.yml` fails a trunk publish whose version is not three numbers.
+
 ## Publish
 
 - Publishing runs on push to `main` and on `release: published` via `.github/workflows/publish.yml`. Both packages are versioned in lockstep; bump `packages/ui/package.json` and `packages/themes/package.json` together or only one ships.
