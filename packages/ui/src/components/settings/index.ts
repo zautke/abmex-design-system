@@ -36,7 +36,23 @@ export {
   UNLIMITED_QUOTA,
   DEFAULT_QUOTA_BYTES,
 } from './ToolsPanel';
-export type { ToolsPanelProps, ToolsPanelValues, WebSearchProvider } from './ToolsPanel';
+export type {
+  ToolsPanelProps,
+  ToolsPanelValuesProps,
+  ToolsPanelSectionsProps,
+  ToolsPanelValues,
+  WebSearchProvider,
+} from './ToolsPanel';
+
+export { SettingsFields } from './SettingsFields';
+export type {
+  SettingsFieldsProps,
+  SettingsSectionSpec,
+  SettingsFieldSpec,
+  SegmentedFieldSpec,
+  ToggleFieldSpec,
+  TextFieldSpec,
+} from './SettingsFields';
 
 export { SettingsSection, SettingsField, SettingsRow, SettingsList } from './SettingsLayout';
 export type {

@@ -1,5 +1,30 @@
 # @abmex/ui
 
+## 0.8.0
+
+First release under the Merlyn-derived release protocol (`docs/protocols/RELEASE_PROTOCOL.md`): trunk versions are exactly `MAJOR.MINOR.PATCH`, published under `latest`; the `next` dist-tag is retired. `publish.yml` fails a trunk publish whose version is not three numbers and checks that both packages share one version. Contents are the `0.7.0-next.2` to `0.7.0-next.11` prereleases below, unchanged.
+
+## 0.7.0-next.11
+
+### Added
+
+- `ModelPicker` accepts `renderModelAccessory(model)`: a per-model control placed at the end of that model's row (Merlyn uses it for an OpenAI reasoning-effort `SegmentedControl`). The consumer owns the state and persistence. With an accessory the picker renders as a popover dialog of rows (model button + accessory), because a listbox option must not contain interactive controls; using the accessory neither selects the model nor closes the picker. Without it, the listbox `Select` is unchanged.
+- Keyboard in the accessory mode keeps the listbox model on the model buttons: focus starts on the selected model; ArrowUp/ArrowDown, Home/End and type-to-find move between models; Tab reaches each row's accessory, and keys pressed inside an accessory are left to it.
+
+## 0.7.0-next.9
+
+### Added
+
+- `SettingsFields`: settings sections described as data. Each section is `{ title, description?, fields }` and each field is a controlled spec: `{ kind: 'segmented', options, value, onChange }`, `{ kind: 'toggle', checked, onChange, stateLabels?, hint? }` or `{ kind: 'text', value, onChange, placeholder?, type?, onBlur? }`, all with optional `label`, `ariaLabel`, `description`, `disabled`. It renders the same `SettingsSection` / `SettingsField` / `SegmentedControl` / `Switch` composition as the hand-written panels, so a consumer passes only values and persistence callbacks.
+- `ToolsPanel` accepts `sections` (`ToolsPanelSectionsProps`) and renders them through `SettingsFields`, for apps whose tool settings differ from the fixed set. The fixed `values` / `onChange` shape is unchanged (now named `ToolsPanelValuesProps`; `ToolsPanelProps` is the union of both).
+
+## 0.7.0-next.8
+
+### Changed
+
+- `@abmex/themes`: Phosphor tokens gain a Layer 1 identity palette. Every distinct color has one name (`--mint`, `--bone`, …) declared per theme between `theme-editor: identities` markers, and every role (`--bg`, `--primary`, …) now aliases its identity with `var()`. Resolved colors are unchanged (contrast audit 200 pairs, 0 failing). The generator fails when a color has no identity or a name is bound to two hexes.
+- Theme editor (`parseSemanticVariables`): a role aliasing an identity resolves to the identity's literal, so pickers keep showing colors; identities are never listed. Components consume roles only.
+
 ## 0.7.0-next.7
 
 ### Fixed

@@ -58,7 +58,7 @@ Everything is driven by props and callbacks, so a consumer with no database, no 
 | `composer` | `PromptComposer`, `SendButton`, `StopButton`, `InputBarKeyboardHandler` |
 | `status` | `ModelPicker`, `ConnectionIndicator`, `ContextWindowTracker`, `TokenCounter`, `SegmentedControl`, `SplashLoader`, `AppFooter` |
 | `conversations` | `ConversationsDrawer`, `ConversationListItem`, `ConversationSearchField`, `ConversationEmptyState` |
-| `settings` | `SettingsModal`, `ScrollableTabStrip`, `ProviderSettingsPanel`, `SecretKeyInput`, `JsonConfigEditor`, `McpServerList`, `SecretsList`, `ToolsPanel`, `SettingsSection`/`Field`/`Row`/`List`, `CopyCommandCallout` |
+| `settings` | `SettingsModal`, `ScrollableTabStrip`, `ProviderSettingsPanel`, `SecretKeyInput`, `JsonConfigEditor`, `McpServerList`, `SecretsList`, `ToolsPanel`, `SettingsFields`, `SettingsSection`/`Field`/`Row`/`List`, `CopyCommandCallout` |
 | `theme` | `ThemeEditorPanel`, `ColorSystem`, `ThemeEditorButton` |
 | primitives | `StatusDot`, `CopyButton`, `cn` |
 | hooks | `useStreamingRate`, `useChatPaneController`, `useInputBarController`, `useReadlineKeys`, `useTabIndent` |

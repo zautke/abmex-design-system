@@ -135,3 +135,39 @@ def mix_lc(a, b, amt):
     A, B = lab(a), lab(b)
     m = [A[k]*(1-amt)+B[k]*amt for k in range(3)]
     return m[0], math.hypot(m[1], m[2])
+
+# ---------------------------------------------------------------- identity layer
+# Layer 1 (kb concept/two-layer-design-token-architecture): one name per distinct
+# color, named for what the color IS. Roles (Layer 2) alias these with var().
+# Only anchors are listed; every derived role (-fg, -hover, -soft, -soft-fg,
+# focus, link, selection, code-bg, scrollbar, chart-*) must resolve to the same
+# hex as a named identity or name one here — build.py fails otherwise, so a new
+# color can never ship without an identity.
+IDENTITY = {
+ 'dark': {
+  'bg': 'pitch', 'bg-sunken': 'tar', 'surface': 'peat', 'surface-2': 'fern',
+  'surface-3': 'moss', 'overlay': 'loam', 'border': 'lichen', 'border-strong': 'pewter',
+  'fg': 'khaki', 'fg-strong': 'cream', 'fg-sage': 'sage', 'fg-muted': 'eucalyptus',
+  'fg-disabled': 'thicket',
+  'primary': 'mint', 'primary-hover': 'spearmint', 'primary-soft': 'kelp', 'primary-soft-fg': 'mint',
+  'danger': 'brick', 'danger-hover': 'terracotta', 'danger-soft': 'umber', 'danger-soft-fg': 'salmon',
+  'success': 'clover', 'success-hover': 'basil', 'success-soft': 'forest', 'success-soft-fg': 'shamrock',
+  'warning': 'ochre', 'warning-hover': 'amber', 'warning-soft': 'bronze',
+  'info': 'slate', 'info-hover': 'steel', 'info-soft': 'denim',
+  'emphasis': 'mauve', 'emphasis-hover': 'lilac', 'emphasis-soft': 'plum', 'emphasis-soft-fg': 'orchid',
+  'chart-4': 'cobalt', 'chart-5': 'cinnamon',
+ },
+ 'light': {
+  'bg': 'bone', 'bg-sunken': 'parchment', 'surface': 'cardstock', 'surface-2': 'linen',
+  'surface-3': 'oat', 'overlay': 'chalk', 'field': 'eggshell', 'border': 'straw', 'border-strong': 'taupe',
+  'fg': 'olive', 'fg-strong': 'loden', 'fg-sage': 'pine', 'fg-muted': 'verdigris', 'fg-disabled': 'pebble',
+  'folder': 'manila', 'paper': 'ivory', 'folder-edge': 'sand', 'page': 'vellum',
+  'primary': 'jade', 'primary-hover': 'malachite', 'primary-soft': 'pistachio', 'primary-soft-fg': 'viridian',
+  'danger': 'madder', 'danger-hover': 'maroon', 'danger-soft': 'blush',
+  'success': 'evergreen', 'success-hover': 'hunter', 'success-soft': 'celery',
+  'warning': 'saffron', 'warning-hover': 'mustard', 'warning-soft': 'wheat', 'warning-soft-fg': 'caramel',
+  'info': 'marine', 'info-hover': 'navy', 'info-soft': 'mist',
+  'emphasis': 'aubergine', 'emphasis-hover': 'grape', 'emphasis-soft': 'lavender',
+  'chart-3': 'copper', 'chart-4': 'indigo', 'chart-5': 'sienna',
+ },
+}

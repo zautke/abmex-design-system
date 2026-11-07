@@ -3,7 +3,7 @@
 Outputs: ../*.css (drop-in), build/tokens.generated.json (seed for ../tokens.json, which is hand-curated after generation), build/contrast.json."""
 import json, os, math
 from color import *
-from palette import resolve, hexof, INTENTS, FOLDER
+from palette import resolve, hexof, INTENTS, FOLDER, IDENTITY
 
 OUT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 os.makedirs(f'{OUT}/adapters', exist_ok=True)
@@ -78,6 +78,33 @@ for i, n in INTENT_NOTE.items():
     USAGE[f'{i}-soft-fg'] = f'{i.capitalize()} text that reads on `{i}-soft`, `bg`, `surface` and `surface-2` (4.5:1).'
 for i in range(1,6): USAGE[f'chart-{i}'] = f'Categorical series {i}; 3:1 on `surface` in both themes.'
 
+# ---------------------------------------------------------------- identity layer (Layer 1)
+def identities(th):
+    """role → identity name; identity name → hex. Fails on an unnamed color or a
+    name bound to two hexes (also across themes: a name means one color)."""
+    res = R[th][0]; named = IDENTITY[th]
+    by_hex = {}
+    for role, name in named.items():
+        h = res[role]
+        if by_hex.setdefault(h, name) != name:
+            raise SystemExit(f'{th}: identities {by_hex[h]!r} and {name!r} share {h} — one color, one name')
+    role_id = {}
+    for role in ORDER:
+        h = res[role]
+        if h not in by_hex:
+            raise SystemExit(f'{th}: role --{role} ({h}) has no identity; name it in palette.IDENTITY')
+        role_id[role] = by_hex[h]
+    name_hex = {}
+    for h, n in by_hex.items():
+        if n in name_hex: raise SystemExit(f'{th}: identity {n!r} bound to {name_hex[n]} and {h}')
+        name_hex[n] = h
+    return role_id, name_hex
+ID = {th: identities(th) for th in R}
+_all = {}
+for th in ID:
+    for n, h in ID[th][1].items():
+        if _all.setdefault(n, h) != h: raise SystemExit(f'identity {n!r} differs across themes: {_all[n]} vs {h}')
+
 def oklch_str(h):
     L,C,H = hex_to_oklch(h)
     if C < 0.0005: return f'oklch({L:.4f} 0 0)'
@@ -90,11 +117,16 @@ def block(th):
              [('Utility', ['focus','link','selection','code-bg','scrollbar']), ('Charts', [f'chart-{i}' for i in range(1,6)])]
     for g, keys in groups:
         lines.append(f'  /* {g} */')
-        for k in keys: lines.append(f'  --{k}: {oklch_str(res[k])}; /* {res[k]} */')
+        for k in keys: lines.append(f'  --{k}: var(--{ID[th][0][k]}); /* {res[k]} */')
     lines.append('  /* Effects */')
     for k,v in ALPHA[th].items(): lines.append(f'  --{k}: {v};')
     for k,v in SHADOW[th].items(): lines.append(f'  --{k}: {v};')
     return '\n'.join(lines)
+
+def identity_block(th):
+    name_hex = ID[th][1]
+    order = sorted(name_hex, key=lambda n: hex_to_oklch(name_hex[n])[0], reverse=(th == 'dark'))
+    return '\n'.join(f'  --{n}: {oklch_str(name_hex[n])}; /* {name_hex[n]} */' for n in order)
 
 HEADER = '''/* ============================================================================
  * Phosphor — {title}
@@ -103,8 +135,28 @@ HEADER = '''/* =================================================================
  * Requires: Tailwind CSS >= 4.2 (verified on 4.2.x and 4.3.x) where noted.
  * ========================================================================== */
 '''
-tokens_css = HEADER.format(title='tokens (Layer 1: the role interface)') + '''
+tokens_css = HEADER.format(title='tokens (Layer 1 identities → Layer 2 roles, the interface)') + '''
 @import "./motion.css";
+/* Layer 1 — identities. One name per distinct color, named for what it IS.
+ * Components never reference these; they consume the roles below, which
+ * alias them with var(). Both themes are declared so a nested scope
+ * re-resolves. */
+/* theme-editor: identities */
+:root,
+.dark:not([data-mode]),
+[data-theme="dark"]:not([data-mode]),
+[data-mode="dark"] {
+''' + identity_block('dark') + '''
+}
+
+.light:not([data-mode]),
+[data-theme="light"]:not([data-mode]),
+[data-mode="light"] {
+''' + identity_block('light') + '''
+}
+/* theme-editor: identities-end */
+
+/* Layer 2 — roles. The interface adapters and components consume. */
 /* Theme scoping
  *   default (no class)            → dark
  *   .dark  | [data-theme="dark"]  → dark   (works on any element, nests)
@@ -359,11 +411,14 @@ open(f'{OUT}/adapters/_template.css','w',encoding='utf-8',newline=chr(10)).write
 # ---------------------------------------------------------------- tokens.json for the design system
 ctoks = []
 for k in colors:
-    ctoks.append({'name': f'{k}', 'value': {'dark': R['dark'][0].get(k) or ALPHA['dark'][k], 'light': R['light'][0].get(k) or ALPHA['light'][k]}, 'usage': USAGE[k]})
+    tok = {'name': f'{k}', 'value': {'dark': R['dark'][0].get(k) or ALPHA['dark'][k], 'light': R['light'][0].get(k) or ALPHA['light'][k]}, 'usage': USAGE[k]}
+    if k in ID['dark'][0]: tok['identity'] = {'dark': ID['dark'][0][k], 'light': ID['light'][0][k]}
+    ctoks.append(tok)
 tokens = {
  'name': 'Phosphor', 'version': 1,
  'meta': {'source': 'Rendered pixels of the wxt-prompt screenshot (Oct 2026), matte; light theme derived; build/palette.py'},
- 'color': {'themes': [{'id':'dark','name':'Dark (Phosphor)'},{'id':'light','name':'Light (Bone paper)'}], 'tokens': ctoks},
+ 'color': {'themes': [{'id':'dark','name':'Dark (Phosphor)'},{'id':'light','name':'Light (Bone paper)'}],
+           'identities': {th: ID[th][1] for th in ID}, 'tokens': ctoks},
  'type': {
    'fonts': [],
    'families': {'sans': '"Rethink Sans", ui-sans-serif, system-ui, sans-serif',
