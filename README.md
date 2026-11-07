@@ -42,7 +42,7 @@ deployment targets. Newer platform APIs in shared components need fallbacks.
 
 ## Release gates
 
-Publish tested immutable tarballs under `next`, themes before UI. Verify registry
+Publish tested immutable tarballs from a release trunk under `latest` (`docs/protocols/RELEASE_PROTOCOL.md`), themes before UI. Verify registry
 installs before updating consumers. Preserve each consumer's prior artifact,
 lockfile and state fixtures, and test rollback before removing copied source.
 Do not promote a partially published candidate or merge paused upstream PRs.
