@@ -90,7 +90,7 @@ function FieldControl({ field }: { field: SettingsFieldSpec }) {
           isSelected={field.checked}
           onChange={(next) => field.onChange(next)}
           isDisabled={field.disabled}
-          aria-label={field.label === undefined ? field.ariaLabel : undefined}
+          aria-label={nameOf(field)}
         >
           <Switch.Content>
             <Switch.Control>
