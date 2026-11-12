@@ -1,0 +1,9 @@
+# ESI-20261028-004 — resolve and execute
+
+User explicitly requests another run that fixes encountered problems. Integration parent7ffe4c8; branch feat/extraction-skill-iteration-004; worktree /Volumes/FLOUNDER/dev/abmex-extraction-skill-iteration-004. Canonical KB and local CodeMunch freshly responded successfully. Do not repeat stale outage claims. This is an assisted repair run, not a blind causal experiment.
+
+Shared skills: ~/.agents/skills/extract-abmex-components (all applicable resources/composition), learn-extract-abmex-components, learn-skill-evolve; frontend extracting-reusable-components, codebase-design, design-tokens, design-review, accessibility and tailwind variants; CodeMunch for code, DocMunch for documentation, Context7 and official/GitHub sources for uncertain behavior. Read actual relevant instructions, not merely catalog. Previous run003 artifacts in sibling worktree are input evidence, not acceptance.
+
+Roster ESI-001: primary owns KB/coordination; package executor owns normal donor bootstrap and build diagnostics/fixes in isolated donor checkout; tool executor owns raw receipt recovery and executable verification. Distinct files and no descendants. Deadline12minutes each, save early and progress every60seconds, primary monitors. On recoverable failure diagnose and fix in scope, do not stop at identifying missing installation/source/receipt. No cache prewarming as proof of public consumption, local models, >50MB without df, destructive data changes, servers without .env and 0.0.0.0, merges or publication. Preserve other work.
+
+Outputs: executable evidence and report, actual failure/fix trail and retrospective. Required learner and two fresh reviews after freeze; failures remain incomplete rather than false acceptance. No unnecessary framework/policy expansion.

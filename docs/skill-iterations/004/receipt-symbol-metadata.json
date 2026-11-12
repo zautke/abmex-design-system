@@ -1,0 +1,9 @@
+{
+  "schema": "esi004.receipt-symbol-metadata/v1",
+  "repository": "zautke/labsupapg",
+  "file_path": "apps/web/src/app/layout.tsx",
+  "symbol_id": "apps/web/src/app/layout.tsx::RootLayout#function",
+  "immutable_revision": "c0b0e5f82973b8a5c929d05f58cef48463bc7b73",
+  "wrapper_prefix": "export default ",
+  "wrapper_basis": "Observed immediately before the retrieved function in the pinned Git blob; wrapper is outside the CodeMunch AST symbol source."
+}

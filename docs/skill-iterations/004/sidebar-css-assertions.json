@@ -1,0 +1,45 @@
+{
+  "claim": "The production CSS bundle emits all active sidebar utility selectors used across the linked UI package source.",
+  "build_command": "corepack pnpm --filter @braisenly/web build",
+  "pre_repair": {
+    "css": "apps/web/.next/static/css/800db61ae31acce7.css",
+    "scanner": "../../node_modules/@braisenly/ui/src/**/*.tsx",
+    "selectors": {
+      "bg-card": true,
+      "border-border": true,
+      "hover:bg-accent/10": true,
+      "bg-accent/20": false,
+      "text-accent": true,
+      "w-5": true,
+      "h-5": true,
+      "px-2": true,
+      "px-4": true,
+      "py-3": true,
+      "ml-3": true,
+      "text-sm": true,
+      "font-medium": true
+    },
+    "result": "fail"
+  },
+  "post_repair": {
+    "css": "apps/web/.next/static/css/f33d993723cc0bf0.css",
+    "scanner": "../../node_modules/@braisenly/ui/src/**/*.{ts,tsx}",
+    "selectors": {
+      "bg-card": true,
+      "border-border": true,
+      "hover:bg-accent/10": true,
+      "bg-accent/20": true,
+      "text-accent": true,
+      "w-5": true,
+      "h-5": true,
+      "px-2": true,
+      "px-4": true,
+      "py-3": true,
+      "ml-3": true,
+      "text-sm": true,
+      "font-medium": true
+    },
+    "result": "pass"
+  },
+  "method": "Python asserted escaped Tailwind selectors are present in emitted production CSS. Source trace places bg-accent/20 in ui/src/components/sidebar/sidebar-variants.ts; it was excluded by the original tsx-only source glob."
+}
