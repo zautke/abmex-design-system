@@ -3,3 +3,6 @@ packages:
 
 allowBuilds:
   esbuild: true
+  # better-sqlite3 13 ships prebuilt binaries for win32/darwin/linux inside the package; its install
+  # script (prebuild-install || node-gyp) is not needed and would require MSVC/Xcode toolchains.
+  better-sqlite3: false
