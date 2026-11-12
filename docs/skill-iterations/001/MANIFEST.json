@@ -1,0 +1,30 @@
+{
+  "run": "ESI-20261027-001",
+  "hash_algorithm": "sha256",
+  "scope": "final on-disk artifact bytes; MANIFEST excluded",
+  "artifacts": {
+    "EXECUTION_PACKET.md": "cdd17df53579b66fead9d2f36bacbf2f3246769518447a11f161e9d2125d1da0",
+    "LEARNING_PACKET.md": "285c786c4ff1763531889caba4962473281160699acd582b90df5c59a91fc98a",
+    "REPORT.md": "a5a1ce6258a0659d15aee1ced4bb5324fa1cbd149dda85a86d4e3e747e9216ec",
+    "TEAM_CONTEXT.md": "b12bf5caf2d242e5aa13d4dbfb080bcd85864bd741968baac226a6717306e20d",
+    "context-audit.md": "845566097d3ea89346880f2048aae4fc9ed219fcf8eefbfbac3578b396a732f1",
+    "context-dispatch.txt": "58d73d9a702ceaa06ed0cce5df91aa974e5b24e6f10e2a179e81671d17c900e2",
+    "context-prompt.md": "f944d8293274c2c8e9cf7152db16eefc62b999119625acf395998c94cdb5e2c2",
+    "executor-dispatch.txt": "885cd6ee011e39662d077acb66fe5848a8f471c0890f2ad582e94b741815e2d0",
+    "executor-prompt.md": "569e5b4ad571498042c70b2f1c54ddd0abf5775243fec630ed1d5b79e24ff388",
+    "executor.md": "7e78f6f8c7483d81659d6fa8100b862ddc576b9a2bf0b8603f65998a64022d1f",
+    "learner-dispatch.txt": "beae081142cf02ba7c7696c93c40234390845dea9844fd0b42c7256a0d0e23d8",
+    "learning.md": "6714809fee7833d31309c7c3685c3c0ee3023ecd4f29a91791e43e1a86413981",
+    "observation.md": "f861aa9071464c9c90edb5940d7e13fb5c2fc7f2eb4b669ae8cd5890a7d9a763",
+    "overseer-dispatch.txt": "dcdfe25ebb2e1a709741ab7a4164f257b21528bdbee732da9442160c4b471a71",
+    "overseer.md": "f0d22989fb5362e7778bb6355d25acc5e7c27f62ac2b5058a657268cceda367f",
+    "retrospective.md": "8674026ce56936cd83e386411f835c98914a793fc02a8e7808ca88cb02cdb22d",
+    "review-a-dispatch.txt": "5c5617550f94a49faf7839628c8fb6791451c1deec62a943346299e44c05a549",
+    "review-a.md": "e4b6f9809d442b64b214552cc209e266fe5928bd612937b39d287da1b0695fe7",
+    "review-b-dispatch.txt": "58f94ea3222e216c15fcb141b86b6066e5781d22d00f01dc447da22059bf1487",
+    "review-b.md": "b4f2d740b670a927be60b279063b8cacaa2706df60cda3ad298e3aefab82e463",
+    "scribe-dispatch.txt": "4428a5441d125ce8849c2a6dae224a7e6311e3103145780129a2b99759902937",
+    "scribe-prompt.md": "a7529d36a2353ab5df4819a8f53bf7d5475721518ba9e701cc097b00c6771b11",
+    "scribe.md": "5d1c93f6b50ffa69308e059fb837ae9f1e8dec1933b8f3edeef8f9dd78737ed9"
+  }
+}
