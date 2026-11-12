@@ -100,15 +100,21 @@ export interface ComponentPropMap {
 }
 export type ComponentDefaults = { [K in PrimitiveName]?: Partial<ComponentPropMap[K]> };
 
+/** Shallow merge where an explicitly undefined override entry keeps the inherited value. */
+function assignDefined(a: PropBag | undefined, b: PropBag | undefined): PropBag {
+  const out: PropBag = { ...a };
+  for (const [key, value] of Object.entries(b ?? {})) if (value !== undefined) out[key] = value;
+  return out;
+}
+
 function mergeComponentProps(base: PropBag = {}, override: PropBag = {}, name?: PrimitiveName): PropBag {
   const out = mergePartProps(base, override);
-  out.options = { ...base.options as object, ...override.options as object };
-  out.slots = { ...base.slots as object, ...override.slots as object };
+  out.options = assignDefined(base.options as PropBag | undefined, override.options as PropBag | undefined);
+  out.slots = assignDefined(base.slots as PropBag | undefined, override.slots as PropBag | undefined);
   for (const channel of ['classNames', 'styles', 'slotProps']) {
     const a = base[channel] as PropBag | undefined;
     const b = override[channel] as PropBag | undefined;
-    const parts: PropBag = { ...a };
-    for (const [key, value] of Object.entries(b ?? {})) if (value !== undefined) parts[key] = value;
+    const parts = assignDefined(a, b);
     for (const key of Object.keys(parts)) {
       if (a?.[key] === undefined || b?.[key] === undefined) continue;
       const merge = (state: PrimitiveState) => {

@@ -2,6 +2,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { createRef } from 'react';
+import type React from 'react';
 import * as primitives from '../../packages/ui/src/primitives/foundation';
 
 afterEach(cleanup);
@@ -24,6 +25,16 @@ describe('foundation public contract', () => {
     expect(button.disabled).toBe(true);
     expect(button.className).toContain('from-provider');
     fireEvent.click(button);
+  });
+  it('ignores undefined options and slots instead of erasing inherited values', () => {
+    const Root = (props: React.ComponentProps<'button'>) => <button {...props} data-custom="root" />;
+    render(<primitives.ComponentDefaultsProvider defaults={{ Button: { options: { size: 'lg' }, slots: { root: Root } } }}>
+      <primitives.Button options={{ size: undefined }} slots={{ root: undefined }}>Save</primitives.Button>
+      <primitives.Button>Plain</primitives.Button>
+    </primitives.ComponentDefaultsProvider>);
+    const [forwarded, plain] = screen.getAllByRole('button') as HTMLButtonElement[];
+    expect(forwarded.dataset.custom).toBe('root');
+    expect(forwarded.className).toBe(plain.className);
   });
   it('preserves provider disabled state when instance root props use a callback', () => {
     const root = vi.fn((state: primitives.ButtonState) => ({ title: state.disabled ? 'Disabled' : 'Enabled' }));
