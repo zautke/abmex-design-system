@@ -1,5 +1,17 @@
 # @abmex/ui
 
+## 0.9.0
+
+### Added
+
+- Six reusable primitives: `Text`, `Icon`, `Button`, `IconButton`, `BaseLayoutContainer` and `LayoutContainer`, built on the Base Component Contract rev 0.9 foundation (`packages/ui/src/primitives/foundation`): provider defaults merged with instance props, slot props, composed root refs, Tailwind utility classes on HTML elements with no consumer compiler required.
+- Public primitive metadata shipped with the package: `@abmex/ui/primitive-manifest.json` and `@abmex/ui/primitive-options.schema.json`, generated at build and checked against the package identity and contract revision.
+- Executable contract evidence: `docs/superpowers/plans/2026-10-25-six-primitives-evidence.md` and a public demo (`packages/ui/demo`).
+
+### Fixed
+
+- `composeRefs` keeps the composed callback ref's identity while its ordered constituent refs are unchanged, so provider and instance refs (including `slotProps.root`) are not detached and reattached on every rerender.
+
 ## 0.8.0
 
 First release under the Merlyn-derived release protocol (`docs/protocols/RELEASE_PROTOCOL.md`): trunk versions are exactly `MAJOR.MINOR.PATCH`, published under `latest`; the `next` dist-tag is retired. `publish.yml` fails a trunk publish whose version is not three numbers and checks that both packages share one version. Contents are the `0.7.0-next.2` to `0.7.0-next.11` prereleases below, unchanged.
