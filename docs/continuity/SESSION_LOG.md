@@ -1,5 +1,9 @@
 # Session log
 
+## 2026-10-22
+
+- publish 0.7.0-next.8 failure https://github.com/zautke/abmex-design-system/actions/runs/39681613398 — registry ok (ui+themes@0.7.0-next.8 present, `next` dist-tag at 0.7.0-next.8, SLSA v1 provenance present); run conclusion is `failure` and its logs were not retrievable (403), so a failing step after publish is unverified.
+
 ## 2026-10-21 — donor extraction and base contract
 
 - Captured user-approved Maximum Flexibility Axiom, replaceable defaults, token authority, additive-only extensions, named public parts, independent instances, persistence capabilities, and two-composition verification.
