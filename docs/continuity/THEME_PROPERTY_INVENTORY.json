@@ -1,0 +1,2552 @@
+{
+  "checked": "2026-10-22",
+  "scope": "Authored Phosphor theme definitions and ABMEX UI Tailwind additions; source-level comparison to wxt-prompt package imports, not installed artifact equivalence or exhaustive upstream Tailwind defaults.",
+  "sources": {
+    "core": "packages/themes/src/phosphor/phosphor.tokens.css",
+    "tw": "packages/themes/src/phosphor/phosphor.tailwind.css",
+    "ui": "packages/ui/src/styles/tailwind.css",
+    "hero": "packages/themes/src/phosphor/adapters/heroui.css",
+    "shad": "packages/themes/src/phosphor/adapters/shadcn.css",
+    "motion": "packages/themes/src/phosphor/motion.css",
+    "json": "packages/themes/src/phosphor/tokens.json"
+  },
+  "identities": [
+    {
+      "name": "--cream",
+      "value": "oklch(0.8957 0.0528 108.60)"
+    },
+    {
+      "name": "--spearmint",
+      "value": "oklch(0.8298 0.1374 176.69)"
+    },
+    {
+      "name": "--amber",
+      "value": "oklch(0.8250 0.0949 69.49)"
+    },
+    {
+      "name": "--khaki",
+      "value": "oklch(0.8065 0.0606 110.84)"
+    },
+    {
+      "name": "--mint",
+      "value": "oklch(0.7848 0.1370 176.88)"
+    },
+    {
+      "name": "--steel",
+      "value": "oklch(0.7843 0.0703 229.06)"
+    },
+    {
+      "name": "--sage",
+      "value": "oklch(0.7824 0.0346 153.50)"
+    },
+    {
+      "name": "--ochre",
+      "value": "oklch(0.7807 0.0950 69.84)"
+    },
+    {
+      "name": "--terracotta",
+      "value": "oklch(0.7506 0.1147 27.35)"
+    },
+    {
+      "name": "--lilac",
+      "value": "oklch(0.7408 0.0896 319.32)"
+    },
+    {
+      "name": "--slate",
+      "value": "oklch(0.7400 0.0701 228.26)"
+    },
+    {
+      "name": "--basil",
+      "value": "oklch(0.7370 0.1099 152.50)"
+    },
+    {
+      "name": "--salmon",
+      "value": "oklch(0.7093 0.1150 26.94)"
+    },
+    {
+      "name": "--brick",
+      "value": "oklch(0.7062 0.1152 26.95)"
+    },
+    {
+      "name": "--orchid",
+      "value": "oklch(0.7043 0.0888 319.18)"
+    },
+    {
+      "name": "--shamrock",
+      "value": "oklch(0.6960 0.1107 152.23)"
+    },
+    {
+      "name": "--mauve",
+      "value": "oklch(0.6946 0.0891 319.18)"
+    },
+    {
+      "name": "--clover",
+      "value": "oklch(0.6929 0.1108 152.21)"
+    },
+    {
+      "name": "--eucalyptus",
+      "value": "oklch(0.6888 0.0302 158.35)"
+    },
+    {
+      "name": "--cobalt",
+      "value": "oklch(0.6810 0.0801 241.78)"
+    },
+    {
+      "name": "--cinnamon",
+      "value": "oklch(0.6795 0.1001 34.61)"
+    },
+    {
+      "name": "--pewter",
+      "value": "oklch(0.5851 0.0214 162.49)"
+    },
+    {
+      "name": "--thicket",
+      "value": "oklch(0.4694 0.0301 157.32)"
+    },
+    {
+      "name": "--moss",
+      "value": "oklch(0.3525 0.0358 158.01)"
+    },
+    {
+      "name": "--kelp",
+      "value": "oklch(0.3385 0.0374 176.68)"
+    },
+    {
+      "name": "--bronze",
+      "value": "oklch(0.3357 0.0199 67.06)"
+    },
+    {
+      "name": "--lichen",
+      "value": "oklch(0.3354 0.0191 163.55)"
+    },
+    {
+      "name": "--denim",
+      "value": "oklch(0.3303 0.0233 228.20)"
+    },
+    {
+      "name": "--umber",
+      "value": "oklch(0.3253 0.0117 26.25)"
+    },
+    {
+      "name": "--plum",
+      "value": "oklch(0.3217 0.0081 317.72)"
+    },
+    {
+      "name": "--forest",
+      "value": "oklch(0.3214 0.0320 151.54)"
+    },
+    {
+      "name": "--fern",
+      "value": "oklch(0.3156 0.0336 157.48)"
+    },
+    {
+      "name": "--loam",
+      "value": "oklch(0.2859 0.0229 162.83)"
+    },
+    {
+      "name": "--peat",
+      "value": "oklch(0.2522 0.0181 165.41)"
+    },
+    {
+      "name": "--pitch",
+      "value": "oklch(0.2143 0.0177 170.07)"
+    },
+    {
+      "name": "--tar",
+      "value": "oklch(0.1847 0.0160 173.80)"
+    },
+    {
+      "name": "--loden",
+      "value": "oklch(0.2249 0.0355 108.95)"
+    },
+    {
+      "name": "--olive",
+      "value": "oklch(0.3292 0.0444 108.61)"
+    },
+    {
+      "name": "--pine",
+      "value": "oklch(0.3986 0.0398 157.68)"
+    },
+    {
+      "name": "--hunter",
+      "value": "oklch(0.4462 0.0910 149.88)"
+    },
+    {
+      "name": "--grape",
+      "value": "oklch(0.4545 0.0901 319.26)"
+    },
+    {
+      "name": "--navy",
+      "value": "oklch(0.4545 0.0750 229.68)"
+    },
+    {
+      "name": "--malachite",
+      "value": "oklch(0.4595 0.0849 177.06)"
+    },
+    {
+      "name": "--maroon",
+      "value": "oklch(0.4748 0.1204 27.14)"
+    },
+    {
+      "name": "--indigo",
+      "value": "oklch(0.4803 0.0803 244.99)"
+    },
+    {
+      "name": "--evergreen",
+      "value": "oklch(0.4913 0.0908 149.56)"
+    },
+    {
+      "name": "--viridian",
+      "value": "oklch(0.4971 0.0913 176.61)"
+    },
+    {
+      "name": "--verdigris",
+      "value": "oklch(0.5000 0.0306 109.81)"
+    },
+    {
+      "name": "--marine",
+      "value": "oklch(0.5000 0.0752 230.29)"
+    },
+    {
+      "name": "--aubergine",
+      "value": "oklch(0.5003 0.0897 318.64)"
+    },
+    {
+      "name": "--jade",
+      "value": "oklch(0.5059 0.0937 176.17)"
+    },
+    {
+      "name": "--madder",
+      "value": "oklch(0.5199 0.1208 26.56)"
+    },
+    {
+      "name": "--caramel",
+      "value": "oklch(0.5264 0.0998 71.84)"
+    },
+    {
+      "name": "--sienna",
+      "value": "oklch(0.5593 0.1108 34.91)"
+    },
+    {
+      "name": "--copper",
+      "value": "oklch(0.6001 0.0997 70.19)"
+    },
+    {
+      "name": "--taupe",
+      "value": "oklch(0.6322 0.0210 162.58)"
+    },
+    {
+      "name": "--pebble",
+      "value": "oklch(0.7007 0.0152 138.72)"
+    },
+    {
+      "name": "--mustard",
+      "value": "oklch(0.7159 0.1005 72.42)"
+    },
+    {
+      "name": "--saffron",
+      "value": "oklch(0.7610 0.1005 72.19)"
+    },
+    {
+      "name": "--straw",
+      "value": "oklch(0.8791 0.0172 137.03)"
+    },
+    {
+      "name": "--sand",
+      "value": "oklch(0.8998 0.0098 72.65)"
+    },
+    {
+      "name": "--oat",
+      "value": "oklch(0.9140 0.0173 128.67)"
+    },
+    {
+      "name": "--celery",
+      "value": "oklch(0.9202 0.0168 151.09)"
+    },
+    {
+      "name": "--mist",
+      "value": "oklch(0.9215 0.0085 236.57)"
+    },
+    {
+      "name": "--lavender",
+      "value": "oklch(0.9223 0.0062 317.75)"
+    },
+    {
+      "name": "--pistachio",
+      "value": "oklch(0.9224 0.0158 177.06)"
+    },
+    {
+      "name": "--blush",
+      "value": "oklch(0.9242 0.0167 26.65)"
+    },
+    {
+      "name": "--parchment",
+      "value": "oklch(0.9352 0.0161 114.39)"
+    },
+    {
+      "name": "--manila",
+      "value": "oklch(0.9387 0.0120 79.78)"
+    },
+    {
+      "name": "--linen",
+      "value": "oklch(0.9438 0.0149 119.11)"
+    },
+    {
+      "name": "--wheat",
+      "value": "oklch(0.9562 0.0176 73.08)"
+    },
+    {
+      "name": "--bone",
+      "value": "oklch(0.9609 0.0119 111.76)"
+    },
+    {
+      "name": "--vellum",
+      "value": "oklch(0.9665 0.0067 97.35)"
+    },
+    {
+      "name": "--ivory",
+      "value": "oklch(0.9844 0.0108 95.16)"
+    },
+    {
+      "name": "--cardstock",
+      "value": "oklch(0.9857 0.0080 114.22)"
+    },
+    {
+      "name": "--chalk",
+      "value": "oklch(0.9922 0.0054 117.92)"
+    },
+    {
+      "name": "--eggshell",
+      "value": "oklch(0.9925 0.0041 121.56)"
+    }
+  ],
+  "roles": {
+    "--bg": [
+      "var(--pitch)",
+      "var(--bone)"
+    ],
+    "--bg-sunken": [
+      "var(--tar)",
+      "var(--parchment)"
+    ],
+    "--surface": [
+      "var(--peat)",
+      "var(--cardstock)"
+    ],
+    "--surface-2": [
+      "var(--fern)",
+      "var(--linen)"
+    ],
+    "--surface-3": [
+      "var(--moss)",
+      "var(--oat)"
+    ],
+    "--overlay": [
+      "var(--loam)",
+      "var(--chalk)"
+    ],
+    "--field": [
+      "var(--fern)",
+      "var(--eggshell)"
+    ],
+    "--border": [
+      "var(--lichen)",
+      "var(--straw)"
+    ],
+    "--border-strong": [
+      "var(--pewter)",
+      "var(--taupe)"
+    ],
+    "--fg": [
+      "var(--khaki)",
+      "var(--olive)"
+    ],
+    "--fg-strong": [
+      "var(--cream)",
+      "var(--loden)"
+    ],
+    "--fg-sage": [
+      "var(--sage)",
+      "var(--pine)"
+    ],
+    "--fg-muted": [
+      "var(--eucalyptus)",
+      "var(--verdigris)"
+    ],
+    "--fg-disabled": [
+      "var(--thicket)",
+      "var(--pebble)"
+    ],
+    "--folder": [
+      "var(--peat)",
+      "var(--manila)"
+    ],
+    "--paper": [
+      "var(--fern)",
+      "var(--ivory)"
+    ],
+    "--folder-edge": [
+      "var(--lichen)",
+      "var(--sand)"
+    ],
+    "--page": [
+      "var(--pitch)",
+      "var(--vellum)"
+    ],
+    "--primary": [
+      "var(--mint)",
+      "var(--jade)"
+    ],
+    "--primary-fg": [
+      "var(--pitch)",
+      "var(--cardstock)"
+    ],
+    "--primary-hover": [
+      "var(--spearmint)",
+      "var(--malachite)"
+    ],
+    "--primary-soft": [
+      "var(--kelp)",
+      "var(--pistachio)"
+    ],
+    "--primary-soft-fg": [
+      "var(--mint)",
+      "var(--viridian)"
+    ],
+    "--danger": [
+      "var(--brick)",
+      "var(--madder)"
+    ],
+    "--danger-fg": [
+      "var(--pitch)",
+      "var(--cardstock)"
+    ],
+    "--danger-hover": [
+      "var(--terracotta)",
+      "var(--maroon)"
+    ],
+    "--danger-soft": [
+      "var(--umber)",
+      "var(--blush)"
+    ],
+    "--danger-soft-fg": [
+      "var(--salmon)",
+      "var(--madder)"
+    ],
+    "--success": [
+      "var(--clover)",
+      "var(--evergreen)"
+    ],
+    "--success-fg": [
+      "var(--pitch)",
+      "var(--cardstock)"
+    ],
+    "--success-hover": [
+      "var(--basil)",
+      "var(--hunter)"
+    ],
+    "--success-soft": [
+      "var(--forest)",
+      "var(--celery)"
+    ],
+    "--success-soft-fg": [
+      "var(--shamrock)",
+      "var(--evergreen)"
+    ],
+    "--warning": [
+      "var(--ochre)",
+      "var(--saffron)"
+    ],
+    "--warning-fg": [
+      "var(--pitch)",
+      "var(--loden)"
+    ],
+    "--warning-hover": [
+      "var(--amber)",
+      "var(--mustard)"
+    ],
+    "--warning-soft": [
+      "var(--bronze)",
+      "var(--wheat)"
+    ],
+    "--warning-soft-fg": [
+      "var(--ochre)",
+      "var(--caramel)"
+    ],
+    "--info": [
+      "var(--slate)",
+      "var(--marine)"
+    ],
+    "--info-fg": [
+      "var(--pitch)",
+      "var(--cardstock)"
+    ],
+    "--info-hover": [
+      "var(--steel)",
+      "var(--navy)"
+    ],
+    "--info-soft": [
+      "var(--denim)",
+      "var(--mist)"
+    ],
+    "--info-soft-fg": [
+      "var(--slate)",
+      "var(--marine)"
+    ],
+    "--emphasis": [
+      "var(--mauve)",
+      "var(--aubergine)"
+    ],
+    "--emphasis-fg": [
+      "var(--pitch)",
+      "var(--cardstock)"
+    ],
+    "--emphasis-hover": [
+      "var(--lilac)",
+      "var(--grape)"
+    ],
+    "--emphasis-soft": [
+      "var(--plum)",
+      "var(--lavender)"
+    ],
+    "--emphasis-soft-fg": [
+      "var(--orchid)",
+      "var(--aubergine)"
+    ],
+    "--focus": [
+      "var(--mint)",
+      "var(--jade)"
+    ],
+    "--link": [
+      "var(--mint)",
+      "var(--viridian)"
+    ],
+    "--selection": [
+      "var(--kelp)",
+      "var(--pistachio)"
+    ],
+    "--code-bg": [
+      "var(--tar)",
+      "var(--parchment)"
+    ],
+    "--scrollbar": [
+      "var(--pewter)",
+      "var(--taupe)"
+    ],
+    "--chart-1": [
+      "var(--mint)",
+      "var(--jade)"
+    ],
+    "--chart-2": [
+      "var(--mauve)",
+      "var(--aubergine)"
+    ],
+    "--chart-3": [
+      "var(--ochre)",
+      "var(--copper)"
+    ],
+    "--chart-4": [
+      "var(--cobalt)",
+      "var(--indigo)"
+    ],
+    "--chart-5": [
+      "var(--cinnamon)",
+      "var(--sienna)"
+    ],
+    "--backdrop": [
+      "rgba(3, 8, 5, 0.72)",
+      "rgba(9, 27, 19, 0.32)"
+    ],
+    "--shadow-surface": [
+      "none",
+      "0 1px 2px 0 rgba(9, 27, 19, 0.06), 0 0 0 1px rgba(9, 27, 19, 0.03)"
+    ],
+    "--shadow-field": [
+      "none",
+      "0 1px 2px 0 rgba(9, 27, 19, 0.05)"
+    ],
+    "--shadow-overlay": [
+      "0 0 0 1px rgba(168, 191, 174, 0.06), 0 16px 40px -12px rgba(0, 0, 0, 0.7)",
+      "0 2px 8px 0 rgba(9, 27, 19, 0.08), 0 14px 32px -6px rgba(9, 27, 19, 0.14)"
+    ]
+  },
+  "noncolor": [
+    {
+      "name": "--theme-attribute",
+      "value": "class"
+    },
+    {
+      "name": "--radius",
+      "value": "0.25rem"
+    },
+    {
+      "name": "--tab-flare",
+      "value": "6px"
+    },
+    {
+      "name": "--border-width",
+      "value": "1px"
+    },
+    {
+      "name": "--ring-width",
+      "value": "2px"
+    },
+    {
+      "name": "--ring-offset",
+      "value": "2px"
+    },
+    {
+      "name": "--font-sans",
+      "value": "\"Rethink Sans\", ui-sans-serif, system-ui, sans-serif"
+    },
+    {
+      "name": "--font-display",
+      "value": "\"Rethink Sans\", ui-sans-serif, system-ui, sans-serif"
+    },
+    {
+      "name": "--font-mono",
+      "value": "\"Victor Mono\", ui-monospace, \"SFMono-Regular\", Menlo, monospace"
+    },
+    {
+      "name": "--display-weight",
+      "value": "600"
+    },
+    {
+      "name": "--display-tracking",
+      "value": "-0.02em"
+    }
+  ],
+  "motion": [
+    {
+      "name": "--duration",
+      "value": "140ms"
+    },
+    {
+      "name": "--tab-enter-duration",
+      "value": "180ms"
+    },
+    {
+      "name": "--tab-exit-duration",
+      "value": "135ms"
+    },
+    {
+      "name": "--theme-transition-duration",
+      "value": "550ms"
+    },
+    {
+      "name": "--mask-fade-duration",
+      "value": "200ms"
+    },
+    {
+      "name": "--pop-duration",
+      "value": "360ms"
+    },
+    {
+      "name": "--toggle-duration",
+      "value": "300ms"
+    },
+    {
+      "name": "--ease",
+      "value": "cubic-bezier(0.2, 0, 0, 1)"
+    },
+    {
+      "name": "--tab-enter-ease",
+      "value": "cubic-bezier(0.2, 0.8, 0.2, 1)"
+    },
+    {
+      "name": "--tab-exit-ease",
+      "value": "cubic-bezier(0.4, 0, 1, 1)"
+    },
+    {
+      "name": "--pop-in-ease",
+      "value": "cubic-bezier(0.42, 0, 1, 1)"
+    },
+    {
+      "name": "--pop-out-ease",
+      "value": "cubic-bezier(0.22, 1, 0.36, 1)"
+    }
+  ],
+  "tailwindMappings": [
+    {
+      "name": "--color-bg",
+      "value": "var(--bg)"
+    },
+    {
+      "name": "--color-bg-sunken",
+      "value": "var(--bg-sunken)"
+    },
+    {
+      "name": "--color-surface",
+      "value": "var(--surface)"
+    },
+    {
+      "name": "--color-surface-2",
+      "value": "var(--surface-2)"
+    },
+    {
+      "name": "--color-surface-3",
+      "value": "var(--surface-3)"
+    },
+    {
+      "name": "--color-overlay",
+      "value": "var(--overlay)"
+    },
+    {
+      "name": "--color-field",
+      "value": "var(--field)"
+    },
+    {
+      "name": "--color-border",
+      "value": "var(--border)"
+    },
+    {
+      "name": "--color-border-strong",
+      "value": "var(--border-strong)"
+    },
+    {
+      "name": "--color-fg",
+      "value": "var(--fg)"
+    },
+    {
+      "name": "--color-fg-strong",
+      "value": "var(--fg-strong)"
+    },
+    {
+      "name": "--color-fg-sage",
+      "value": "var(--fg-sage)"
+    },
+    {
+      "name": "--color-fg-muted",
+      "value": "var(--fg-muted)"
+    },
+    {
+      "name": "--color-fg-disabled",
+      "value": "var(--fg-disabled)"
+    },
+    {
+      "name": "--color-folder",
+      "value": "var(--folder)"
+    },
+    {
+      "name": "--color-paper",
+      "value": "var(--paper)"
+    },
+    {
+      "name": "--color-folder-edge",
+      "value": "var(--folder-edge)"
+    },
+    {
+      "name": "--color-page",
+      "value": "var(--page)"
+    },
+    {
+      "name": "--color-primary",
+      "value": "var(--primary)"
+    },
+    {
+      "name": "--color-primary-fg",
+      "value": "var(--primary-fg)"
+    },
+    {
+      "name": "--color-primary-hover",
+      "value": "var(--primary-hover)"
+    },
+    {
+      "name": "--color-primary-soft",
+      "value": "var(--primary-soft)"
+    },
+    {
+      "name": "--color-primary-soft-fg",
+      "value": "var(--primary-soft-fg)"
+    },
+    {
+      "name": "--color-danger",
+      "value": "var(--danger)"
+    },
+    {
+      "name": "--color-danger-fg",
+      "value": "var(--danger-fg)"
+    },
+    {
+      "name": "--color-danger-hover",
+      "value": "var(--danger-hover)"
+    },
+    {
+      "name": "--color-danger-soft",
+      "value": "var(--danger-soft)"
+    },
+    {
+      "name": "--color-danger-soft-fg",
+      "value": "var(--danger-soft-fg)"
+    },
+    {
+      "name": "--color-success",
+      "value": "var(--success)"
+    },
+    {
+      "name": "--color-success-fg",
+      "value": "var(--success-fg)"
+    },
+    {
+      "name": "--color-success-hover",
+      "value": "var(--success-hover)"
+    },
+    {
+      "name": "--color-success-soft",
+      "value": "var(--success-soft)"
+    },
+    {
+      "name": "--color-success-soft-fg",
+      "value": "var(--success-soft-fg)"
+    },
+    {
+      "name": "--color-warning",
+      "value": "var(--warning)"
+    },
+    {
+      "name": "--color-warning-fg",
+      "value": "var(--warning-fg)"
+    },
+    {
+      "name": "--color-warning-hover",
+      "value": "var(--warning-hover)"
+    },
+    {
+      "name": "--color-warning-soft",
+      "value": "var(--warning-soft)"
+    },
+    {
+      "name": "--color-warning-soft-fg",
+      "value": "var(--warning-soft-fg)"
+    },
+    {
+      "name": "--color-info",
+      "value": "var(--info)"
+    },
+    {
+      "name": "--color-info-fg",
+      "value": "var(--info-fg)"
+    },
+    {
+      "name": "--color-info-hover",
+      "value": "var(--info-hover)"
+    },
+    {
+      "name": "--color-info-soft",
+      "value": "var(--info-soft)"
+    },
+    {
+      "name": "--color-info-soft-fg",
+      "value": "var(--info-soft-fg)"
+    },
+    {
+      "name": "--color-emphasis",
+      "value": "var(--emphasis)"
+    },
+    {
+      "name": "--color-emphasis-fg",
+      "value": "var(--emphasis-fg)"
+    },
+    {
+      "name": "--color-emphasis-hover",
+      "value": "var(--emphasis-hover)"
+    },
+    {
+      "name": "--color-emphasis-soft",
+      "value": "var(--emphasis-soft)"
+    },
+    {
+      "name": "--color-emphasis-soft-fg",
+      "value": "var(--emphasis-soft-fg)"
+    },
+    {
+      "name": "--color-focus",
+      "value": "var(--focus)"
+    },
+    {
+      "name": "--color-link",
+      "value": "var(--link)"
+    },
+    {
+      "name": "--color-selection",
+      "value": "var(--selection)"
+    },
+    {
+      "name": "--color-code-bg",
+      "value": "var(--code-bg)"
+    },
+    {
+      "name": "--color-scrollbar",
+      "value": "var(--scrollbar)"
+    },
+    {
+      "name": "--color-chart-1",
+      "value": "var(--chart-1)"
+    },
+    {
+      "name": "--color-chart-2",
+      "value": "var(--chart-2)"
+    },
+    {
+      "name": "--color-chart-3",
+      "value": "var(--chart-3)"
+    },
+    {
+      "name": "--color-chart-4",
+      "value": "var(--chart-4)"
+    },
+    {
+      "name": "--color-chart-5",
+      "value": "var(--chart-5)"
+    },
+    {
+      "name": "--color-backdrop",
+      "value": "var(--backdrop)"
+    },
+    {
+      "name": "--font-display",
+      "value": "var(--font-display)"
+    },
+    {
+      "name": "--shadow-surface",
+      "value": "var(--shadow-surface)"
+    },
+    {
+      "name": "--shadow-field",
+      "value": "var(--shadow-field)"
+    },
+    {
+      "name": "--shadow-overlay",
+      "value": "var(--shadow-overlay)"
+    },
+    {
+      "name": "--radius-base",
+      "value": "var(--radius)"
+    },
+    {
+      "name": "--ease-base",
+      "value": "var(--ease)"
+    }
+  ],
+  "uiDeclarations": [
+    {
+      "name": "--text-2xs",
+      "value": "0.6875rem"
+    },
+    {
+      "name": "--text-2xs--line-height",
+      "value": "1rem"
+    },
+    {
+      "name": "--text-3xs",
+      "value": "0.625rem"
+    },
+    {
+      "name": "--text-3xs--line-height",
+      "value": "0.875rem"
+    },
+    {
+      "name": "--scale-pop",
+      "value": "0.85"
+    },
+    {
+      "name": "--scale-pop-over",
+      "value": "1.08"
+    },
+    {
+      "name": "--duration-pop",
+      "value": "360ms"
+    },
+    {
+      "name": "--ease-pop-in",
+      "value": "cubic-bezier(0.42, 0, 1, 1)"
+    },
+    {
+      "name": "--ease-pop-out",
+      "value": "cubic-bezier(0.22, 1, 0.36, 1)"
+    },
+    {
+      "name": "--animate-pop-in",
+      "value": "pop-in var(--duration-pop) both"
+    },
+    {
+      "name": "--animate-pop-out",
+      "value": "pop-out var(--duration-pop) both"
+    },
+    {
+      "name": "--font-code",
+      "value": "var(--font-mono)"
+    },
+    {
+      "name": "--color-app-bg",
+      "value": "var(--bg)"
+    },
+    {
+      "name": "--color-header-bg",
+      "value": "var(--surface)"
+    },
+    {
+      "name": "--color-header-border",
+      "value": "var(--border)"
+    },
+    {
+      "name": "--color-splash-bg",
+      "value": "var(--bg)"
+    },
+    {
+      "name": "--color-splash-text",
+      "value": "var(--fg-muted)"
+    },
+    {
+      "name": "--color-splash-ring",
+      "value": "var(--border-strong)"
+    },
+    {
+      "name": "--color-chat-empty-text",
+      "value": "var(--fg-muted)"
+    },
+    {
+      "name": "--color-chat-bubble-user-bg",
+      "value": "var(--surface-2)"
+    },
+    {
+      "name": "--color-chat-bubble-user-text",
+      "value": "var(--fg)"
+    },
+    {
+      "name": "--color-chat-bubble-ai-bg",
+      "value": "var(--surface)"
+    },
+    {
+      "name": "--color-chat-bubble-ai-text",
+      "value": "var(--fg)"
+    },
+    {
+      "name": "--color-chat-bubble-ai-border",
+      "value": "var(--border)"
+    },
+    {
+      "name": "--color-chat-error-text",
+      "value": "var(--danger-soft-fg)"
+    },
+    {
+      "name": "--color-chat-clearbtn-text",
+      "value": "var(--fg-muted)"
+    },
+    {
+      "name": "--color-chat-clearbtn-text-hover",
+      "value": "var(--danger-soft-fg)"
+    },
+    {
+      "name": "--color-conn-probing",
+      "value": "var(--warning)"
+    },
+    {
+      "name": "--color-conn-connected",
+      "value": "var(--success)"
+    },
+    {
+      "name": "--color-conn-disconnected",
+      "value": "var(--danger)"
+    },
+    {
+      "name": "--color-conn-label",
+      "value": "var(--fg-muted)"
+    },
+    {
+      "name": "--color-drawer-backdrop",
+      "value": "var(--backdrop)"
+    },
+    {
+      "name": "--color-drawer-bg",
+      "value": "var(--surface)"
+    },
+    {
+      "name": "--color-drawer-border",
+      "value": "var(--border)"
+    },
+    {
+      "name": "--color-drawer-header-bg",
+      "value": "var(--surface)"
+    },
+    {
+      "name": "--color-drawer-header-border",
+      "value": "var(--border)"
+    },
+    {
+      "name": "--color-drawer-newbtn-bg",
+      "value": "var(--primary-soft)"
+    },
+    {
+      "name": "--color-drawer-newbtn-text",
+      "value": "var(--primary-soft-fg)"
+    },
+    {
+      "name": "--color-drawer-newbtn-bg-hover",
+      "value": "var(--surface-3)"
+    },
+    {
+      "name": "--color-drawer-search-bg",
+      "value": "var(--surface)"
+    },
+    {
+      "name": "--color-drawer-search-border",
+      "value": "var(--border)"
+    },
+    {
+      "name": "--color-drawer-empty-text",
+      "value": "var(--fg-muted)"
+    },
+    {
+      "name": "--color-drawer-item-bg-active",
+      "value": "var(--primary-soft)"
+    },
+    {
+      "name": "--color-drawer-item-text-active",
+      "value": "var(--fg-strong)"
+    },
+    {
+      "name": "--color-drawer-item-text",
+      "value": "var(--fg)"
+    },
+    {
+      "name": "--color-drawer-item-bg-hover",
+      "value": "var(--surface-2)"
+    },
+    {
+      "name": "--color-drawer-item-text-hover",
+      "value": "var(--fg-strong)"
+    },
+    {
+      "name": "--color-drawer-item-icon",
+      "value": "var(--fg-muted)"
+    },
+    {
+      "name": "--color-drawer-item-icon-active",
+      "value": "var(--primary-soft-fg)"
+    },
+    {
+      "name": "--color-drawer-edit-bg",
+      "value": "var(--field)"
+    },
+    {
+      "name": "--color-drawer-edit-border",
+      "value": "var(--focus)"
+    },
+    {
+      "name": "--color-inputbar-bg",
+      "value": "var(--bg)"
+    },
+    {
+      "name": "--color-inputbar-border",
+      "value": "var(--border)"
+    },
+    {
+      "name": "--color-inputbar-input-bg",
+      "value": "var(--field)"
+    },
+    {
+      "name": "--color-inputbar-input-border",
+      "value": "var(--field)"
+    },
+    {
+      "name": "--color-inputbar-input-text",
+      "value": "var(--fg)"
+    },
+    {
+      "name": "--color-inputbar-input-placeholder",
+      "value": "var(--fg-muted)"
+    },
+    {
+      "name": "--color-inputbar-input-border-focus",
+      "value": "var(--focus)"
+    },
+    {
+      "name": "--color-md-code-inline-bg",
+      "value": "var(--surface-2)"
+    },
+    {
+      "name": "--color-md-code-inline-text",
+      "value": "var(--success-soft-fg)"
+    },
+    {
+      "name": "--color-md-link",
+      "value": "var(--link)"
+    },
+    {
+      "name": "--color-md-th-border",
+      "value": "var(--border)"
+    },
+    {
+      "name": "--color-md-td-border",
+      "value": "var(--border)"
+    },
+    {
+      "name": "--color-md-code-block-bg",
+      "value": "var(--code-bg)"
+    },
+    {
+      "name": "--color-md-code-block-text",
+      "value": "var(--fg)"
+    },
+    {
+      "name": "--color-md-code-block-link",
+      "value": "var(--link)"
+    },
+    {
+      "name": "--color-md-code-block-border",
+      "value": "var(--border)"
+    },
+    {
+      "name": "--color-md-code-header-bg",
+      "value": "var(--surface)"
+    },
+    {
+      "name": "--color-md-code-header-text",
+      "value": "var(--fg-muted)"
+    },
+    {
+      "name": "--color-md-code-header-border",
+      "value": "var(--border)"
+    },
+    {
+      "name": "--color-md-code-copy-bg-hover",
+      "value": "var(--surface-2)"
+    },
+    {
+      "name": "--color-md-code-copy-text-hover",
+      "value": "var(--fg-strong)"
+    },
+    {
+      "name": "--color-md-code-copied-icon",
+      "value": "var(--success)"
+    },
+    {
+      "name": "--color-modelpicker-empty-bg",
+      "value": "var(--surface-2)"
+    },
+    {
+      "name": "--color-modelpicker-empty-border",
+      "value": "var(--border)"
+    },
+    {
+      "name": "--color-modelpicker-empty-text",
+      "value": "var(--fg-muted)"
+    },
+    {
+      "name": "--color-themeedit-bg",
+      "value": "var(--overlay)"
+    },
+    {
+      "name": "--color-themeedit-border",
+      "value": "var(--border)"
+    },
+    {
+      "name": "--color-themeedit-title-text",
+      "value": "var(--fg-strong)"
+    },
+    {
+      "name": "--color-themeedit-title-border",
+      "value": "var(--border)"
+    },
+    {
+      "name": "--color-themeedit-family-label",
+      "value": "var(--fg-muted)"
+    },
+    {
+      "name": "--color-themeedit-slider-label",
+      "value": "var(--fg-muted)"
+    },
+    {
+      "name": "--color-themeedit-slider-track",
+      "value": "var(--surface-3)"
+    },
+    {
+      "name": "--color-themeedit-slider-thumb",
+      "value": "var(--primary)"
+    },
+    {
+      "name": "--color-themeedit-reset-text",
+      "value": "var(--fg-muted)"
+    },
+    {
+      "name": "--color-themeedit-reset-text-hover",
+      "value": "var(--fg-strong)"
+    },
+    {
+      "name": "--color-themeedit-reset-border",
+      "value": "var(--border)"
+    },
+    {
+      "name": "--color-error-text",
+      "value": "var(--fg-strong)"
+    },
+    {
+      "name": "--oocm-text",
+      "value": "var(--fg-muted)"
+    }
+  ],
+  "heroAdapter": [
+    {
+      "name": "--field-radius",
+      "value": "calc(var(--radius) * 1.5)"
+    },
+    {
+      "name": "--field-border-width",
+      "value": "var(--border-width)"
+    },
+    {
+      "name": "--ring-offset-width",
+      "value": "var(--ring-offset)"
+    },
+    {
+      "name": "--background",
+      "value": "var(--bg)"
+    },
+    {
+      "name": "--foreground",
+      "value": "var(--fg)"
+    },
+    {
+      "name": "--surface-foreground",
+      "value": "var(--fg)"
+    },
+    {
+      "name": "--surface-secondary",
+      "value": "var(--surface-2)"
+    },
+    {
+      "name": "--surface-secondary-foreground",
+      "value": "var(--fg)"
+    },
+    {
+      "name": "--surface-tertiary",
+      "value": "var(--surface-3)"
+    },
+    {
+      "name": "--surface-tertiary-foreground",
+      "value": "var(--fg)"
+    },
+    {
+      "name": "--overlay-foreground",
+      "value": "var(--fg)"
+    },
+    {
+      "name": "--muted",
+      "value": "var(--fg-muted)"
+    },
+    {
+      "name": "--default",
+      "value": "var(--surface-2)"
+    },
+    {
+      "name": "--default-foreground",
+      "value": "var(--fg-strong)"
+    },
+    {
+      "name": "--accent",
+      "value": "var(--primary)"
+    },
+    {
+      "name": "--accent-foreground",
+      "value": "var(--primary-fg)"
+    },
+    {
+      "name": "--field-background",
+      "value": "var(--field)"
+    },
+    {
+      "name": "--field-foreground",
+      "value": "var(--fg-strong)"
+    },
+    {
+      "name": "--field-placeholder",
+      "value": "var(--fg-muted)"
+    },
+    {
+      "name": "--field-border",
+      "value": "var(--border-strong)"
+    },
+    {
+      "name": "--success-foreground",
+      "value": "var(--success-fg)"
+    },
+    {
+      "name": "--warning-foreground",
+      "value": "var(--warning-fg)"
+    },
+    {
+      "name": "--danger-foreground",
+      "value": "var(--danger-fg)"
+    },
+    {
+      "name": "--segment",
+      "value": "var(--surface-3)"
+    },
+    {
+      "name": "--segment-foreground",
+      "value": "var(--fg-strong)"
+    },
+    {
+      "name": "--separator",
+      "value": "var(--border)"
+    },
+    {
+      "name": "--scrollbar-thumb",
+      "value": "var(--scrollbar)"
+    },
+    {
+      "name": "--surface-shadow",
+      "value": "var(--shadow-surface)"
+    },
+    {
+      "name": "--overlay-shadow",
+      "value": "var(--shadow-overlay)"
+    },
+    {
+      "name": "--field-shadow",
+      "value": "var(--shadow-field)"
+    },
+    {
+      "name": "--surface-hover",
+      "value": "var(--surface-2)"
+    },
+    {
+      "name": "--background-secondary",
+      "value": "var(--surface)"
+    },
+    {
+      "name": "--background-tertiary",
+      "value": "var(--surface-2)"
+    },
+    {
+      "name": "--background-inverse",
+      "value": "var(--fg-strong)"
+    },
+    {
+      "name": "--default-hover",
+      "value": "var(--surface-3)"
+    },
+    {
+      "name": "--accent-hover",
+      "value": "var(--primary-hover)"
+    },
+    {
+      "name": "--accent-soft",
+      "value": "var(--primary-soft)"
+    },
+    {
+      "name": "--accent-soft-foreground",
+      "value": "var(--primary-soft-fg)"
+    },
+    {
+      "name": "--accent-soft-hover",
+      "value": "color-mix(in oklab, var(--primary-soft) 80%, var(--primary) 20%)"
+    },
+    {
+      "name": "--success-soft-foreground",
+      "value": "var(--success-soft-fg)"
+    },
+    {
+      "name": "--success-soft-hover",
+      "value": "color-mix(in oklab, var(--success-soft) 80%, var(--success) 20%)"
+    },
+    {
+      "name": "--warning-soft-foreground",
+      "value": "var(--warning-soft-fg)"
+    },
+    {
+      "name": "--warning-soft-hover",
+      "value": "color-mix(in oklab, var(--warning-soft) 80%, var(--warning) 20%)"
+    },
+    {
+      "name": "--danger-soft-foreground",
+      "value": "var(--danger-soft-fg)"
+    },
+    {
+      "name": "--danger-soft-hover",
+      "value": "color-mix(in oklab, var(--danger-soft) 80%, var(--danger) 20%)"
+    },
+    {
+      "name": "--default-soft",
+      "value": "var(--surface-2)"
+    },
+    {
+      "name": "--default-soft-foreground",
+      "value": "var(--fg-strong)"
+    },
+    {
+      "name": "--default-soft-hover",
+      "value": "var(--surface-3)"
+    },
+    {
+      "name": "--field-hover",
+      "value": "var(--field)"
+    },
+    {
+      "name": "--field-focus",
+      "value": "var(--field)"
+    },
+    {
+      "name": "--field-border-hover",
+      "value": "var(--fg-muted)"
+    },
+    {
+      "name": "--field-border-focus",
+      "value": "var(--focus)"
+    },
+    {
+      "name": "--separator-secondary",
+      "value": "var(--border)"
+    },
+    {
+      "name": "--separator-tertiary",
+      "value": "var(--border-strong)"
+    },
+    {
+      "name": "--border-secondary",
+      "value": "var(--border-strong)"
+    },
+    {
+      "name": "--border-tertiary",
+      "value": "var(--fg-muted)"
+    }
+  ],
+  "shadcnAdapter": [
+    {
+      "name": "--background",
+      "value": "var(--bg)"
+    },
+    {
+      "name": "--foreground",
+      "value": "var(--fg)"
+    },
+    {
+      "name": "--card",
+      "value": "var(--surface)"
+    },
+    {
+      "name": "--card-foreground",
+      "value": "var(--fg)"
+    },
+    {
+      "name": "--popover",
+      "value": "var(--overlay)"
+    },
+    {
+      "name": "--popover-foreground",
+      "value": "var(--fg)"
+    },
+    {
+      "name": "--primary-foreground",
+      "value": "var(--primary-fg)"
+    },
+    {
+      "name": "--secondary",
+      "value": "var(--surface-2)"
+    },
+    {
+      "name": "--secondary-foreground",
+      "value": "var(--fg-strong)"
+    },
+    {
+      "name": "--muted",
+      "value": "var(--surface-2)"
+    },
+    {
+      "name": "--muted-foreground",
+      "value": "var(--fg-muted)"
+    },
+    {
+      "name": "--accent",
+      "value": "var(--primary-soft)"
+    },
+    {
+      "name": "--accent-foreground",
+      "value": "var(--fg-strong)"
+    },
+    {
+      "name": "--destructive",
+      "value": "var(--danger)"
+    },
+    {
+      "name": "--destructive-foreground",
+      "value": "var(--danger-fg)"
+    },
+    {
+      "name": "--input",
+      "value": "var(--border-strong)"
+    },
+    {
+      "name": "--ring",
+      "value": "var(--focus)"
+    },
+    {
+      "name": "--sidebar",
+      "value": "var(--surface)"
+    },
+    {
+      "name": "--sidebar-foreground",
+      "value": "var(--fg)"
+    },
+    {
+      "name": "--sidebar-primary",
+      "value": "var(--primary)"
+    },
+    {
+      "name": "--sidebar-primary-foreground",
+      "value": "var(--primary-fg)"
+    },
+    {
+      "name": "--sidebar-accent",
+      "value": "var(--surface-2)"
+    },
+    {
+      "name": "--sidebar-accent-foreground",
+      "value": "var(--fg-strong)"
+    },
+    {
+      "name": "--sidebar-border",
+      "value": "var(--border)"
+    },
+    {
+      "name": "--sidebar-ring",
+      "value": "var(--focus)"
+    },
+    {
+      "name": "--success-foreground",
+      "value": "var(--success-fg)"
+    },
+    {
+      "name": "--warning-foreground",
+      "value": "var(--warning-fg)"
+    },
+    {
+      "name": "--info-foreground",
+      "value": "var(--info-fg)"
+    },
+    {
+      "name": "--emphasis-foreground",
+      "value": "var(--emphasis-fg)"
+    },
+    {
+      "name": "--color-background",
+      "value": "var(--background)"
+    },
+    {
+      "name": "--color-foreground",
+      "value": "var(--foreground)"
+    },
+    {
+      "name": "--color-card",
+      "value": "var(--card)"
+    },
+    {
+      "name": "--color-card-foreground",
+      "value": "var(--card-foreground)"
+    },
+    {
+      "name": "--color-popover",
+      "value": "var(--popover)"
+    },
+    {
+      "name": "--color-popover-foreground",
+      "value": "var(--popover-foreground)"
+    },
+    {
+      "name": "--color-primary",
+      "value": "var(--primary)"
+    },
+    {
+      "name": "--color-primary-foreground",
+      "value": "var(--primary-foreground)"
+    },
+    {
+      "name": "--color-secondary",
+      "value": "var(--secondary)"
+    },
+    {
+      "name": "--color-secondary-foreground",
+      "value": "var(--secondary-foreground)"
+    },
+    {
+      "name": "--color-muted",
+      "value": "var(--muted)"
+    },
+    {
+      "name": "--color-muted-foreground",
+      "value": "var(--muted-foreground)"
+    },
+    {
+      "name": "--color-accent",
+      "value": "var(--accent)"
+    },
+    {
+      "name": "--color-accent-foreground",
+      "value": "var(--accent-foreground)"
+    },
+    {
+      "name": "--color-destructive",
+      "value": "var(--destructive)"
+    },
+    {
+      "name": "--color-destructive-foreground",
+      "value": "var(--destructive-foreground)"
+    },
+    {
+      "name": "--color-border",
+      "value": "var(--border)"
+    },
+    {
+      "name": "--color-input",
+      "value": "var(--input)"
+    },
+    {
+      "name": "--color-ring",
+      "value": "var(--ring)"
+    },
+    {
+      "name": "--color-chart-1",
+      "value": "var(--chart-1)"
+    },
+    {
+      "name": "--color-chart-2",
+      "value": "var(--chart-2)"
+    },
+    {
+      "name": "--color-chart-3",
+      "value": "var(--chart-3)"
+    },
+    {
+      "name": "--color-chart-4",
+      "value": "var(--chart-4)"
+    },
+    {
+      "name": "--color-chart-5",
+      "value": "var(--chart-5)"
+    },
+    {
+      "name": "--color-sidebar",
+      "value": "var(--sidebar)"
+    },
+    {
+      "name": "--color-sidebar-foreground",
+      "value": "var(--sidebar-foreground)"
+    },
+    {
+      "name": "--color-sidebar-primary",
+      "value": "var(--sidebar-primary)"
+    },
+    {
+      "name": "--color-sidebar-primary-foreground",
+      "value": "var(--sidebar-primary-foreground)"
+    },
+    {
+      "name": "--color-sidebar-accent",
+      "value": "var(--sidebar-accent)"
+    },
+    {
+      "name": "--color-sidebar-accent-foreground",
+      "value": "var(--sidebar-accent-foreground)"
+    },
+    {
+      "name": "--color-sidebar-border",
+      "value": "var(--sidebar-border)"
+    },
+    {
+      "name": "--color-sidebar-ring",
+      "value": "var(--sidebar-ring)"
+    },
+    {
+      "name": "--color-success",
+      "value": "var(--success)"
+    },
+    {
+      "name": "--color-success-foreground",
+      "value": "var(--success-foreground)"
+    },
+    {
+      "name": "--color-warning",
+      "value": "var(--warning)"
+    },
+    {
+      "name": "--color-warning-foreground",
+      "value": "var(--warning-foreground)"
+    },
+    {
+      "name": "--color-info",
+      "value": "var(--info)"
+    },
+    {
+      "name": "--color-info-foreground",
+      "value": "var(--info-foreground)"
+    },
+    {
+      "name": "--color-emphasis",
+      "value": "var(--emphasis)"
+    },
+    {
+      "name": "--color-emphasis-foreground",
+      "value": "var(--emphasis-foreground)"
+    },
+    {
+      "name": "--radius-sm",
+      "value": "calc(var(--radius) * 0.6)"
+    },
+    {
+      "name": "--radius-md",
+      "value": "calc(var(--radius) * 0.8)"
+    },
+    {
+      "name": "--radius-lg",
+      "value": "var(--radius)"
+    },
+    {
+      "name": "--radius-xl",
+      "value": "calc(var(--radius) * 1.4)"
+    },
+    {
+      "name": "--radius-2xl",
+      "value": "calc(var(--radius) * 1.8)"
+    },
+    {
+      "name": "--radius-3xl",
+      "value": "calc(var(--radius) * 2.2)"
+    },
+    {
+      "name": "--radius-4xl",
+      "value": "calc(var(--radius) * 2.6)"
+    }
+  ],
+  "tokenCatalog": {
+    "version": 1,
+    "color": {
+      "themes": [
+        {
+          "id": "dark",
+          "name": "Dark (Phosphor)"
+        },
+        {
+          "id": "light",
+          "name": "Light (Bone paper)"
+        }
+      ],
+      "tokens": [
+        {
+          "name": "bg",
+          "value": {
+            "dark": "#111c18",
+            "light": "#f2f3ea"
+          },
+          "usage": "App background (deep phosphor-black / bone paper). Ground for `fg`, `fg-strong`, `fg-muted`."
+        },
+        {
+          "name": "bg-sunken",
+          "value": {
+            "dark": "#0b1512",
+            "light": "#e9ebdf"
+          },
+          "usage": "Recessed wells below the app ground: code blocks, terminal output, inset sidebars."
+        },
+        {
+          "name": "surface",
+          "value": {
+            "dark": "#1a2520",
+            "light": "#fafbf5"
+          },
+          "usage": "The muted surface: sidebar, inspector, Questions block, cards (shadcn `card`, HeroUI `surface`). Ground for every text token."
+        },
+        {
+          "name": "surface-2",
+          "value": {
+            "dark": "#23372b",
+            "light": "#ebeee3"
+          },
+          "usage": "Raised fill: the prompt/input block, active tab, hovered rows, secondary buttons."
+        },
+        {
+          "name": "surface-3",
+          "value": {
+            "dark": "#2b4134",
+            "light": "#dfe5d9"
+          },
+          "usage": "Pressed / selected neutral fill, segmented-control thumb."
+        },
+        {
+          "name": "overlay",
+          "value": {
+            "dark": "#202e27",
+            "light": "#fcfdf9"
+          },
+          "usage": "Floating layers: popover, menu, tooltip, dialog. One step above `surface`."
+        },
+        {
+          "name": "field",
+          "value": {
+            "dark": "#23372b",
+            "light": "#fcfdfa"
+          },
+          "usage": "Input, textarea and select background (the raised green of the prompt block)."
+        },
+        {
+          "name": "border",
+          "value": {
+            "dark": "#2e3a34",
+            "light": "#d2dacf"
+          },
+          "usage": "Hairline: card edges, dividers, table rules. Decorative only (below 3:1 by design)."
+        },
+        {
+          "name": "border-strong",
+          "value": {
+            "dark": "#718078",
+            "light": "#7f8e86"
+          },
+          "usage": "Control boundary: input, checkbox and select outlines; 3:1 on `field`, `surface`, `bg`."
+        },
+        {
+          "name": "fg",
+          "value": {
+            "dark": "#c1c497",
+            "light": "#37371b"
+          },
+          "usage": "Body text: golden khaki (dark) / olive ink (light) on every ground, including the muted `surface`."
+        },
+        {
+          "name": "fg-strong",
+          "value": {
+            "dark": "#dfe0b8",
+            "light": "#1d1d08"
+          },
+          "usage": "Headings, active labels, values on every ground."
+        },
+        {
+          "name": "fg-sage",
+          "value": {
+            "dark": "#a8bfae",
+            "light": "#354e3f"
+          },
+          "usage": "Secondary text role: sage (dark) / forest ink (light). Inactive tabs, neutral values, table body in dense data."
+        },
+        {
+          "name": "fg-muted",
+          "value": {
+            "dark": "#8ca194",
+            "light": "#646551"
+          },
+          "usage": "Secondary text, captions, placeholders: 4.5:1 on every ground up to `surface-2`."
+        },
+        {
+          "name": "fg-disabled",
+          "value": {
+            "dark": "#4d6054",
+            "light": "#9aa198"
+          },
+          "usage": "Disabled labels only (WCAG-exempt)."
+        },
+        {
+          "name": "primary",
+          "value": {
+            "dark": "#2ed5b7",
+            "light": "#037663"
+          },
+          "usage": "Mint / deep jade: the one saturated color; the brand signal. Primary buttons, active nav, toggles on, progress. As text it holds 4.5:1 on `bg`/`surface`."
+        },
+        {
+          "name": "primary-fg",
+          "value": {
+            "dark": "#111c18",
+            "light": "#fafbf5"
+          },
+          "usage": "Text and icons on a `primary` or `primary-hover` fill."
+        },
+        {
+          "name": "primary-hover",
+          "value": {
+            "dark": "#45e4c5",
+            "light": "#016757"
+          },
+          "usage": "Hover / pressed state of a `primary` fill."
+        },
+        {
+          "name": "primary-soft",
+          "value": {
+            "dark": "#213e37",
+            "light": "#dbe9e5"
+          },
+          "usage": "Tinted background for primary badges, alerts and selected rows."
+        },
+        {
+          "name": "primary-soft-fg",
+          "value": {
+            "dark": "#2ed5b7",
+            "light": "#057361"
+          },
+          "usage": "Primary text that reads on `primary-soft`, `bg`, `surface` and `surface-2` (4.5:1)."
+        },
+        {
+          "name": "danger",
+          "value": {
+            "dark": "#df8379",
+            "light": "#a34942"
+          },
+          "usage": "Matte brick: destructive actions, invalid fields, error text. As text it holds 4.5:1 on `bg`/`surface`."
+        },
+        {
+          "name": "danger-fg",
+          "value": {
+            "dark": "#111c18",
+            "light": "#fafbf5"
+          },
+          "usage": "Text and icons on a `danger` or `danger-hover` fill."
+        },
+        {
+          "name": "danger-hover",
+          "value": {
+            "dark": "#ee9186",
+            "light": "#943c35"
+          },
+          "usage": "Hover / pressed state of a `danger` fill."
+        },
+        {
+          "name": "danger-soft",
+          "value": {
+            "dark": "#3a3231",
+            "light": "#f1e2e0"
+          },
+          "usage": "Tinted background for danger badges, alerts and selected rows."
+        },
+        {
+          "name": "danger-soft-fg",
+          "value": {
+            "dark": "#e0847a",
+            "light": "#a34942"
+          },
+          "usage": "Danger text that reads on `danger-soft`, `bg`, `surface` and `surface-2` (4.5:1)."
+        },
+        {
+          "name": "success",
+          "value": {
+            "dark": "#63b07a",
+            "light": "#376f44"
+          },
+          "usage": "Code green: completed, connected, passing. As text it holds 4.5:1 on `bg`/`surface`."
+        },
+        {
+          "name": "success-fg",
+          "value": {
+            "dark": "#111c18",
+            "light": "#fafbf5"
+          },
+          "usage": "Text and icons on a `success` or `success-hover` fill."
+        },
+        {
+          "name": "success-hover",
+          "value": {
+            "dark": "#71be88",
+            "light": "#296238"
+          },
+          "usage": "Hover / pressed state of a `success` fill."
+        },
+        {
+          "name": "success-soft",
+          "value": {
+            "dark": "#27382b",
+            "light": "#dde8df"
+          },
+          "usage": "Tinted background for success badges, alerts and selected rows."
+        },
+        {
+          "name": "success-soft-fg",
+          "value": {
+            "dark": "#64b17b",
+            "light": "#376f44"
+          },
+          "usage": "Success text that reads on `success-soft`, `bg`, `surface` and `surface-2` (4.5:1)."
+        },
+        {
+          "name": "warning",
+          "value": {
+            "dark": "#dfad73",
+            "light": "#d9a767"
+          },
+          "usage": "Matte ochre (oranger than the gold text): degraded, pending attention. Always dark text on the fill."
+        },
+        {
+          "name": "warning-fg",
+          "value": {
+            "dark": "#111c18",
+            "light": "#1d1d08"
+          },
+          "usage": "Text and icons on a `warning` or `warning-hover` fill."
+        },
+        {
+          "name": "warning-hover",
+          "value": {
+            "dark": "#eebb81",
+            "light": "#ca9959"
+          },
+          "usage": "Hover / pressed state of a `warning` fill."
+        },
+        {
+          "name": "warning-soft",
+          "value": {
+            "dark": "#3e352c",
+            "light": "#f8efe4"
+          },
+          "usage": "Tinted background for warning badges, alerts and selected rows."
+        },
+        {
+          "name": "warning-soft-fg",
+          "value": {
+            "dark": "#dfad73",
+            "light": "#8e601d"
+          },
+          "usage": "Warning text that reads on `warning-soft`, `bg`, `surface` and `surface-2` (4.5:1)."
+        },
+        {
+          "name": "info",
+          "value": {
+            "dark": "#7bb4ce",
+            "light": "#2f6b86"
+          },
+          "usage": "Matte slate-cyan: neutral notices, help, links to docs. As text it holds 4.5:1 on `bg`/`surface`."
+        },
+        {
+          "name": "info-fg",
+          "value": {
+            "dark": "#111c18",
+            "light": "#fafbf5"
+          },
+          "usage": "Text and icons on a `info` or `info-hover` fill."
+        },
+        {
+          "name": "info-hover",
+          "value": {
+            "dark": "#89c2dd",
+            "light": "#205e78"
+          },
+          "usage": "Hover / pressed state of a `info` fill."
+        },
+        {
+          "name": "info-soft",
+          "value": {
+            "dark": "#29383f",
+            "light": "#e0e6ea"
+          },
+          "usage": "Tinted background for info badges, alerts and selected rows."
+        },
+        {
+          "name": "info-soft-fg",
+          "value": {
+            "dark": "#7bb4ce",
+            "light": "#2f6b86"
+          },
+          "usage": "Info text that reads on `info-soft`, `bg`, `surface` and `surface-2` (4.5:1)."
+        },
+        {
+          "name": "emphasis",
+          "value": {
+            "dark": "#b58bc0",
+            "light": "#795284"
+          },
+          "usage": "Mauve: italic emphasis, highlights in prose, a fourth category hue. As text it holds 4.5:1 on `bg`/`surface`."
+        },
+        {
+          "name": "emphasis-fg",
+          "value": {
+            "dark": "#111c18",
+            "light": "#fafbf5"
+          },
+          "usage": "Text and icons on a `emphasis` or `emphasis-hover` fill."
+        },
+        {
+          "name": "emphasis-hover",
+          "value": {
+            "dark": "#c499cf",
+            "light": "#6c4576"
+          },
+          "usage": "Hover / pressed state of a `emphasis` fill."
+        },
+        {
+          "name": "emphasis-soft",
+          "value": {
+            "dark": "#353236",
+            "light": "#e7e4e8"
+          },
+          "usage": "Tinted background for emphasis badges, alerts and selected rows."
+        },
+        {
+          "name": "emphasis-soft-fg",
+          "value": {
+            "dark": "#b88ec3",
+            "light": "#795284"
+          },
+          "usage": "Emphasis text that reads on `emphasis-soft`, `bg`, `surface` and `surface-2` (4.5:1)."
+        },
+        {
+          "name": "focus",
+          "value": {
+            "dark": "#2ed5b7",
+            "light": "#037663"
+          },
+          "usage": "Focus ring, 2px solid with 2px offset; 3:1 on every ground."
+        },
+        {
+          "name": "link",
+          "value": {
+            "dark": "#2ed5b7",
+            "light": "#057361"
+          },
+          "usage": "Inline links on any ground."
+        },
+        {
+          "name": "selection",
+          "value": {
+            "dark": "#213e37",
+            "light": "#dbe9e5"
+          },
+          "usage": "Text selection and highlighted search matches."
+        },
+        {
+          "name": "code-bg",
+          "value": {
+            "dark": "#0b1512",
+            "light": "#e9ebdf"
+          },
+          "usage": "Code surface: blends toward app bg, bordered by `border`."
+        },
+        {
+          "name": "scrollbar",
+          "value": {
+            "dark": "#718078",
+            "light": "#7f8e86"
+          },
+          "usage": "Scrollbar thumb."
+        },
+        {
+          "name": "chart-1",
+          "value": {
+            "dark": "#2ed5b7",
+            "light": "#037663"
+          },
+          "usage": "Categorical series 1; 3:1 on `surface` in both themes."
+        },
+        {
+          "name": "chart-2",
+          "value": {
+            "dark": "#b58bc0",
+            "light": "#795284"
+          },
+          "usage": "Categorical series 2; 3:1 on `surface` in both themes."
+        },
+        {
+          "name": "chart-3",
+          "value": {
+            "dark": "#dfad73",
+            "light": "#a67537"
+          },
+          "usage": "Categorical series 3; 3:1 on `surface` in both themes."
+        },
+        {
+          "name": "chart-4",
+          "value": {
+            "dark": "#6b9fc6",
+            "light": "#336288"
+          },
+          "usage": "Categorical series 4; 3:1 on `surface` in both themes."
+        },
+        {
+          "name": "chart-5",
+          "value": {
+            "dark": "#ce816e",
+            "light": "#ab5a46"
+          },
+          "usage": "Categorical series 5; 3:1 on `surface` in both themes."
+        },
+        {
+          "name": "backdrop",
+          "value": {
+            "dark": "rgba(3, 8, 5, 0.72)",
+            "light": "rgba(9, 27, 19, 0.32)"
+          },
+          "usage": "Modal scrim behind dialogs and sheets."
+        }
+      ]
+    },
+    "type": {
+      "fonts": [
+        {
+          "family": "Rethink Sans",
+          "file": "fonts/RethinkSans-Variable.woff2",
+          "weight": "400 800",
+          "style": "normal"
+        },
+        {
+          "family": "Rethink Sans",
+          "file": "fonts/RethinkSans-Variable-Italic.woff2",
+          "weight": "400 800",
+          "style": "italic"
+        },
+        {
+          "family": "Victor Mono",
+          "file": "fonts/VictorMono-Variable.woff2",
+          "weight": "100 700",
+          "style": "normal"
+        },
+        {
+          "family": "Victor Mono",
+          "file": "fonts/VictorMono-Variable-Italic.woff2",
+          "weight": "100 700",
+          "style": "italic"
+        }
+      ],
+      "families": {
+        "sans": "\"Rethink Sans\", ui-sans-serif, system-ui, sans-serif",
+        "display": "\"Rethink Sans\", ui-sans-serif, system-ui, sans-serif",
+        "mono": "\"Victor Mono\", ui-monospace, SFMono-Regular, Menlo, monospace"
+      },
+      "groups": [
+        {
+          "name": "Display",
+          "family": "display",
+          "note": "",
+          "styles": [
+            {
+              "name": "display-xl",
+              "fontSize": "40px",
+              "lineHeight": "44px",
+              "fontWeight": "600",
+              "letterSpacing": "-0.025em",
+              "fontStyle": "normal",
+              "opticalSize": null,
+              "family": "",
+              "sample": "Conversation initiation",
+              "usage": "Page and hero titles, one per view."
+            },
+            {
+              "name": "display-lg",
+              "fontSize": "28px",
+              "lineHeight": "34px",
+              "fontWeight": "600",
+              "letterSpacing": "-0.02em",
+              "fontStyle": "normal",
+              "opticalSize": null,
+              "family": "",
+              "sample": "",
+              "usage": "Section titles."
+            },
+            {
+              "name": "display-md",
+              "fontSize": "20px",
+              "lineHeight": "26px",
+              "fontWeight": "600",
+              "letterSpacing": "-0.015em",
+              "fontStyle": "normal",
+              "opticalSize": null,
+              "family": "",
+              "sample": "",
+              "usage": "Panel and dialog titles."
+            }
+          ]
+        },
+        {
+          "name": "Text",
+          "family": "sans",
+          "note": "",
+          "styles": [
+            {
+              "name": "title",
+              "fontSize": "16px",
+              "lineHeight": "24px",
+              "fontWeight": "600",
+              "letterSpacing": "0",
+              "fontStyle": "normal",
+              "opticalSize": null,
+              "family": "",
+              "sample": "",
+              "usage": "Card titles, table headers in prose layouts."
+            },
+            {
+              "name": "body",
+              "fontSize": "12px",
+              "lineHeight": "22px",
+              "fontWeight": "430",
+              "letterSpacing": "0",
+              "fontStyle": "normal",
+              "opticalSize": null,
+              "family": "",
+              "sample": "",
+              "usage": "Default UI and prose text in `fg`."
+            },
+            {
+              "name": "body-sm",
+              "fontSize": "10px",
+              "lineHeight": "20px",
+              "fontWeight": "400",
+              "letterSpacing": "0",
+              "fontStyle": "normal",
+              "opticalSize": null,
+              "family": "",
+              "sample": "",
+              "usage": "Dense UI, helper text in `fg-muted`."
+            },
+            {
+              "name": "label",
+              "fontSize": "10px",
+              "lineHeight": "16px",
+              "fontWeight": "330",
+              "letterSpacing": "0.01em",
+              "fontStyle": "normal",
+              "opticalSize": null,
+              "family": "",
+              "sample": "",
+              "usage": "Form labels, badges, button text at sm size."
+            }
+          ]
+        },
+        {
+          "name": "Data",
+          "family": "mono",
+          "note": "",
+          "styles": [
+            {
+              "name": "mono",
+              "fontSize": "12px",
+              "lineHeight": "20px",
+              "fontWeight": "400",
+              "letterSpacing": "0",
+              "fontStyle": "normal",
+              "opticalSize": null,
+              "family": "",
+              "sample": "158,029 tokens · 15% used",
+              "usage": "Code, terminal output, token counts, hex values, IDs."
+            },
+            {
+              "name": "mono-sm",
+              "fontSize": "10px",
+              "lineHeight": "18px",
+              "fontWeight": "400",
+              "letterSpacing": "0",
+              "fontStyle": "normal",
+              "opticalSize": null,
+              "family": "",
+              "sample": "",
+              "usage": "Status lines, key hints (ctrl+p), table numerics."
+            },
+            {
+              "name": "mono-emphasis",
+              "fontSize": "12px",
+              "lineHeight": "20px",
+              "fontWeight": "400",
+              "letterSpacing": "0",
+              "fontStyle": "italic",
+              "opticalSize": null,
+              "family": "",
+              "sample": "",
+              "usage": "Victor Mono cursive italic in `emphasis-soft-fg` for emphasis inside data."
+            }
+          ]
+        }
+      ]
+    },
+    "spacing": {
+      "note": "",
+      "tokens": [
+        {
+          "name": "space-1",
+          "value": "4px",
+          "usage": "Icon-to-label gap, badge padding-y."
+        },
+        {
+          "name": "space-2",
+          "value": "8px",
+          "usage": "Control padding-y, tight stacks."
+        },
+        {
+          "name": "space-3",
+          "value": "12px",
+          "usage": "Control padding-x, table cell padding."
+        },
+        {
+          "name": "space-4",
+          "value": "16px",
+          "usage": "Card padding (dense), form row gap."
+        },
+        {
+          "name": "space-6",
+          "value": "24px",
+          "usage": "Card padding, section gap inside panels."
+        },
+        {
+          "name": "space-8",
+          "value": "32px",
+          "usage": "Panel gutters."
+        },
+        {
+          "name": "space-12",
+          "value": "48px",
+          "usage": "Page section spacing."
+        }
+      ]
+    },
+    "radius": {
+      "note": "",
+      "tokens": [
+        {
+          "name": "radius-sm",
+          "value": "2px",
+          "usage": "Badges, kbd, checkboxes (shadcn radius-sm ≈ 0.6×)."
+        },
+        {
+          "name": "radius",
+          "value": "4px",
+          "usage": "Base: buttons, cards, menus (--radius, shadcn radius-lg)."
+        },
+        {
+          "name": "radius-field",
+          "value": "6px",
+          "usage": "Inputs and selects (HeroUI field-radius = 1.5×)."
+        },
+        {
+          "name": "radius-full",
+          "value": "9999px",
+          "usage": "Status dots, avatars, switches."
+        }
+      ]
+    },
+    "shadow": {
+      "note": "",
+      "tokens": [
+        {
+          "name": "shadow-surface",
+          "value": {
+            "dark": "none",
+            "light": "0 1px 2px 0 rgba(9, 27, 19, 0.06), 0 0 0 1px rgba(9, 27, 19, 0.03)"
+          },
+          "usage": "Cards: none in dark (hairline does the work), a faint lift on paper."
+        },
+        {
+          "name": "shadow-field",
+          "value": {
+            "dark": "none",
+            "light": "0 1px 2px 0 rgba(9, 27, 19, 0.05)"
+          },
+          "usage": "Inputs."
+        },
+        {
+          "name": "shadow-overlay",
+          "value": {
+            "dark": "0 0 0 1px rgba(168, 191, 174, 0.06), 0 16px 40px -12px rgba(0, 0, 0, 0.7)",
+            "light": "0 2px 8px 0 rgba(9, 27, 19, 0.08), 0 14px 32px -6px rgba(9, 27, 19, 0.14)"
+          },
+          "usage": "Popovers, menus, dialogs."
+        }
+      ]
+    },
+    "name": "Phosphor",
+    "meta": {
+      "source": "Rendered pixels of the wxt-prompt screenshot (Oct 2026), matte; light theme derived; build/palette.py"
+    }
+  }
+}
