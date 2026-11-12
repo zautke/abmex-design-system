@@ -107,7 +107,8 @@ function mergeComponentProps(base: PropBag = {}, override: PropBag = {}, name?: 
   for (const channel of ['classNames', 'styles', 'slotProps']) {
     const a = base[channel] as PropBag | undefined;
     const b = override[channel] as PropBag | undefined;
-    const parts: PropBag = { ...a, ...b };
+    const parts: PropBag = { ...a };
+    for (const [key, value] of Object.entries(b ?? {})) if (value !== undefined) parts[key] = value;
     for (const key of Object.keys(parts)) {
       if (a?.[key] === undefined || b?.[key] === undefined) continue;
       const merge = (state: PrimitiveState) => {

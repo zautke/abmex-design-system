@@ -16,6 +16,15 @@ describe('foundation public contract', () => {
     expect(button.textContent).toBe('true');
     expect(button.title).toBe('Merged');
   });
+  it('ignores undefined part overrides instead of erasing inherited defaults', () => {
+    render(<primitives.ComponentDefaultsProvider defaults={{ Button: { slotProps: { root: { disabled: true } }, classNames: { root: 'from-provider' } } }}>
+      <primitives.Button slotProps={{ root: undefined }} classNames={{ root: undefined }} onAction={() => { throw new Error('must not run'); }}>Save</primitives.Button>
+    </primitives.ComponentDefaultsProvider>);
+    const button = screen.getByRole('button') as HTMLButtonElement;
+    expect(button.disabled).toBe(true);
+    expect(button.className).toContain('from-provider');
+    fireEvent.click(button);
+  });
   it('preserves provider disabled state when instance root props use a callback', () => {
     const root = vi.fn((state: primitives.ButtonState) => ({ title: state.disabled ? 'Disabled' : 'Enabled' }));
     render(<primitives.ComponentDefaultsProvider defaults={{ Button: { slotProps: { root: { disabled: true } } } }}>
