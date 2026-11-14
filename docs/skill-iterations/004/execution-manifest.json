@@ -1,0 +1,17 @@
+{
+  "scope": "execution packet before learner; later learning/review artifacts separate",
+  "files": {
+    "TEAM_CONTEXT.md": "f26a67ae2522682f563f1e6481fa37747e9dc2db92271b1b61e3517ef8619dca",
+    "bootstrap.md": "720516f5e98a87a8c02dd678500dfa96e6098c4a95664d4499a322c42196c7f2",
+    "candidate.md": "e66dbe7bd679ad5ea142008a13e4d413c3b72834b5bfe0df3e5c33c2454f83e1",
+    "evaluation.md": "7bfed4931df3dd3ad0f4d588ef1092d95369a1161c84cc8e2759bac564d32a89",
+    "events.md": "2ff95560384d38eacf2e677b82279b02a01fd656f2b544ce469b3c658514b2d1",
+    "live-check.md": "0690c1f15b0afb3ea60f769887879306ee3d06f1b7ed38e7168e3116fbe24e25",
+    "receipt-codemunch-outline.json": "65264062c0f16b706f941fc27b1bb85cb129e219b89553e08bfc6f41ad748a52",
+    "receipt-codemunch-response.json": "1382d8a082a7e894e6c8bbd3d63348f8d7cc81261d0aeaf663786b24e8f6c1e7",
+    "receipt-findings.md": "66cb9028569e9846c186302fd419837ac605ae7e55589fe8367969ab97b59bcb",
+    "receipt-symbol-metadata.json": "2c55c909a5216d5da95ce858031e19a00e7515846b775377c826639f42a71045",
+    "sidebar-css-assertions.json": "6064d33c4fc534b26b8dfa446e9d52b176fd376a2c38e896f8732b5e7e5b9482",
+    "verify-receipt.py": "8a5936cfa0ca2aff01a2d80b3855188fbfb40d586e846c8a752b3a00b7286e59"
+  }
+}

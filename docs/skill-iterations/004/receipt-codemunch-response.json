@@ -1,0 +1,9 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\"id\":\"apps/web/src/app/layout.tsx::RootLayout#function\",\"kind\":\"function\",\"name\":\"RootLayout\",\"file\":\"apps/web/src/app/layout.tsx\",\"line\":17,\"end_line\":29,\"signature\":\"function RootLayout({\\n  children,\\n}: Readonly<{\\n  children: React.ReactNode;\\n}>)\",\"decorators\":[],\"docstring\":\"\",\"content_hash\":\"dd328f9b03efe55c0ce911ac8728285765709e1e3da02c7c26149e6c3be46e8b\",\"source\":\"function RootLayout({\\n  children,\\n}: Readonly<{\\n  children: React.ReactNode;\\n}>) {\\n  return (\\n    <html lang=\\\"en\\\" className={rethinkSans.variable}>\\n      <body className=\\\"font-sans antialiased\\\">\\n        {children}\\n      </body>\\n    </html>\\n  );\\n}\",\"content_verified\":true,\"git_sha_verification\":\"git_sha_mismatch\",\"git_sha_rev\":\"c0b0e5f82973b8a5c929d05f58cef48463bc7b73\",\"_freshness\":\"fresh\",\"_meta\":{\"receipts\":{\"schema\":\"jcodemunch.evidence/v1\",\"count\":1,\"ids\":[\"sha256:40a3f7b9ee7ff16a01bfb3692c4c1f188a917340ea4dcd87896cddf5556dcf57\"],\"proof_kinds\":[\"symbol_definition\"],\"resource_uri_prefix\":\"munch://evidence/\"},\"already_delivered\":{\"count\":1,\"symbols\":[\"apps/web/src/app/layout.tsx::RootLayout#function\"]}}}"
+    }
+  ],
+  "isError": false
+}
