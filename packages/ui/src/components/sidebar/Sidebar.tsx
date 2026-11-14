@@ -372,7 +372,7 @@ export function SidebarItem({ label, icon, active = false, disabled = false, hre
     else item.disabled = true;
   }
   const Body = slots?.body ?? context.slots?.itemBody ?? 'span';
-  const Primary = slots?.action ?? Component;
+  const Primary = slots?.action ?? context.slots?.itemAction ?? Component;
   const body = children ?? <IconLabel icon={icon} label={label} collapsed={isCollapsed} unstyled={context.unstyled} />;
   const bodyProps = mergePartProps({ 'data-slot': 'itemBody', className: cn(context.unstyled ? undefined : sidebarClasses.itemBody, stateValue(context.classNames?.itemBody, state)), style: stateValue(context.styles?.itemBody, state), title: isCollapsed && typeof label === 'string' ? label : undefined }, stateValue(context.slotProps?.itemBody as SidebarSlotValue<Record<string, unknown>> | undefined, state), slotProps?.body as Record<string, unknown> | undefined);
   const row = mergePartProps({ 'data-slot': 'item', className: itemClass, style: stateValue(context.styles?.item, state) }, stateValue(context.slotProps?.item as SidebarSlotValue<Record<string, unknown>> | undefined, state));

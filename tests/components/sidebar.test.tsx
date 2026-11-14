@@ -2,6 +2,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { createRef, useState } from 'react';
+import type { ComponentProps } from 'react';
 import { IconLabel, Sidebar, SidebarContent, SidebarHeader, SidebarItem, SidebarTrigger, SidebarRail, useSidebar } from '../../packages/ui/src/components/sidebar';
 
 afterEach(cleanup);
@@ -117,6 +118,15 @@ describe('Sidebar', () => {
     render(<Sidebar id="workspace"><SidebarContent>Pane</SidebarContent></Sidebar>);
     expect(screen.getByRole('navigation').getAttribute('id')).toBe('workspace');
     expect(document.getElementById('workspace-content')).toBeTruthy();
+  });
+
+  it('uses the sidebar-level item action replacement slot', () => {
+    function CustomAction(props: ComponentProps<'a'>) {
+      return <a data-custom-action="true" {...props} />;
+    }
+
+    render(<Sidebar slots={{ itemAction: CustomAction }}><SidebarItem href="/home" label="Home" /></Sidebar>);
+    expect(screen.getByRole('link', { name: 'Home' }).getAttribute('data-custom-action')).toBe('true');
   });
 
   it('lets rail prop and slot handlers cancel keyboard and pointer resizing', () => {
