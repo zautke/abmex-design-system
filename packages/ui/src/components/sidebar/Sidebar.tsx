@@ -223,15 +223,19 @@ function SidebarRoot<C extends ElementType = 'nav'>(input: SidebarProps<C>) {
   });
   const currentWidth = clamp(controlledWidth, min, max);
   const setCollapsed = useCallback((next: boolean | ((current: boolean) => boolean)) => {
-    const value = typeof next === 'function' ? next(controlledCollapsed) : next;
-    controlledCollapsed === value || setControlledCollapsed(value);
-    if (collapsed === undefined) setStored(current => ({ ...current, collapsed: value }));
-  }, [collapsed, controlledCollapsed, setControlledCollapsed, setStored]);
+    setControlledCollapsed(current => typeof next === 'function' ? next(current) : next);
+    if (collapsed === undefined) {
+      setStored(current => ({
+        ...current,
+        collapsed: typeof next === 'function' ? next(current.collapsed) : next,
+      }));
+    }
+  }, [collapsed, setControlledCollapsed, setStored]);
   const setWidth = useCallback((next: number | ((current: number) => number)) => {
-    const value = clamp(typeof next === 'function' ? next(currentWidth) : next, min, max);
-    currentWidth === value || setControlledWidth(value);
-    if (width === undefined) setStored(current => ({ ...current, width: value }));
-  }, [currentWidth, max, min, setControlledWidth, setStored, width]);
+    const resolve = (current: number) => clamp(typeof next === 'function' ? next(current) : next, min, max);
+    setControlledWidth(resolve);
+    if (width === undefined) setStored(current => ({ ...current, width: resolve(current.width) }));
+  }, [max, min, setControlledWidth, setStored, width]);
   const toggleCollapsed = useCallback(() => setCollapsed(value => !value), [setCollapsed]);
   const context = useMemo<SidebarContextValue>(() => ({
     collapsed: controlledCollapsed,

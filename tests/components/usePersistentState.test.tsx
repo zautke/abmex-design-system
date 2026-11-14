@@ -63,6 +63,9 @@ describe('useControllableState', () => {
     fireEvent.click(screen.getByRole('button'));
     expect(screen.getByRole('button').textContent).toBe('10');
     expect(onChange).toHaveBeenCalledWith(11);
+    fireEvent.click(screen.getByRole('button'));
+    expect(screen.getByRole('button').textContent).toBe('10');
+    expect(onChange).toHaveBeenLastCalledWith(11);
   });
 
   it('applies multiple functional updates against the latest pending value', () => {

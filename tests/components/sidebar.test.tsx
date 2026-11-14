@@ -12,6 +12,14 @@ function Probe({ name }: { name: string }) {
   return <output aria-label={`${name} state`}>{`${collapsed}|${width}|${side}`}</output>;
 }
 
+function BatchedActions() {
+  const { setCollapsed, setWidth } = useSidebar();
+  return <>
+    <button onClick={() => { setWidth(width => width + 10); setWidth(width => width + 10); }}>Width twice</button>
+    <button onClick={() => { setCollapsed(value => !value); setCollapsed(value => !value); }}>Collapse twice</button>
+  </>;
+}
+
 describe('Sidebar', () => {
   it('keeps label content mounted and inert while collapsed', () => {
     const label = <input aria-label="Label draft" defaultValue="start" />;
@@ -127,6 +135,14 @@ describe('Sidebar', () => {
 
     render(<Sidebar slots={{ itemAction: CustomAction }}><SidebarItem href="/home" label="Home" /></Sidebar>);
     expect(screen.getByRole('link', { name: 'Home' }).getAttribute('data-custom-action')).toBe('true');
+  });
+
+  it('applies batched functional width and collapse updates against pending state', () => {
+    render(<Sidebar><BatchedActions /><Probe name="batched" /></Sidebar>);
+    fireEvent.click(screen.getByRole('button', { name: 'Width twice' }));
+    expect(screen.getByLabelText('batched state').textContent).toBe('false|300|left');
+    fireEvent.click(screen.getByRole('button', { name: 'Collapse twice' }));
+    expect(screen.getByLabelText('batched state').textContent).toBe('false|300|left');
   });
 
   it('lets rail prop and slot handlers cancel keyboard and pointer resizing', () => {

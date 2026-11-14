@@ -25,7 +25,7 @@ export function useControllableState<T>({
       const resolved = typeof next === 'function'
         ? (next as (current: T) => T)(previousValue)
         : next;
-      currentValueRef.current = resolved;
+      if (!controlled) currentValueRef.current = resolved;
       onChange?.(resolved);
       if (!controlled) setInternalValue(resolved);
     },
