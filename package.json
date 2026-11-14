@@ -7,6 +7,8 @@
     "build": "pnpm -r --if-present build",
     "typecheck": "pnpm -r --if-present typecheck",
     "test": "vitest run",
+    "demo:sidebar": "pnpm --filter @abmex/ui exec vite --config demo-sidebar/vite.config.ts",
+    "build:sidebar-demo": "pnpm --filter @abmex/ui exec vite build --config demo-sidebar/vite.config.ts",
     "check": "pnpm build && pnpm typecheck && pnpm test && node --test tests/package-css.test.mjs && pnpm test:types",
     "ci:postpublish:github": "node scripts/create-tags-and-releases.mjs",
     "test:browser": "node tests/browser/tabs.test.mjs",

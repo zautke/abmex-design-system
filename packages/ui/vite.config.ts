@@ -11,6 +11,10 @@ export default defineConfig({
       // Sortable tabs are a separate entry so the root never imports the optional @dnd-kit peers.
       entry: [
         resolve(__dirname, 'src/index.ts'),
+        resolve(__dirname, 'src/primitives/foundation/index.ts'),
+        resolve(__dirname, 'src/components/sidebar/index.ts'),
+        resolve(__dirname, 'src/components/sidebar-demo/index.ts'),
+        resolve(__dirname, 'src/components/sidebar-search/index.ts'),
         // Lean tabs subpath: consumers that only need tabs skip the chat/HeroUI families.
         resolve(__dirname, 'src/components/tabs/index.ts'),
         resolve(__dirname, 'src/components/tabs/Sortable.tsx'),
@@ -40,6 +44,13 @@ export default defineConfig({
         return true;
       },
       output: {
+        banner: chunk => {
+          const id = chunk.facadeModuleId ?? '';
+          const foundation = id.includes('/src/primitives/foundation/') && !id.endsWith('/index.ts') && !id.endsWith('/descriptors.ts');
+          const interactive = ['/sidebar/Sidebar.tsx', '/sidebar-demo/SidebarDemo.tsx', '/sidebar-demo/InspectorSidebarDemo.tsx', '/sidebar-search/RecipeSearchSidebarDemo.tsx', '/hooks/usePersistentState.ts', '/layout/LayoutContainer.tsx']
+            .some(path => id.endsWith(path));
+          return foundation || interactive ? '"use client";' : '';
+        },
         preserveModules: true,
         preserveModulesRoot: 'src',
         entryFileNames: '[name].js',

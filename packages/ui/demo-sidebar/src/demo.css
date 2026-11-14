@@ -1,0 +1,33 @@
+* { box-sizing: border-box; }
+html, body, #root { width: 100%; height: 100%; margin: 0; }
+body { background: var(--bg); color: var(--fg); font-family: var(--font-sans, Inter, sans-serif); }
+button, input { font: inherit; }
+.app-frame { display: flex; height: 100%; min-height: 580px; flex-direction: column; background: var(--bg); }
+.app-header { display: flex; min-height: 60px; align-items: center; gap: 28px; border-bottom: 1px solid var(--border); padding: 0 24px; background: var(--surface); }
+.app-brand { display: flex; align-items: center; gap: 10px; color: var(--fg-strong); font-size: 13px; font-weight: 650; white-space: nowrap; }
+.brand-mark { display: inline-grid; width: 28px; height: 28px; place-items: center; border-radius: 6px; background: var(--primary); color: var(--primary-soft-fg); font-size: 12px; font-weight: 700; }
+.example-tabs { display: flex; height: 100%; gap: 4px; }
+.example-tabs button { border: 0; border-bottom: 2px solid transparent; padding: 0 12px; background: transparent; color: var(--fg-muted); cursor: pointer; font-size: 12px; }
+.example-tabs button[aria-current='page'] { border-bottom-color: var(--primary); color: var(--fg-strong); }
+.app-header__note { margin-left: auto; color: var(--fg-muted); font-size: 11px; }
+.composition-stage { display: flex; min-height: 0; flex: 1; flex-direction: column; padding: 20px; }
+.host-controls { display: flex; min-height: 38px; align-items: center; justify-content: space-between; gap: 20px; padding: 0 4px 12px; color: var(--fg-muted); font-size: 12px; }
+.host-controls p { margin: 0; }
+.host-controls button { border: 1px solid var(--border); border-radius: 6px; padding: 7px 10px; background: var(--surface); color: var(--fg); cursor: pointer; font-size: 11px; }
+.host-controls button:hover { background: var(--surface-2); }
+.composition-stage > [data-theme], .composition-stage > section, .direct-parts-view { display: flex; min-height: 0; flex: 1; overflow: hidden; border: 1px solid var(--border); border-radius: 10px; }
+.fixture-panel { display: flex; max-width: 760px; align-items: flex-start; gap: 16px; border: 1px solid var(--border); border-radius: 8px; padding: 20px; background: var(--surface); }
+.fixture-panel__marker { display: grid; width: 34px; height: 34px; flex: none; place-items: center; border-radius: 7px; background: var(--primary-soft); color: var(--primary-soft-fg); font-size: 13px; font-weight: 650; }
+.fixture-panel h2 { margin: 2px 0 6px; color: var(--fg-strong); font-size: 14px; font-weight: 600; }
+.fixture-panel p { margin: 0; color: var(--fg-muted); font-size: 12px; line-height: 1.6; }
+.direct-parts-view { min-height: 0; }
+.direct-parts-view__header { display: flex; align-items: center; gap: 10px; }
+.direct-parts-view__footer { margin: 0; padding: 8px 12px; color: var(--fg-muted); font-size: 11px; }
+@media (max-width: 720px) {
+  .app-header { gap: 10px; padding: 0 12px; }
+  .app-header__note { display: none; }
+  .example-tabs { margin-left: auto; }
+  .example-tabs button { padding: 0 6px; font-size: 10px; }
+  .composition-stage { padding: 10px; }
+  .host-controls { align-items: flex-start; flex-direction: column; gap: 8px; }
+}

@@ -69,6 +69,11 @@ export {
   useMerlynAdaptersOptional,
 } from './provider';
 export type { MerlynUIAdapters, MerlynUIProviderProps } from './provider';
+export * from './primitives/foundation';
+export * from './components/sidebar';
+export * from './components/sidebar-demo';
+export * from './components/sidebar-search';
+export * from './hooks/usePersistentState';
 
 export type { PersistenceAdapter } from './adapters/persistence';
 export type { ProviderRegistryAdapter } from './adapters/providerRegistry';
