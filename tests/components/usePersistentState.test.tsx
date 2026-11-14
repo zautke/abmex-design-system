@@ -64,6 +64,17 @@ describe('useControllableState', () => {
     expect(screen.getByRole('button').textContent).toBe('10');
     expect(onChange).toHaveBeenCalledWith(11);
   });
+
+  it('applies multiple functional updates against the latest pending value', () => {
+    function Counter() {
+      const [count, setCount] = useControllableState({ value: undefined, defaultValue: 0 });
+      return <button onClick={() => { setCount(current => current + 1); setCount(current => current + 1); }}>{count}</button>;
+    }
+
+    render(<Counter />);
+    fireEvent.click(screen.getByRole('button'));
+    expect(screen.getByRole('button').textContent).toBe('2');
+  });
 });
 
 describe('usePersistentState', () => {

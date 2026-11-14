@@ -16,16 +16,20 @@ export function useControllableState<T>({
   const [internalValue, setInternalValue] = useState(defaultValue);
   const controlled = value !== undefined;
   const currentValue = controlled ? value : internalValue;
+  const currentValueRef = useRef(currentValue);
+  currentValueRef.current = currentValue;
 
   const setValue = useCallback<Dispatch<SetStateAction<T>>>(
     next => {
+      const previousValue = currentValueRef.current;
       const resolved = typeof next === 'function'
-        ? (next as (current: T) => T)(currentValue)
+        ? (next as (current: T) => T)(previousValue)
         : next;
+      currentValueRef.current = resolved;
       onChange?.(resolved);
       if (!controlled) setInternalValue(resolved);
     },
-    [controlled, currentValue, onChange],
+    [controlled, onChange],
   );
 
   return [currentValue, setValue] as const;

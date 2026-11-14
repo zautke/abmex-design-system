@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
-import { createRef } from 'react';
+import { createRef, useState } from 'react';
 import { IconLabel, Sidebar, SidebarContent, SidebarHeader, SidebarItem, SidebarTrigger, SidebarRail, useSidebar } from '../../packages/ui/src/components/sidebar';
 
 afterEach(cleanup);
@@ -97,6 +97,26 @@ describe('Sidebar', () => {
     view.unmount();
     expect(remove).toHaveBeenCalledWith('pointermove', expect.any(Function));
     remove.mockRestore();
+  });
+
+  it('keeps controlled pointer resizing connected to the latest setter', () => {
+    function ControlledSidebar() {
+      const [width, setWidth] = useState(280);
+      return <Sidebar width={width} onWidthChange={setWidth}><Probe name="controlled" /></Sidebar>;
+    }
+
+    render(<ControlledSidebar />);
+    const rail = screen.getByRole('separator');
+    fireEvent.pointerDown(rail, { pointerId: 5, button: 0, clientX: 100 });
+    fireEvent.pointerMove(window, { pointerId: 5, clientX: 140 });
+    fireEvent.pointerMove(window, { pointerId: 5, clientX: 100 });
+    expect(screen.getByLabelText('controlled state').textContent).toBe('false|280|left');
+  });
+
+  it('forwards the sidebar id to its root and derives content id from it', () => {
+    render(<Sidebar id="workspace"><SidebarContent>Pane</SidebarContent></Sidebar>);
+    expect(screen.getByRole('navigation').getAttribute('id')).toBe('workspace');
+    expect(document.getElementById('workspace-content')).toBeTruthy();
   });
 
   it('lets rail prop and slot handlers cancel keyboard and pointer resizing', () => {

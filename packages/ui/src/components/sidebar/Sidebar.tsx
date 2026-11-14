@@ -256,7 +256,7 @@ function SidebarRoot<C extends ElementType = 'nav'>(input: SidebarProps<C>) {
   const Root = slots?.root ?? as ?? 'nav';
   const rootSlot = stateValue(slotProps?.root as SidebarSlotValue<Record<string, unknown>> | undefined, state);
   const mergedRoot = mergePartProps(
-    { 'data-slot': 'root', 'data-sidebar-side': side, 'data-sidebar-collapsed': controlledCollapsed, 'aria-label': 'Sidebar', className: cn(sidebarStructure.root, unstyled ? undefined : sidebarClasses.root, stateValue(classNames?.root, state), className), style: { width: controlledCollapsed ? collapsedSize : currentWidth, flex: '0 0 auto', ...stateValue(styles?.root, state), ...style } },
+    { 'data-slot': 'root', id, 'data-sidebar-side': side, 'data-sidebar-collapsed': controlledCollapsed, 'aria-label': 'Sidebar', className: cn(sidebarStructure.root, unstyled ? undefined : sidebarClasses.root, stateValue(classNames?.root, state), className), style: { width: controlledCollapsed ? collapsedSize : currentWidth, flex: '0 0 auto', ...stateValue(styles?.root, state), ...style } },
     native as Record<string, unknown>,
     rootSlot,
   );
@@ -422,6 +422,8 @@ export function SidebarRail<C extends ElementType = 'div'>({ as, ref, label = 'S
   const context = useSidebarContext();
   const dragging = useRef<{ pointerId: number; originX: number; originWidth: number } | null>(null);
   const cleanup = useRef<(() => void) | null>(null);
+  const setWidthRef = useRef(context.setWidth);
+  setWidthRef.current = context.setWidth;
   useEffect(() => () => cleanup.current?.(), []);
   const Component = as ?? context.slots?.rail ?? 'div';
   const state: SidebarState = { collapsed: context.collapsed, width: context.width, side: context.side, unstyled: context.unstyled };
@@ -446,7 +448,7 @@ export function SidebarRail<C extends ElementType = 'div'>({ as, ref, label = 'S
       const origin = dragging.current;
       if (!origin || next.pointerId !== origin.pointerId) return;
       const direction = context.side === 'left' ? 1 : -1;
-      context.setWidth(origin.originWidth + (next.clientX - origin.originX) * direction);
+      setWidthRef.current(origin.originWidth + (next.clientX - origin.originX) * direction);
     };
     const stop = (next: PointerEvent) => {
       if (dragging.current?.pointerId !== next.pointerId) return;
