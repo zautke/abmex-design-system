@@ -219,6 +219,19 @@ open(f'{OUT}/{FAMILY}.tokens.css','w',encoding='utf-8',newline=chr(10)).write(to
 # ---------------------------------------------------------------- tailwind layer
 SEL = ':root,\n.dark,\n[data-theme="dark"],\n.light,\n[data-theme="light"],\n[data-mode]'
 colors = ORDER + ['backdrop']
+_D, _L = ', '.join(PHOS_DARK.split(',\n')[1:]), ', '.join(PHOS_LIGHT.split(',\n'))  # :root is the default, not a scope
+# An overlay family's bare attribute is its default-dark scope (see its DARK_SEL), so the variants must count it.
+_D += ''.join(f', [data-theme="{f[8:-3]}"]:not([data-mode])' for f in sorted(os.listdir(os.path.dirname(os.path.abspath(__file__)))) if f.startswith('palette_') and f.endswith('.py'))
+_D = f':is({_D}):not({_L})'  # one element matching both is light: the tokens declare light after dark at equal specificity
+def _within(*scopes):
+    chain = ' '.join(f':is({scope})' for scope in scopes)
+    return f'{chain}, {chain} *'
+def _nearest(own, other, depth=2):
+    """Nearest scope is `own`: the ancestor scopes end own, or own>other>own, ... and are not followed by `other`."""
+    seqs = [[own, other] * k + [own] for k in range(depth)]
+    return [f'&:where({_within(*seq)}):not(:where({_within(*seq, other)}))' for seq in seqs]
+VARIANTS = (f'@custom-variant dark ({", ".join([f"&:not(:where({_within(_L)}))"] + _nearest(_D, _L))});\n'
+            f'@custom-variant light ({", ".join(_nearest(_L, _D))});')
 tw = HEADER.format(title='Tailwind v4 layer') + '''
 @import "./phosphor.tokens.css";
 
@@ -228,10 +241,14 @@ tw = HEADER.format(title='Tailwind v4 layer') + '''
  *   .light .dark x  → dark utilities fire, light silenced
  *   .dark  .light y → light utilities fire, dark silenced
  * so `dark:`/`light:` never disagree with the `--*` token cascade, which
- * resolves by the same nearest-scope CSS inheritance. Redefines any earlier
+ * resolves by the same nearest-scope CSS inheritance. The scopes are the token
+ * selectors themselves, so data-mode outranks .dark/.light and legacy data-theme
+ * on the same element, and every family keyed on data-mode gets both variants.
+ * Exact for up to four alternating scopes (root mode plus three nested flips);
+ * a fifth alternation fires neither variant.
+ * Redefines any earlier
  * `dark` variant (e.g. HeroUI's), so import this file AFTER @heroui/styles. */
-@custom-variant dark (&:not(:where(.light, .light *, [data-theme="light"], [data-theme="light"] *)), &:where(.dark, .dark *, [data-theme="dark"], [data-theme="dark"] *):not(:where(.dark .light, .dark .light *, [data-theme="dark"] [data-theme="light"], [data-theme="dark"] [data-theme="light"] *)));
-@custom-variant light (&:where(.light, .light *, [data-theme="light"], [data-theme="light"] *):not(:where(.light .dark, .light .dark *, [data-theme="light"] .dark, [data-theme="light"] .dark *)));
+''' + VARIANTS + '''
 
 /* Phosphor-native utilities: bg-surface, text-fg-muted, border-border,
  * ring-focus, shadow-overlay, rounded-base, font-display … */

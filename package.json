@@ -7,9 +7,9 @@
     "build": "pnpm -r --if-present build",
     "typecheck": "pnpm -r --if-present typecheck",
     "test": "vitest run",
-    "check": "pnpm build && pnpm typecheck && pnpm test && node --test tests/package-css.test.mjs && pnpm test:types",
+    "check": "pnpm build && pnpm typecheck && pnpm test && node --test tests/package-css.test.mjs && pnpm test:types && python3 -B packages/themes/src/phosphor/build/test_build.py",
     "ci:postpublish:github": "node scripts/create-tags-and-releases.mjs",
-    "test:browser": "node tests/browser/tabs.test.mjs",
+    "test:browser": "node tests/browser/variants.test.mjs && node tests/browser/tabs.test.mjs",
     "test:types": "tsc --noEmit --strict --skipLibCheck false --moduleResolution Bundler --module ESNext --target ES2022 --jsx react-jsx tests/package-types.ts packages/ui/type-tests/foundation.tsx"
   },
   "devDependencies": {
