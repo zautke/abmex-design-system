@@ -222,6 +222,7 @@ colors = ORDER + ['backdrop']
 _D, _L = ', '.join(PHOS_DARK.split(',\n')[1:]), ', '.join(PHOS_LIGHT.split(',\n'))  # :root is the default, not a scope
 # An overlay family's bare attribute is its default-dark scope (see its DARK_SEL), so the variants must count it.
 _D += ''.join(f', [data-theme="{f[8:-3]}"]:not([data-mode])' for f in sorted(os.listdir(os.path.dirname(os.path.abspath(__file__)))) if f.startswith('palette_') and f.endswith('.py'))
+_D = f':is({_D}):not({_L})'  # one element matching both is light: the tokens declare light after dark at equal specificity
 def _within(*scopes):
     chain = ' '.join(f':is({scope})' for scope in scopes)
     return f'{chain}, {chain} *'
