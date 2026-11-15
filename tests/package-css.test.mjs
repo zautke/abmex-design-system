@@ -74,3 +74,24 @@ test('themes ships the cev family and the MUI adapter', async () => {
   assert.match(css, /\[data-theme="cev"\]\[data-mode="light"\]/);
   await assert.rejects(access(resolve('packages/themes/dist/cev/build')));
 });
+
+test('Tailwind compiles the phosphor bridge with the cev overlay; dark:/light: follow data-mode', async () => {
+  const { compile } = await import('tailwindcss');
+  const themes = resolve('packages/themes/dist');
+  const loadStylesheet = async (id, base) => {
+    const path = id === 'tailwindcss' ? resolve('node_modules/tailwindcss/index.css') : resolve(base, id);
+    return { path, base: dirname(path), content: await readFile(path, 'utf8') };
+  };
+  const input = '@import "tailwindcss";\n@import "./phosphor/phosphor.tailwind.css";\n@import "./cev/cev.tokens.css";';
+  const { build } = await compile(input, { base: themes, loadStylesheet });
+  const css = build(['bg-primary', 'rounded-base', 'dark:hidden', 'light:hidden']);
+  assert.match(css, /\.bg-primary\s*\{[^}]*var\(--primary\)/);
+  assert.match(css, /\.rounded-base\s*\{[^}]*var\(--radius\)/);
+  assert.match(css, /\[data-theme="cev"\] \[data-mode="light"\]/); // nested scope re-resolves
+  // Mode scopes are the token selectors: data-mode outranks .dark/.light and legacy data-theme.
+  for (const variant of ['dark', 'light']) {
+    const rule = css.split(`.${variant}\\:hidden`)[1]?.split('display: none')[0];
+    assert.ok(rule, `missing ${variant}:hidden`);
+    for (const scope of ['[data-mode="dark"]', '[data-mode="light"]', '.dark:not([data-mode])']) assert.ok(rule.includes(scope), `${variant}: ${scope}`);
+  }
+});
