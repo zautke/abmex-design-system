@@ -1,15 +1,19 @@
 # Current task state
 
+## Latest — 2026-11-15 trunk state
+
+Entries below this one are history and predate the releases listed here.
+
+- `development` is at 0.11.0 (`8cf31f4`); `main` is at 1.0.0. The next promotion to `main` is 2.0.0.
+- 0.9.0 (PR #14): six primitives on Base Component Contract 0.9, primitive manifest and options schema exports.
+- 0.10.0 (PR #16): cev theme family overlay (`data-theme="cev"` with `data-mode`) and the `@abmex/themes/mui` adapter. This delivered P1–P3 of the CEV-002 theme donor plan.
+- 0.11.0 (PR #26): P4 gates of that plan, and the Tailwind `dark:`/`light:` variants now follow `data-mode` and the nearest scope, checked in Chrome against the computed `color-scheme`.
+- Open: P5 (Merlyn swap proof) and CEV-side consumption, which starts after the CEV repository's PR #2 merges. The acceptance definition of an "interchangeable" theme interface is still not written down beyond color-role parity, which `test_build.py` now enforces.
+- `tests/browser/tabs.test.mjs` is flaky under machine load (reads 140 instead of 5000 for the exit duration about half the time); not yet diagnosed.
+- Known drift: npm dist-tag `next` still points at 0.7.0-next.11 although the release protocol retired it. Stale PRs #7, #8, #11 and the Sidebar extraction PRs #15 and #21 remain open.
+- Release records: kb `projects/design-system/abmex-release/abmex-design-system-release-log-append-only`. 0.8.0 through 0.11.0 are recorded there.
+
 ## Latest — 2026-10-26 verification and learning closeout
-
-Six primitives candidate verified in `/Volumes/FLOUNDER/dev/abmex-design-system-six-primitives`, `feat/six-primitives` (uncommitted). Final suite198/198 in22files; public declaration gate and3artifact tests pass. Normal source prepack/pack and fresh tarball consumer pass; live work-profile Chrome actions/screenshots and empty console recorded. Owned tab/server and disposable consumer dependencies cleaned. Contract0.9 implementation appendix matches KB and both repository copies.
-
-Learning record: `projects/design-system/donor-component-extraction-parent/runs/extract-20261025-003-learning-record`. Two fresh Luna/high reviewers plus bounded control/replay/holdout completed; extraction0.2.1 adds a conditional callback-ownership trial. Companion/method0.1.0 unchanged; no user consensus or empirical promotion claimed. Codex extraction/learn aliases now resolve through ~/.agents/skills to existing profile sources.
-
-Version-format blocker withdrawn2026-10-26: canonical KB already exempted npm on2026-10-16; user confirms development/main exactly THREE numbers, MINOR bump into development and MAJOR bump into main. No separate stamp mapping is needed. Next integration work is commit/push/reviewed PR under that rule; no commit/PR/publish made yet. Broader work remains Sidebar extraction, persistence/inventory rollout and shared themes/two-app swaps. CEV ownership remains explicitly sequenced; latest cross-team board and PRIMARY-MSG-008 govern.
-
-Earlier checkpoints below are historical and superseded where this section is newer.
-
 ## 2026-10-26 — six-primitives closeout
 
 Primary work is in `/Volumes/FLOUNDER/dev/abmex-design-system-six-primitives`, branch `feat/six-primitives`. Six primitives are implemented as a draft. Latest recorded `pnpm test` passed 192 tests across 22 files; type checks, builds, metadata generation and prior browser evidence are recorded in [the evidence checkpoint](../superpowers/plans/2026-10-25-six-primitives-evidence.md). Browser/packed-consumer proof has not been repeated after latest source changes. No acceptance, release, commit or deployment is claimed.
@@ -22,14 +26,33 @@ Pending: npm SemVer versus the full org version stamp mapping (user response req
 
 ## 2026-10-21 — active contract design
 
-Current effort: donor-component extraction skill and evolving public component contract. Read [BASE_COMPONENT_CONTRACT.md](BASE_COMPONENT_CONTRACT.md) first. Principles are approved; API names, merge rules, and prototype remain draft. Next: research conventional extension surfaces in MUI and other major systems, then continue the design interview. Existing inventory alignment must be additive. No extraction implementation or consumer migration has occurred in this effort.
 
-KB parent: `projects/design-system/donor-component-extraction-parent`; child: `projects/design-system/donor-component-extraction-parent/base-component-contract`. Keep the child and local contract body aligned. Prototype is documentation, not production code.
+Six primitives candidate verified in `/Volumes/FLOUNDER/dev/abmex-design-system-six-primitives`, `feat/six-primitives` (uncommitted). Final suite198/198 in22files; public declaration gate and3artifact tests pass. Normal source prepack/pack and fresh tarball consumer pass; live work-profile Chrome actions/screenshots and empty console recorded. Owned tab/server and disposable consumer dependencies cleaned. Contract0.9 implementation appendix matches KB and both repository copies.
 
-## Historical migration checkpoint — not reverified this session
+Learning record: `projects/design-system/donor-component-extraction-parent/runs/extract-20261025-003-learning-record`. Two fresh Luna/high reviewers plus bounded control/replay/holdout completed; extraction0.2.1 adds a conditional callback-ownership trial. Companion/method0.1.0 unchanged; no user consensus or empirical promotion claimed. Codex extraction/learn aliases now resolve through ~/.agents/skills to existing profile sources.
 
-Checkpoint: roughly 40% of reviewed ABMEX migration plan.
+Version-format blocker withdrawn2026-10-26: canonical KB already exempted npm on2026-10-16; user confirms development/main exactly THREE numbers, MINOR bump into development and MAJOR bump into main. No separate stamp mapping is needed. Next integration work is commit/push/reviewed PR under that rule; no commit/PR/publish made yet. Broader work remains Sidebar extraction, persistence/inventory rollout and shared themes/two-app swaps. CEV ownership remains explicitly sequenced; latest cross-team board and PRIMARY-MSG-008 govern.
 
-Latest implementation includes motion token source, generated CSS/TypeScript/Swift platform output, scoped transition selectors, and SwiftUI primitives. Latest `pnpm check` passes: 162 tests across 18 files, both package builds, and typechecks. Browser verification must use an installed Chrome channel because Playwright's bundled browser is unavailable. Native syntax parsing passed; full Swift package verification is still pending.
+Earlier checkpoints below are historical and superseded where this section is newer.
 
-Transfer complete. Source PR: https://github.com/zautke/abmex-design-system/pull/1. New private repository: https://github.com/zautke/abmex-ai, local path `/Volumes/MACDEV/abmex-ai`, transfer PR: https://github.com/zautke/abmex-ai/pull/1. Continue remaining plan gates from the transfer branch.
+Updated 2026-10-25. Read [FRESH_SESSION_HANDOFF.md](FRESH_SESSION_HANDOFF.md) for the complete initial prompt.
+
+## Active objective
+First live component exercise: implement Text, Icon, Button, IconButton, BaseLayoutContainer, and LayoutContainer to inform the executable contract. Theme scope covers Merlyn and CEV through an interchangeable common interface with dark/light support. Primary is confirming the exact meaning/acceptance boundary of “interchangeable”; implementation and runtime acceptance remain pending. CEV team remains secondary and acts only under exact primary/user assignments.
+
+## Coordination
+KB parent blackboard: projects/design-system/donor-component-extraction-parent/blackboard-cev-abmex-donor-import-local-to-abmex-multi-agent-message-hub
+Read child Coordination Hub, Action Ledger and CEV Donor Import Topic Hub. PRIMARY-MSG-001..005 answer branch/package/dirty-doc questions, correct old Phase2/palette/release assumptions and request standby acknowledgment. Check NEW messages before work.
+
+## Implemented versus pending
+Skills: extract-abmex-components0.2.0 + composition; learn-extract-abmex-components0.1.0 + learn-skill-evolve0.1.0. Verified ~/.codex component/learn paths are symlinks into ~/.agents/skills; .system remains local. Validator/links and bounded reasoning reviews passed; official quick_validate lacks yaml. No component implementation/live exercise, runtime contract enforcement, theme interoperability, theme migration or HeroUI replacement is claimed complete.
+
+Contract0.9 approved. Theme audit/full Tailwind4.3 reference/normalization plan documented, not implemented. Prior untracked/modified docs remain primary-owned. Secondary cannot touch them.
+
+## Resume order
+1. Confirm primary's precise acceptance definition for interchangeable Merlyn/CEV theme interface and dark/light behavior.
+2. Reconcile branch/version/deployment workflow and dirty-doc integration before any branch mutation. Verified local main@1b8517e; origin/main@ba6551a is four commits ahead and contains development@4024eac; no local-only commits.
+3. Begin the six-component live exercise under the agreed contract; record component and theme decisions as evidence, then run the required learner/review loop.
+4. Check latest shared-board messages and CEV standby acknowledgment; any CEV task needs a precise bounded assignment.
+
+No commit/push or app/browser process started in coordination. Last reported disk free5.6Gi (not rechecked). Source-control integration remains unfinished; do not claim clean state. Skills outside this repo remain local. Full handoff includes KB paths, findings, policy limits and unresolved tasks.
