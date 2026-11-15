@@ -8,19 +8,30 @@ import sys
 import tempfile
 import unittest
 
+SRC = pathlib.Path(__file__).resolve().parents[2]
+
+
+def color_roles(css):
+    """Role names declared in the mode blocks (everything before the non-color :root block)."""
+    roles = css.split('theme-editor: roles', 1)[1].split('theme-editor: roles-end')[0].split('\n:root {', 1)[0]
+    return set(re.findall(r'^\s*(--[a-z0-9-]+):', roles, re.M))
+
 
 class GeneratorTest(unittest.TestCase):
     def test_contrast_gate(self):
         with tempfile.TemporaryDirectory() as directory:
             build = pathlib.Path(directory) / 'build'
             build.mkdir()
-            for name in ('build.py', 'palette.py', 'color.py'):
+            for name in ('build.py', 'palette.py', 'palette_cev.py', 'color.py'):  # palette_cev: the bridge lists every family's default scope
                 shutil.copyfile(pathlib.Path(__file__).with_name(name), build / name)
             command = [sys.executable, str(build / 'build.py')]
             passed = subprocess.run(command, cwd=directory, capture_output=True, text=True)
             self.assertEqual(passed.returncode, 0, passed.stdout + passed.stderr)
             self.assertIn('200 pairs checked, 0 failing', passed.stdout)
             css = (build.parent / 'phosphor.tokens.css').read_text()
+            # committed outputs are the generator's outputs: a generator edit that moves them shows in review
+            for name in ('phosphor.tokens.css', 'phosphor.tailwind.css'):
+                self.assertEqual((build.parent / name).read_text(), (SRC / 'phosphor' / name).read_text(), name)
             self.assertIn('--folder:', css)
             self.assertIn('--tab-flare:', css)
             self.assertNotIn('--ph-', css)
@@ -61,6 +72,12 @@ class GeneratorTest(unittest.TestCase):
             # an overlay family writes only its tokens: no bridge, no adapters
             self.assertFalse((build.parent / 'phosphor.tailwind.css').exists())
             css = (out / 'cev.tokens.css').read_text()
+            self.assertEqual(css, (SRC / 'cev' / 'cev.tokens.css').read_text())
+            # interchangeable families: every phosphor color role has a cev value in both modes
+            phosphor = color_roles((SRC / 'phosphor' / 'phosphor.tokens.css').read_text())
+            self.assertTrue(phosphor)
+            self.assertEqual(phosphor - color_roles(css), set())
+            self.assertIn('[data-theme="cev"] [data-mode="light"]', css)  # nested scope re-resolves
             self.assertNotIn('@import', css)
             self.assertIn('[data-theme="cev"][data-mode="light"]', css)
             self.assertIn('--radius: 0.5rem;', css)

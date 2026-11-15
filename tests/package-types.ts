@@ -3,6 +3,7 @@ import type { ComponentProps } from 'react';
 import { ApprovalRequest, FileList, ImageTile, SettingsFields, TaskList, ToolResult, ToolsPanel } from '../packages/ui/dist/index.js';
 import { Tabs } from '../packages/ui/dist/components/tabs/index.js';
 import { SortableTab } from '../packages/ui/dist/components/tabs/Sortable.js';
+import { muiThemeOptions } from '../packages/themes/dist/mui.js';
 
 const approval: ComponentProps<typeof ApprovalRequest> = { heading: 'Approve?', onApprove() {}, onReject() {} };
 const files: ComponentProps<typeof FileList> = { entries: [] };
@@ -24,4 +25,5 @@ const fields: ComponentProps<typeof SettingsFields> = {
   ],
 };
 const toolsBySections: ComponentProps<typeof ToolsPanel> = { sections: fields.sections };
-void [approval, files, image, tasks, result, tabs, sortable, fields, toolsBySections];
+const mui: string = muiThemeOptions().cssVariables.colorSchemeSelector;
+void [mui, approval, files, image, tasks, result, tabs, sortable, fields, toolsBySections];
