@@ -4,13 +4,14 @@
 
 Entries below this one are history and predate the releases listed here.
 
-- `development` is at 0.10.0 (`8f7f305`); `main` is at 1.0.0. The next promotion to `main` is 2.0.0.
+- `development` is at 0.11.0 (`8cf31f4`); `main` is at 1.0.0. The next promotion to `main` is 2.0.0.
 - 0.9.0 (PR #14): six primitives on Base Component Contract 0.9, primitive manifest and options schema exports.
 - 0.10.0 (PR #16): cev theme family overlay (`data-theme="cev"` with `data-mode`) and the `@abmex/themes/mui` adapter. This delivered P1–P3 of the CEV-002 theme donor plan.
-- PR #26 (`test/cev-family-gates`, draft, 0.11.0): P4 gates plus a fix making the Tailwind `dark:`/`light:` variants follow `data-mode` and the nearest scope. Waiting on review.
+- 0.11.0 (PR #26): P4 gates of that plan, and the Tailwind `dark:`/`light:` variants now follow `data-mode` and the nearest scope, checked in Chrome against the computed `color-scheme`.
 - Open: P5 (Merlyn swap proof) and CEV-side consumption, which starts after the CEV repository's PR #2 merges. The acceptance definition of an "interchangeable" theme interface is still not written down beyond color-role parity, which `test_build.py` now enforces.
+- `tests/browser/tabs.test.mjs` is flaky under machine load (reads 140 instead of 5000 for the exit duration about half the time); not yet diagnosed.
 - Known drift: npm dist-tag `next` still points at 0.7.0-next.11 although the release protocol retired it. Stale PRs #7, #8, #11 and the Sidebar extraction PRs #15 and #21 remain open.
-- Release records: kb `projects/design-system/abmex-release/abmex-design-system-release-log-append-only`. 0.8.0 and 1.0.0 are not yet backfilled there.
+- Release records: kb `projects/design-system/abmex-release/abmex-design-system-release-log-append-only`. 0.8.0 through 0.11.0 are recorded there.
 
 ## Latest — 2026-10-26 verification and learning closeout
 ## 2026-10-26 — six-primitives closeout
