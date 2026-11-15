@@ -28,6 +28,12 @@
 
 - 2026-10-21: Adopt slots for replacement, slotProps for named-part configuration, and as for polymorphism. Type/schema enforcement is proposed, not implemented. JSON Schema describes serializable configuration; React props/functions/refs remain TypeScript contracts.
 
+- 2026-10-26: Six-primitives work remains a draft checkpoint. Latest recorded suite passed 192/192; this does not close acceptance, latest live/packed proof, independent review, contract reconciliation, or required learning.
+- 2026-10-26: PRIMARY-MSG-006 authorizes CEV theme planning only. A submitted CEV plan and reviewed learning proposals do not authorize implementation or establish user decisions.
+- 2026-10-26: Canonical extraction skills currently live under `~/.agents/settings/global/claude-profiles/fe/skills/`; alias/distribution decision remains open. Do not restore copies.
+- 2026-10-26: Release mapping between npm SemVer and full organizational version stamps remains unresolved; never claim deployed parity until resolved and observed.
+
+
 - 2026-10-21: [Base Component Contract](BASE_COMPONENT_CONTRACT.md) is a living contract, paired with the kb child under the donor extraction parent. Preserve approved requirements separately from proposed APIs.
 - Extensions are ONLY additive. Stable named parts expose configuration, props, styling, composition, and applicable behavior/state capabilities without breaking existing consumers.
 - Stateful components need default in-memory and optional localStorage support plus external app-state ownership. Instance isolation is required; undo/redo is not required.

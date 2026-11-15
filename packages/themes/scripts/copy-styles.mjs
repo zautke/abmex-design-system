@@ -13,7 +13,7 @@ if (args.length) {
   Usage();
   process.exit(2);
 }
-await cp('src/phosphor', 'dist/phosphor', {
-  recursive: true,
-  filter: (source) => !/[\\/]build([\\/]|$)/.test(source),
-});
+const filter = (source) => !/[\\/]build([\\/]|$)/.test(source);
+for (const family of ['phosphor', 'cev']) {
+  await cp(`src/${family}`, `dist/${family}`, { recursive: true, filter });
+}

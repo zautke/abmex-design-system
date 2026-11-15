@@ -43,6 +43,20 @@ Earlier contract-policy interview and skill-creation checkboxes are historical; 
 - [ ] Verify installed/compiled artifact equivalence and browser-computed theme/editor coverage; source audit limitations are explicit.
 - [ ] Implement approved contract and audit remediation additively after scoped implementation planning; no production changes yet.
 
+## Six-primitives and cross-team closeout — 2026-10-26
+
+- [x] Record latest observed implementation checkpoint and preserve test counts accurately (192 tests / 22 files; no acceptance inferred).
+- [ ] Complete independent contract and acceptance review; reconcile runtime/type policy for disabled slot callbacks.
+- [ ] Re-run fresh packed public-consumer proof and live real-user browser acceptance against latest changes; update only from observed results.
+- [ ] Reconcile descriptor/schema gates and Base Component Contract in both worktree and canonical KB after contract-agent report.
+- [ ] Freeze complete 003 evidence packet and compare 001–004 history; then run mandatory learn companion with two independent fresh-context reviews and user/primary deliberation.
+- [ ] Resolve release-stamp mapping and skill-alias distribution decisions; do not fabricate deployed-version parity or restore moved skill copies.
+- [ ] Commit/push and open draft PR only under applicable branch/version policy after gates and authorization.
+
+- [x] CEV-002 theme-only planning assignment submitted; planning learning reviewers completed.
+- [ ] Primary review and user deliberation for CEV-002 proposed dispositions; explicit implementation assignments still required.
+
+
 ## Donor extraction contract — 2026-10-21
 
 - [x] Create kb extraction parent under design-system.

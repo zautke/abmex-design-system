@@ -26,6 +26,10 @@
 
 - 2026-10-21: Polymorphic props require selected-target inference and rejected-use tests. A type signature cannot prove ref forwarding, semantic behavior, or additive compatibility; combine type, metadata, package, and runtime evidence.
 
+- 2026-10-26: For extracted-component acceptance, keep code/test results, independent contract review, fresh public-package evidence, live browser evidence, and skill learning as separate closure fields. A cited suite count proves only the executed suite; it does not imply cross-boundary acceptance.
+- 2026-10-26: Cross-team planning artifacts need explicit status separation: assignment, acknowledgment, plan submission, learning review, user/primary disposition, and implementation authorization are distinct states.
+
+
 - 2026-10-21: Define capability-specific interfaces under common principles; do not force input props or persistence onto unrelated/stateless primitives.
 - Named public parts create supported replacement boundaries. Separate content, element, and behavior replacement; preserve semantic and event/ref contracts.
 - Additive inventory alignment needs a per-component matrix and existing-consumer regression evidence. Reuse, extend, compose, or create based on responsibilities rather than visual resemblance.

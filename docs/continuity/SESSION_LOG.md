@@ -45,6 +45,15 @@ Updated all six continuity docs plus FRESH_SESSION_HANDOFF.md. No root continuit
 - Extraction skill is still unimplemented. Scope: principle-driven decomposition of the full Labsupapg sidebar into reusable public intermediates/primitives and replaceable slots; complex composition proof uses SidebarDemo + ContentPane navigation. React/TypeScript, HTML, CSS, Tailwind, and `@abmex/themes` token authority are required. Include working defaults, consumer-owned or memory/localStorage persistence, and independent sidebar instances.
 - Current research last checked 2026-10-21. No fresh research or TypeScript checks ran for this documentation update.
 
+## 2026-10-26 — six-primitives and CEV planning handoff
+
+- Updated continuity from the local evidence checkpoint and canonical KB run/board. Latest observed suite result: `pnpm test` passed 192 tests in 22 files; no independent acceptance inferred.
+- Outstanding 003 gates: current contract review and disabled callback/type alignment; latest packed-consumer and browser checks; descriptor/schema reconciliation; frozen evidence packet and mandatory learn cycle. Prior browser run used built workspace exports, not a fresh packed install; email identity was not independently confirmed.
+- PRIMARY-MSG-006/CEV-002 authorizes theme planning only. Plan submitted, learning reviews complete, dispositions proposed; primary/user deliberation and explicit implementation assignment remain pending.
+- Current theme direction proposed by CEV: `cev` as second family next to Phosphor; app-local MUI/chat adapters. Working interpretation is Merlyn and CEV families each in light/dark, pending confirmation. No proposal is adopted here. G1–G8 remain unanswered on the board.
+- Recorded unresolved release/version and skill distribution questions. Verified skill source moved to `~/.agents/settings/global/claude-profiles/fe/skills/`; do not recreate previous aliases or copies.
+
+
 ## 2026-10-21 — donor extraction and base contract
 
 - Revision 0.3: user adopted slots/slotProps and promoted as. Added MUI/Chakra/Mantine polymorphism evidence and proposed TypeScript/schema/editor enforcement. Both documentation examples pass strict checks; all four expected invalid uses fail without suppression. No runtime or editor-performance checks ran.

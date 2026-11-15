@@ -1,0 +1,15 @@
+{
+  "run_id": "EXTRACT-20261025-003",
+  "skill_version": "0.2.0",
+  "next_run_skill_version": "0.2.1-trial",
+  "scope": "Six-primitives implementation exercise; whole-project donor and theme work remain separate",
+  "checks": [
+    {"claim":"Six primitives preserve native/slot/ref/provider/semantic contracts", "required":true, "result":"pass", "evidence":"2026-10-25-six-primitives-evidence.md#final-candidate-verification--2026-10-26; 198 tests/22 files; independent code review", "reason":""},
+    {"claim":"Public declarations and named props types compile through package exports", "required":true, "result":"pass", "evidence":"pnpm test:types; packages/ui/type-tests/foundation.tsx; LayoutContainerProps export regression", "reason":""},
+    {"claim":"Compiled CSS, metadata and package artifact boundaries are usable", "required":true, "result":"pass", "evidence":"node --test tests/package-css.test.mjs: 3 passed; normal pnpm pack/prepack; fresh local tarball consumer", "reason":""},
+    {"claim":"Two compositions support real pointer/keyboard and dark/light behavior", "required":true, "result":"pass", "evidence":"2026-10-25-six-primitives-evidence.md final Chrome screenshot chain; console []", "reason":""},
+    {"claim":"Documentation, bounded recording, retrospective and required two-reviewer learning are recorded", "required":true, "result":"pass", "evidence":"2026-10-26-six-primitives-learning.md and canonical KB003-learning-record; coverage labeled partial summary/session artifacts", "reason":""},
+    {"claim":"Durable state persistence applies to these stateless primitives", "required":false, "result":"inapplicable", "evidence":"BASE_COMPONENT_CONTRACT.md executable foundation checkpoint", "reason":"No durable component-owned state; persistence remains required for applicable future stateful components, not invented for these primitives."},
+    {"claim":"Versioned commit, pushed draft PR and source-control integration completed under release policy", "required":true, "result":"not-run", "evidence":"CURRENT_TASK_STATE.md release-protocol correction2026-10-26", "reason":"Integration steps have not yet executed. The prior format blocker was erroneous and is withdrawn: npm exemption already existed; development/main use THREE-number versions, MINOR into development and MAJOR into main."}
+  ]
+}
