@@ -25,7 +25,7 @@ test('dark:/light: fire for the nearest mode scope, the one the tokens resolve f
     const page = await browser.newPage();
     await page.setContent(`<style>${css}</style><main></main>`);
     const wrong = await page.evaluate(() => {
-      const scopes = ['class="dark"', 'class="light"', 'data-theme="dark"', 'data-mode="dark"', 'data-mode="light"', 'class="dark" data-mode="light"', 'class="light" data-mode="dark"'];
+      const scopes = ['class="dark"', 'class="light"', 'data-theme="dark"', 'data-theme="cev"', 'data-mode="dark"', 'data-mode="light"', 'class="dark" data-mode="light"', 'class="light" data-mode="dark"'];
       const roots = [{}, { theme: 'cev', mode: 'light' }, { theme: 'cev', mode: 'dark' }, { mode: 'light' }, { className: 'light' }];
       let chains = [[]];
       for (let depth = 0; depth < 3; depth++) chains = chains.concat(chains.filter(c => c.length === depth).flatMap(c => scopes.map(s => [...c, s])));
@@ -36,6 +36,7 @@ test('dark:/light: fire for the nearest mode scope, the one the tokens resolve f
         for (; el; el = el.parentElement) {
           if (el.dataset.mode) return el.dataset.mode;
           for (const mode of ['dark', 'light']) if (el.classList.contains(mode) || el.dataset.theme === mode) return mode;
+          if (el.dataset.theme === 'cev') return 'dark'; // a family attribute without a mode is that family's default, dark
         }
         return 'dark';
       };
@@ -53,7 +54,7 @@ test('dark:/light: fire for the nearest mode scope, the one the tokens resolve f
       }
       return { count: document.querySelectorAll('p').length * roots.length, wrong };
     });
-    assert.equal(wrong.count, 400 * 5);
+    assert.equal(wrong.count, 585 * 5);
     assert.deepEqual(wrong.wrong.slice(0, 10), []);
   } finally {
     await browser.close();

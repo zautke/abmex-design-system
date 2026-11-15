@@ -220,6 +220,8 @@ open(f'{OUT}/{FAMILY}.tokens.css','w',encoding='utf-8',newline=chr(10)).write(to
 SEL = ':root,\n.dark,\n[data-theme="dark"],\n.light,\n[data-theme="light"],\n[data-mode]'
 colors = ORDER + ['backdrop']
 _D, _L = ', '.join(PHOS_DARK.split(',\n')[1:]), ', '.join(PHOS_LIGHT.split(',\n'))  # :root is the default, not a scope
+# An overlay family's bare attribute is its default-dark scope (see its DARK_SEL), so the variants must count it.
+_D += ''.join(f', [data-theme="{f[8:-3]}"]:not([data-mode])' for f in sorted(os.listdir(os.path.dirname(os.path.abspath(__file__)))) if f.startswith('palette_') and f.endswith('.py'))
 def _within(*scopes):
     chain = ' '.join(f':is({scope})' for scope in scopes)
     return f'{chain}, {chain} *'

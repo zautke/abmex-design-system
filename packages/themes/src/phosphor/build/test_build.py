@@ -22,7 +22,7 @@ class GeneratorTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             build = pathlib.Path(directory) / 'build'
             build.mkdir()
-            for name in ('build.py', 'palette.py', 'color.py'):
+            for name in ('build.py', 'palette.py', 'palette_cev.py', 'color.py'):  # palette_cev: the bridge lists every family's default scope
                 shutil.copyfile(pathlib.Path(__file__).with_name(name), build / name)
             command = [sys.executable, str(build / 'build.py')]
             passed = subprocess.run(command, cwd=directory, capture_output=True, text=True)
